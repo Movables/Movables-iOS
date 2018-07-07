@@ -1,0 +1,8 @@
+app_identifier("co.movables.Movables") # The bundle identifier of your app
+apple_id("cwc1231@uw.edu") # Your Apple email address
+
+itc_team_id("334818") # iTunes Connect Team ID
+team_id("3DZ3S2K7LU") # Developer Portal Team ID
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile

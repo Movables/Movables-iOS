@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DiscoverViewController" customModule="Movables" customModuleProvider="target">
+            <connections>
+                <outlet property="cardPeekCollectionView" destination="vgN-ek-ajD" id="oBm-WL-N7M"/>
+                <outlet property="mapView" destination="YJ6-Zz-H3f" id="C9W-nn-pOO"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="mutedStandard" rotateEnabled="NO" pitchEnabled="NO" showsUserLocation="YES" showsCompass="NO" showsPointsOfInterest="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YJ6-Zz-H3f">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                </mapView>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="vgN-ek-ajD">
+                    <rect key="frame" x="0.0" y="446" width="375" height="191"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="InA-Li-UJe">
+                        <size key="itemSize" width="50" height="50"/>
+                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    </collectionViewFlowLayout>
+                </collectionView>
+            </subviews>
+            <constraints>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="vgN-ek-ajD" secondAttribute="bottom" constant="30" id="9gh-4c-S1D"/>
+                <constraint firstItem="YJ6-Zz-H3f" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="KtU-BY-N6N"/>
+                <constraint firstItem="vgN-ek-ajD" firstAttribute="centerX" secondItem="YJ6-Zz-H3f" secondAttribute="centerX" id="Ktc-Vo-7rk"/>
+                <constraint firstItem="vgN-ek-ajD" firstAttribute="width" secondItem="fnl-2z-Ty3" secondAttribute="width" id="O2H-xP-28M"/>
+                <constraint firstItem="YJ6-Zz-H3f" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="r9O-sZ-mry"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="YJ6-Zz-H3f" secondAttribute="trailing" id="sni-di-k6f"/>
+                <constraint firstItem="vgN-ek-ajD" firstAttribute="height" secondItem="fnl-2z-Ty3" secondAttribute="height" multiplier="2:7" constant="6" id="ybz-qw-261"/>
+                <constraint firstAttribute="bottom" secondItem="YJ6-Zz-H3f" secondAttribute="bottom" id="zcN-rQ-koc"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+        </view>
+    </objects>
+</document>

@@ -1,0 +1,244 @@
+PODS:
+  - AlgoliaSearch-Client-Swift (5.1.7)
+  - Bolts (1.9.0):
+    - Bolts/AppLinks (= 1.9.0)
+    - Bolts/Tasks (= 1.9.0)
+  - Bolts/AppLinks (1.9.0):
+    - Bolts/Tasks
+  - Bolts/Tasks (1.9.0)
+  - BoringSSL (10.0.5):
+    - BoringSSL/Implementation (= 10.0.5)
+    - BoringSSL/Interface (= 10.0.5)
+  - BoringSSL/Implementation (10.0.5):
+    - BoringSSL/Interface (= 10.0.5)
+  - BoringSSL/Interface (10.0.5)
+  - CountdownLabel (3.0.0)
+  - Crashlytics (3.10.3):
+    - Fabric (~> 1.7.8)
+  - CropViewController (2.3.6)
+  - DateToolsSwift (4.0.0)
+  - Fabric (1.7.8)
+  - FBSDKCoreKit (4.34.0):
+    - Bolts (~> 1.7)
+  - FBSDKLoginKit (4.34.0):
+    - FBSDKCoreKit
+  - Firebase/Auth (5.4.0):
+    - Firebase/CoreOnly
+    - FirebaseAuth (= 5.0.2)
+  - Firebase/Core (5.4.0):
+    - Firebase/CoreOnly
+    - FirebaseAnalytics (= 5.0.1)
+  - Firebase/CoreOnly (5.4.0):
+    - FirebaseCore (= 5.0.5)
+  - Firebase/Firestore (5.4.0):
+    - Firebase/CoreOnly
+    - FirebaseFirestore (= 0.12.5)
+  - Firebase/Functions (5.4.0):
+    - Firebase/CoreOnly
+    - FirebaseFunctions (= 2.1.0)
+  - Firebase/Storage (5.4.0):
+    - Firebase/CoreOnly
+    - FirebaseStorage (= 3.0.0)
+  - FirebaseAnalytics (5.0.1):
+    - FirebaseCore (~> 5.0)
+    - FirebaseInstanceID (~> 3.0)
+    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
+    - nanopb (~> 0.3)
+  - FirebaseAuth (5.0.2):
+    - FirebaseCore (~> 5.0)
+    - GTMSessionFetcher/Core (~> 1.1)
+  - FirebaseCore (5.0.5):
+    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
+  - FirebaseFirestore (0.12.5):
+    - FirebaseCore (~> 5.0)
+    - FirebaseFirestore/abseil-cpp (= 0.12.5)
+    - gRPC-ProtoRPC (~> 1.0)
+    - leveldb-library (~> 1.18)
+    - nanopb (~> 0.3.8)
+    - Protobuf (~> 3.1)
+  - FirebaseFirestore/abseil-cpp (0.12.5):
+    - FirebaseCore (~> 5.0)
+    - gRPC-ProtoRPC (~> 1.0)
+    - leveldb-library (~> 1.18)
+    - nanopb (~> 0.3.8)
+    - Protobuf (~> 3.1)
+  - FirebaseFunctions (2.1.0):
+    - FirebaseCore (~> 5.0)
+    - GTMSessionFetcher/Core (~> 1.1)
+  - FirebaseInstanceID (3.1.1):
+    - FirebaseCore (~> 5.0)
+  - FirebaseStorage (3.0.0):
+    - FirebaseCore (~> 5.0)
+    - GTMSessionFetcher/Core (~> 1.1)
+  - GoogleSignIn (4.1.2):
+    - "GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)"
+    - "GoogleToolboxForMac/NSString+URLArguments (~> 2.1)"
+    - GTMOAuth2 (~> 1.0)
+    - GTMSessionFetcher/Core (~> 1.1)
+  - GoogleToolboxForMac/DebugUtils (2.1.4):
+    - GoogleToolboxForMac/Defines (= 2.1.4)
+  - GoogleToolboxForMac/Defines (2.1.4)
+  - "GoogleToolboxForMac/NSData+zlib (2.1.4)":
+    - GoogleToolboxForMac/Defines (= 2.1.4)
+  - "GoogleToolboxForMac/NSDictionary+URLArguments (2.1.4)":
+    - GoogleToolboxForMac/DebugUtils (= 2.1.4)
+    - GoogleToolboxForMac/Defines (= 2.1.4)
+    - "GoogleToolboxForMac/NSString+URLArguments (= 2.1.4)"
+  - "GoogleToolboxForMac/NSString+URLArguments (2.1.4)"
+  - gRPC (1.13.0):
+    - gRPC-RxLibrary (= 1.13.0)
+    - gRPC/Main (= 1.13.0)
+  - gRPC-Core (1.13.0):
+    - gRPC-Core/Implementation (= 1.13.0)
+    - gRPC-Core/Interface (= 1.13.0)
+  - gRPC-Core/Implementation (1.13.0):
+    - BoringSSL (~> 10.0)
+    - gRPC-Core/Interface (= 1.13.0)
+    - nanopb (~> 0.3)
+  - gRPC-Core/Interface (1.13.0)
+  - gRPC-ProtoRPC (1.13.0):
+    - gRPC-ProtoRPC/Main (= 1.13.0)
+  - gRPC-ProtoRPC/Main (1.13.0):
+    - gRPC (= 1.13.0)
+    - gRPC-RxLibrary (= 1.13.0)
+    - Protobuf (~> 3.0)
+  - gRPC-RxLibrary (1.13.0)
+  - gRPC/Main (1.13.0):
+    - gRPC-Core (= 1.13.0)
+    - gRPC-RxLibrary (= 1.13.0)
+  - GTMOAuth2 (1.1.6):
+    - GTMSessionFetcher (~> 1.1)
+  - GTMSessionFetcher (1.1.15):
+    - GTMSessionFetcher/Full (= 1.1.15)
+  - GTMSessionFetcher/Core (1.1.15)
+  - GTMSessionFetcher/Full (1.1.15):
+    - GTMSessionFetcher/Core (= 1.1.15)
+  - IQKeyboardManagerSwift (6.0.4)
+  - KMNavigationBarTransition (1.1.5)
+  - leveldb-library (1.20)
+  - MarqueeLabel/Swift (3.1.6)
+  - nanopb (0.3.8):
+    - nanopb/decode (= 0.3.8)
+    - nanopb/encode (= 0.3.8)
+  - nanopb/decode (0.3.8)
+  - nanopb/encode (0.3.8)
+  - NVActivityIndicatorView (4.2.1):
+    - NVActivityIndicatorView/Presenter (= 4.2.1)
+  - NVActivityIndicatorView/Presenter (4.2.1)
+  - Protobuf (3.6.0)
+  - SDWebImage (4.4.1):
+    - SDWebImage/Core (= 4.4.1)
+  - SDWebImage/Core (4.4.1)
+  - SlackTextViewController (1.9.6)
+  - SwiftLint (0.26.0)
+  - TTTAttributedLabel (2.0.0)
+  - "UITextView+Placeholder (1.2.1)"
+
+DEPENDENCIES:
+  - AlgoliaSearch-Client-Swift
+  - CountdownLabel
+  - Crashlytics
+  - CropViewController
+  - DateToolsSwift
+  - Fabric
+  - FBSDKLoginKit
+  - Firebase/Auth
+  - Firebase/Core
+  - Firebase/Firestore
+  - Firebase/Functions
+  - Firebase/Storage
+  - GoogleSignIn
+  - IQKeyboardManagerSwift
+  - KMNavigationBarTransition
+  - MarqueeLabel/Swift
+  - NVActivityIndicatorView
+  - SDWebImage (~> 4.0)
+  - SlackTextViewController
+  - SwiftLint
+  - TTTAttributedLabel
+  - "UITextView+Placeholder"
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - AlgoliaSearch-Client-Swift
+    - Bolts
+    - BoringSSL
+    - CountdownLabel
+    - Crashlytics
+    - CropViewController
+    - DateToolsSwift
+    - Fabric
+    - FBSDKCoreKit
+    - FBSDKLoginKit
+    - Firebase
+    - FirebaseAnalytics
+    - FirebaseAuth
+    - FirebaseCore
+    - FirebaseFirestore
+    - FirebaseFunctions
+    - FirebaseInstanceID
+    - FirebaseStorage
+    - GoogleSignIn
+    - GoogleToolboxForMac
+    - gRPC
+    - gRPC-Core
+    - gRPC-ProtoRPC
+    - gRPC-RxLibrary
+    - GTMOAuth2
+    - GTMSessionFetcher
+    - IQKeyboardManagerSwift
+    - KMNavigationBarTransition
+    - leveldb-library
+    - MarqueeLabel
+    - nanopb
+    - NVActivityIndicatorView
+    - Protobuf
+    - SDWebImage
+    - SlackTextViewController
+    - SwiftLint
+    - TTTAttributedLabel
+    - "UITextView+Placeholder"
+
+SPEC CHECKSUMS:
+  AlgoliaSearch-Client-Swift: 13f8abe012615ed3ccc35dc61ce0401a191be0ff
+  Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
+  BoringSSL: cf3f1793eb6e3c445c4d150456341f149c268a35
+  CountdownLabel: 4534a68892b1deb73fda18702dfdc2c8444cec08
+  Crashlytics: 2aea305161a2122492698c75af27f2b98aa49a25
+  CropViewController: e6d4bd512d15a1709e9ddf71fe7d98ffd05dda0f
+  DateToolsSwift: 875d97ff9e3a5d54abdd67a269b3f51c757b71ab
+  Fabric: fba4684a95df789565b0b27fc5b6e68f1755af32
+  FBSDKCoreKit: 0ff57f093b85c8c9d5aba697d3edf68a8960ce78
+  FBSDKLoginKit: 8c78f57a145afb756e4755e69195ebe08a42466e
+  Firebase: d66f4f29c23f22d96808d9abc174d81d8eee968f
+  FirebaseAnalytics: b3628aea54c50464c32c393fb2ea032566e7ecc2
+  FirebaseAuth: 096e457cdd4274412a66c4a35874787e411f5a03
+  FirebaseCore: 42b3267233bd21a5abd54117ccc38ca3dd0f8e83
+  FirebaseFirestore: b041e4a94601e18e82a863e0dcfa9d3e55cc2031
+  FirebaseFunctions: 0cb3bc0bbeac1daf6fea378a1064ff7f484e4c4e
+  FirebaseInstanceID: f3f0657372592ecdfdfe2cac604a5a75758376a6
+  FirebaseStorage: 7ca4bb7b58a25fa647b04f524033fc7cb7eb272b
+  GoogleSignIn: d9ef55b10f0aa401a5de2747f59b725e4b9732ac
+  GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
+  gRPC: 81b990caa01d7c32605d300c2ffd1b5ba0ef9e49
+  gRPC-Core: a56b086a8ef5ced6f6ba5be5bc0a63fca185015a
+  gRPC-ProtoRPC: 842797fbe05dfcf891afb4a5048e5ccf5f06ef86
+  gRPC-RxLibrary: fa6852f98d6ec0b73c0ec2f6406c26943099d501
+  GTMOAuth2: c77fe325e4acd453837e72d91e3b5f13116857b2
+  GTMSessionFetcher: 5fa5b80fd20e439ef5f545fb2cb3ca6c6714caa2
+  IQKeyboardManagerSwift: 36dbe324b4f9793f5f41ba5227f3e7c76dfefd50
+  KMNavigationBarTransition: 7a52c9bc25b39b6e3343e980b453facee1591b82
+  leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
+  MarqueeLabel: 0c41f08ef5773e29c0f71064a8fa788a2fd8b365
+  nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
+  NVActivityIndicatorView: 8068ba3ad39cb44cbaab25d89ff2546b3f092681
+  Protobuf: 0fc0ad8bec688b2a3017a139953e01374fedbd5f
+  SDWebImage: 47e9b5b925cbce75946c23f0c42dd19464189af4
+  SlackTextViewController: b854e62c1c156336bc4fd409c6ca79b5773e8f9d
+  SwiftLint: f6b83e8d95ee1e91e11932d843af4fdcbf3fc764
+  TTTAttributedLabel: 8cffe8e127e4e82ff3af1e5386d4cd0ad000b656
+  "UITextView+Placeholder": 0c3efd97f37ea64bde7f34cc6e90fe02e87b3909
+
+PODFILE CHECKSUM: 1d34545458241686eefc50c2fdf0ad5cf322ee99
+
+COCOAPODS: 1.5.3
