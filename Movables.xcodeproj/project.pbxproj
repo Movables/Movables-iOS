@@ -135,6 +135,7 @@
 		2CF5BACE20CEADCD006A6FAE /* CreatePackageCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF5BACD20CEADCD006A6FAE /* CreatePackageCoordinator.swift */; };
 		2CF5BAD020CEB0FB006A6FAE /* CreatePackageTagSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF5BACF20CEB0FB006A6FAE /* CreatePackageTagSearchViewController.swift */; };
 		38C9FDB59C99DE90596C2E7E /* Pods_MovablesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 953E128EB4E3568AAE06F43B /* Pods_MovablesTests.framework */; };
+		9971D8CB20F0A2F600A41081 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9971D8CD20F0A2F600A41081 /* Localizable.strings */; };
 		B9E4C90FFF648F7E3394403E /* Pods_MovablesUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AD895961502F523A9864C36 /* Pods_MovablesUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -296,6 +297,8 @@
 		861F4ADAB024B140DDAFD08E /* Pods-MovablesTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MovablesTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MovablesTests/Pods-MovablesTests.debug.xcconfig"; sourceTree = "<group>"; };
 		92B32B0ED32A7B912749E71C /* Pods-MovablesUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MovablesUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-MovablesUITests/Pods-MovablesUITests.release.xcconfig"; sourceTree = "<group>"; };
 		953E128EB4E3568AAE06F43B /* Pods_MovablesTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MovablesTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9971D8CC20F0A2F600A41081 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		9971D8CE20F0A30800A41081 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9AD895961502F523A9864C36 /* Pods_MovablesUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MovablesUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B175944D02DED14414EEA5E8 /* Pods-Movables.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Movables.release.xcconfig"; path = "Pods/Target Support Files/Pods-Movables/Pods-Movables.release.xcconfig"; sourceTree = "<group>"; };
 		E150EA963DE1F22C1F514C7F /* Pods_Movables.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Movables.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -542,6 +545,7 @@
 				2C9DA3E4206365EA0041098A /* Info.plist */,
 				2C793765206F65FE00E7C863 /* GoogleService-Info.plist */,
 				2C513CD420F082B200641734 /* credentials.plist */,
+				9971D8CD20F0A2F600A41081 /* Localizable.strings */,
 			);
 			path = Movables;
 			sourceTree = "<group>";
@@ -706,7 +710,7 @@
 				TargetAttributes = {
 					2C9DA3D4206365EA0041098A = {
 						CreatedOnToolsVersion = 9.2;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.Maps.iOS = {
 								enabled = 1;
@@ -752,6 +756,7 @@
 			files = (
 				2C9DA3E3206365EA0041098A /* LaunchScreen.storyboard in Resources */,
 				2CAA8BE420A2CCC9007F625F /* LoginViewController.xib in Resources */,
+				9971D8CB20F0A2F600A41081 /* Localizable.strings in Resources */,
 				2C793766206F65FE00E7C863 /* GoogleService-Info.plist in Resources */,
 				2C9B2B04209B293900BD66BB /* OnboardingViewController.xib in Resources */,
 				2CEE36F420C1536A0097AC5F /* ProfileViewController.xib in Resources */,
@@ -1097,6 +1102,15 @@
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
+		9971D8CD20F0A2F600A41081 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9971D8CC20F0A2F600A41081 /* zh-Hant */,
+				9971D8CE20F0A30800A41081 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -1218,13 +1232,14 @@
 			baseConfigurationReference = 7A3C5A60399981105620EE3A /* Pods-Movables.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3DZ3S2K7LU;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Movables/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = co.movables.Movables;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1236,13 +1251,14 @@
 			baseConfigurationReference = B175944D02DED14414EEA5E8 /* Pods-Movables.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3DZ3S2K7LU;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Movables/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = co.movables.Movables;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
