@@ -349,7 +349,7 @@ extension CreatePackageReviewViewController: UICollectionViewDataSource {
             circleText: nil,
             circleSubscript: nil,
             titleText: dueDateString,
-            subtitleText: "Due Date",
+            subtitleText: String(NSLocalizedString("label.dueDate", comment: "label text for due date")),
             tint: getTintForCategory(category: createPackageCoordinator.category!),
             actions: nil,
             type: .Time

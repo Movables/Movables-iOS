@@ -14,7 +14,7 @@ class RecipientAnnotation: NSObject, MKAnnotation {
     let coordinate: CLLocationCoordinate2D
     
     init(with coordinate: CLLocationCoordinate2D) {
-        self.title = "Destination"
+        self.title = String(NSLocalizedString("label.destination", comment: "label text for recipient annotation view"))
         self.coordinate = coordinate
         
         super.init()

@@ -92,7 +92,7 @@ class CreateConversationTypeSelectViewController: UIViewController {
         tableView.register(LargeTitleWithSubtitleTableViewCell.self, forCellReuseIdentifier: "typeItem")
         view.addSubview(tableView)
         
-        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.childViewControllers.count)", image: nil, body: "Select Conversation Type", color: .white)
+        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.childViewControllers.count)", image: nil, body: String(NSLocalizedString("label.selectConversationType", comment: "label text for select conversatino type")), color: .white)
         instructionLabel.bodyLabel.textColor = Theme().textColor
         instructionLabel.circleMask.backgroundColor = Theme().textColor
         instructionLabel.characterLabel.textColor = .white
@@ -150,8 +150,8 @@ extension CreateConversationTypeSelectViewController: UITableViewDelegate {
             createConversationCoordinator.type = selectedType
             createConversationCoordinator.showLegislativeAreaSelectVC()
         } else {
-            let alertController = UIAlertController(title: "Private Conversation Unavailable", message: "It's coming...soon.", preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
+            let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.privateConversation", comment: "alert copy for private conversation")), message: nil, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.ok", comment: "button title for OK")), style: .default, handler: { (action) in
                 self.createConversationCoordinator.cancelConversationCreation(created: false)
             }))
             present(alertController, animated: true, completion: nil)

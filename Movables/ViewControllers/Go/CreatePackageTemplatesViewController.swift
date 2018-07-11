@@ -178,7 +178,7 @@ extension CreatePackageTemplatesViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: "templateCard") as! TemplateCardTableViewCell
             let template = self.templates[indexPath.row]
             cell.headlineLabel.text = template.headline
-            cell.authorLabel.text = "Template by \(template.templateBy!.displayName)"
+            cell.authorLabel.text = String(format: NSLocalizedString("label.templateBy", comment: "label text for template by"), template.templateBy!.displayName)
             cell.descriptionLabel.text = template.description
             cell.recipientImageView.sd_setImage(with: URL(string: template.recipient.photoUrl!)) { (image, error, cacheType, url) in
                 print("loaded image")

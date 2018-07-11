@@ -322,9 +322,9 @@ extension OrganizeDetailViewController: UITableViewDataSource {
             var sectionTitle: String?
             switch section {
             case 1:
-                sectionTitle = "My Conversations"
+                sectionTitle = String(NSLocalizedString("label.myConversations", comment: "label text for my conversations"))
             case 2:
-                sectionTitle = "Nearby Conversations"
+                sectionTitle = String(NSLocalizedString("label.nearbyConversations", comment: "label text for nearby conversations"))
             default:
                 sectionTitle = ""
             }
@@ -345,11 +345,11 @@ extension OrganizeDetailViewController: UITableViewDataSource {
 func getDescriptionForCommunity(community: Community) -> String {
     switch community.type {
     case .location:
-        return "Local"
+        return String(NSLocalizedString("label.conversationTypeLocal", comment: "label string for local conversation"))
     case .package:
-        return "Package"
+        return String(NSLocalizedString("label.conversationTypePackage", comment: "label string for package conversation"))
     default:
-        return "Private"
+        return String(NSLocalizedString("label.conversationTypePrivate", comment: "label string for private conversation"))
     }
 }
 
