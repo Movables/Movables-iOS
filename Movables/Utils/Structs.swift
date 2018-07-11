@@ -288,11 +288,11 @@ enum PackageStatus {
 func getReadableForStatusEnum(statusEnum: PackageStatus) -> String {
     switch statusEnum {
     case .pending:
-        return "Pending Pickup"
+        return "Pending Pickup".localized(key: "button.pending")
     case .transit:
-        return "In Transit"
+        return "In Transit".localized(key: "button.inTransit")
     case .delivered:
-        return "Delivered"
+        return "Delivered".localized(key: "button.delivered")
     case .draft:
         return "Draft"
     default:

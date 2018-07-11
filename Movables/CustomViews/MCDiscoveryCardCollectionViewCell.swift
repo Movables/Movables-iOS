@@ -93,7 +93,7 @@ class MCDiscoveryCardCollectionViewCell: UICollectionViewCell {
         timeLeftformatter.allowedUnits = [.day, .hour, .minute]
         
         // Use the configured formatter to generate the string.
-        let timeLeftString = packagePreview.timeLeft > 0 ? timeLeftformatter.string(from: packagePreview.timeLeft) : "Past due"
+        let timeLeftString = packagePreview.timeLeft > 0 ? timeLeftformatter.string(from: packagePreview.timeLeft) : "Past due".localized(key: "label.pastDue")
 
         
         let distanceLeftformatter = MeasurementFormatter()
@@ -109,11 +109,11 @@ class MCDiscoveryCardCollectionViewCell: UICollectionViewCell {
         tagPillView.characterLabel.text = getEmojiForCategory(category: packagePreview.categories.first!)
         headlineLabel.text = packagePreview.headline
         headlineLabel.restartLabel()
-        toLabelView.keyLabel.text = "To"
-        fromLabelView.keyLabel.text = packagePreview.destination != nil ? "Destination" : "From"
+        toLabelView.keyLabel.text = "Recipient".localized(key: "label.recipient")
+        fromLabelView.keyLabel.text = packagePreview.destination != nil ? "Destination".localized(key: "label.destination") : "From".localized(key: "label.sender")
         toLabelView.valueLabel.text = packagePreview.recipientName
         fromLabelView.valueLabel.text = packagePreview.destination != nil ? packagePreview.destination!.name ?? string(from: packagePreview.destination!.geoPoint) : "\(packagePreview.moversCount) of us"
-        toGoLabel.text = packagePreview.packageStatus != .delivered ? "\(distanceLeftString) left / \(timeLeftString!)" : "Delivered"
+        toGoLabel.text = packagePreview.packageStatus != .delivered ? "\(distanceLeftString) / \(timeLeftString!)" : "Delivered".localized(key: "label.delivered")
         infoStackView.addArrangedSubview(toLabelView)
         infoStackView.addArrangedSubview(fromLabelView)
         infoStackView.addArrangedSubview(toGoLabel)

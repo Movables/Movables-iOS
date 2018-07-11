@@ -16,7 +16,7 @@ class DropoffAnnotation: NSObject, MKAnnotation {
     
     init(with transitRecord: TransitRecord) {
         self.transitRecord = transitRecord
-        self.title = "Dropoff"
+        self.title = "Dropoff".localized(key: "annotation.dropoff")
         self.coordinate = CLLocationCoordinate2D(latitude: transitRecord.dropoffGeoPoint!.latitude, longitude: transitRecord.dropoffGeoPoint!.longitude)
         super.init()
     }

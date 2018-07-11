@@ -196,7 +196,7 @@ class PostsPreviewCollectionViewCell: UICollectionViewCell {
                     // show empty state
                     let emptyStateView = EmptyStateView(frame: .zero)
                     emptyStateView.translatesAutoresizingMaskIntoConstraints = false
-                    emptyStateView.actionButton.setTitle("Participate", for: .normal)
+                    emptyStateView.actionButton.setTitle("Participate".localized(key: "button.participate"), for: .normal)
                     self.emptyStateButton = emptyStateView.actionButton
                     postsStackView.addArrangedSubview(emptyStateView)
                     

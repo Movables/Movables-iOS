@@ -79,7 +79,7 @@ class MCGoCardView: UIView {
 
         dropoffButton = UIButton(frame: .zero)
         dropoffButton.translatesAutoresizingMaskIntoConstraints = false
-        dropoffButton.setTitle("Dropoff", for: .normal)
+        dropoffButton.setTitle("Dropoff".localized(key: "button.dropoff"), for: .normal)
         dropoffButton.setTitleColor(.white, for: .normal)
         dropoffButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
         dropoffButton.setBackgroundColor(color: Theme().grayTextColor, forUIControlState: .normal)

@@ -144,7 +144,7 @@ class CreatePackageReviewViewController: UIViewController {
         navigateButton = UIButton(frame: .zero)
         navigateButton.translatesAutoresizingMaskIntoConstraints = false
         navigateButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        navigateButton.setTitle("Create", for: .normal)
+        navigateButton.setTitle("Create".localized(key: "button.create"), for: .normal)
         navigateButton.setTitleColor(.white, for: .normal)
         navigateButton.tintColor = .white
         navigateButton.setBackgroundColor(color: getTintForCategory(category: createPackageCoordinator.category!), forUIControlState: .normal)
@@ -328,7 +328,7 @@ extension CreatePackageReviewViewController: UICollectionViewDataSource {
             circleText: nil,
             circleSubscript: nil,
             titleText: recipient.displayName,
-            subtitleText: "Recipient",
+            subtitleText: "Recipient".localized(key: "label.recipient"),
             tint: getTintForCategory(category: createPackageCoordinator.category!),
             actions: recipientActions,
             type: .Person
@@ -378,7 +378,7 @@ extension CreatePackageReviewViewController: UICollectionViewDataSource {
             circleText: nil,
             circleSubscript: nil,
             titleText: totalDistanceString,
-            subtitleText: "Distance",
+            subtitleText: "Distance".localized(key: "label.distance"),
             tint: getTintForCategory(category: createPackageCoordinator.category!),
             actions: nil,
             type: .Directions
@@ -391,7 +391,7 @@ extension CreatePackageReviewViewController: UICollectionViewDataSource {
             circleText: nil,
             circleSubscript: nil,
             titleText: sender.displayName,
-            subtitleText: "Sender",
+            subtitleText: "Sender".localized(key: "label.sender"),
             tint: getTintForCategory(category: createPackageCoordinator.category!),
             actions: nil,
             type: .Person

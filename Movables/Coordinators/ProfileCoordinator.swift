@@ -17,7 +17,7 @@ class ProfileCoordinator: Coordinator {
     override init() {
         profileVC = ProfileViewController()
         self.rootViewController = UINavigationController(rootViewController: profileVC)
-        self.rootViewController.tabBarItem = UITabBarItem(title: "Me", image: UIImage(named: "tab_me"), tag: 4)
+        self.rootViewController.tabBarItem = UITabBarItem(title: "Me".localized(key: "tabBar.profile"), image: UIImage(named: "tab_me"), tag: 4)
     }
 }
 

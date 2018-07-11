@@ -5,3 +5,35 @@
   Created by apple on 2018/7/7.
   Copyright © 2018年 Movables, Inc. All rights reserved.
 */
+
+"tabBar.explore" = "探索";
+"tabBar.move" = "移動";
+"tabBar.activities" = "動態";
+"tabBar.organize" = "組織";
+"tabBar.profile" = "我的帳戶";
+"navBar.conversation" = "對話";
+"headerCollectionCell.conversation" = "對話";
+"button.pickup" = "揀取";
+"button.dropoff" = "放置地";
+"button.track" = "關注";
+"button.tracking" = "關注中";
+"button.inTransit" = "運送中";
+"button.delivered" = "已送達";
+"button.participate" = "參與";
+"button.moved" = "已運送";
+"button.loading" =  "讀取中";
+"button.pending" = "待取中";
+"annotation.pickup" = "揀取地";
+"annotation.dropoff" = "放置地";
+"button.create" = "製作議題包";
+"copy.makeItHappen" = "你就是沒有人";
+"copy.makeItHappenBody" = "製作一個全新的議題包或是以範本來製作議題包。你來決定！";
+"button.readMore" = "閱讀";
+"label.recipient" = "收件人";
+"label.sender" = "寄件人";
+"label.time" = "剩餘時間";
+"label.distance" = "剩餘距離";
+"label.pastDue" = "已到期";
+"label.delivered" = "已送達";
+"label.destination" = "目的地";
+"copy.nothingToSee" = "這裡沒東西，還沒有";

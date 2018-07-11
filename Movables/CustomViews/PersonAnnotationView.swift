@@ -88,7 +88,7 @@ class PickupActivityAnnotationView: MKAnnotationView {
         centerOffset = CGPoint(x: 0, y: -54)
         canShowCallout = false
         
-        let circleLabel = MCCircleWithLabel(frame: .zero, textInCircle: nil, labelText: "Pickup", labelTextSubscript: nil, image: UIImage(named: "ActivityType--packagePickup"), color: Theme().grayTextColor, tilt: .balanced)
+        let circleLabel = MCCircleWithLabel(frame: .zero, textInCircle: nil, labelText: "Pickup".localized(key: "annotation.pickup"), labelTextSubscript: nil, image: UIImage(named: "ActivityType--packagePickup"), color: Theme().grayTextColor, tilt: .balanced)
         
         circleLabel.imageView.backgroundColor = UIColor.white.withAlphaComponent(0.5)
         circleLabel.imageView.tintColor = Theme().grayTextColor
