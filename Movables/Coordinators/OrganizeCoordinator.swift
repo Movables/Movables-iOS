@@ -18,7 +18,7 @@ class OrganizeCoordinator: Coordinator {
     override init() {
         organizeVC = OrganizeViewController()
         self.rootViewController = UINavigationController(rootViewController: organizeVC)
-        self.rootViewController.tabBarItem = UITabBarItem(title: "Organize".localized(key: "tabBar.organize"), image: UIImage(named: "tab_organize"), tag: 3)
+        self.rootViewController.tabBarItem = UITabBarItem(title: String(NSLocalizedString("tabBar.organize", comment: "Organize tab name")), image: UIImage(named: "tab_organize"), tag: 3)
     }
 }
 

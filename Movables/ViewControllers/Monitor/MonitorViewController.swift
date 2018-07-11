@@ -226,14 +226,14 @@ extension MonitorViewController: UITableViewDataSource {
                 cell.annotationView.circleMask.layer.borderColor = Theme().textColor.cgColor
             case .packageDropoff:
                 cell.annotationView.imageView.image = UIImage(named: "ActivityType--packageDropoff")
-                cell.annotationView.labelTextLabel.text = "Dropoff".localized(key: "annotation.dropoff")
+                cell.annotationView.labelTextLabel.text = String(NSLocalizedString("annotation.dropoff", comment: "title for dropoff annotation view"))
                 cell.annotationView.imageView.tintColor = Theme().grayTextColor
                 cell.annotationView.imageView.backgroundColor = UIColor.white.withAlphaComponent(0.5)
                 cell.annotationView.labelContainer.backgroundColor = Theme().grayTextColor
                 cell.annotationView.circleMask.layer.borderColor = Theme().grayTextColor.cgColor
             case .packagePickup:
                 cell.annotationView.imageView.image = UIImage(named: "ActivityType--packagePickup")
-                cell.annotationView.labelTextLabel.text = "Pickup".localized(key: "annotation.pickup")
+                cell.annotationView.labelTextLabel.text = String(NSLocalizedString("annotation.pickup", comment: "title for pickup annotation view"))
                 cell.annotationView.imageView.tintColor = Theme().grayTextColor
                 cell.annotationView.imageView.backgroundColor = UIColor.white.withAlphaComponent(0.5)
                 cell.annotationView.labelContainer.backgroundColor = Theme().grayTextColor
@@ -308,7 +308,7 @@ extension MonitorViewController: UITableViewDataSource {
             
             let distanceString = distanceFormatter.string(from: distanceMeasurement)
             
-            let recipientRow = LogisticsRow(circleImageUrl: recipient.photoUrl, circleText: nil, circleSubscript: nil, titleText: recipient.displayName, subtitleText: "Recipient".localized(key: "label.recipient"), tint: Theme().textColor, actions: nil, type: .Person)
+            let recipientRow = LogisticsRow(circleImageUrl: recipient.photoUrl, circleText: nil, circleSubscript: nil, titleText: recipient.displayName, subtitleText: String(NSLocalizedString("label.recipient", comment: "title label for recipient")), tint: Theme().textColor, actions: nil, type: .Person)
             let destinationRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: destination.name ?? string(from: destination.geoPoint), subtitleText: "Destination", tint: Theme().textColor, actions: nil, type: .Destination)
             let distanceRemainingRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: distanceString, subtitleText: "Distance Remaining", tint: Theme().textColor, actions: nil, type: .Directions)
             return [recipientRow, destinationRow, distanceRemainingRow]
@@ -337,7 +337,7 @@ extension MonitorViewController: UITableViewDataSource {
             
             let timeRemainingString = (dueDate.timeIntervalSince1970 - Date().timeIntervalSince1970) > 0 ? timeFormatter.string(from: dueDate.timeIntervalSince1970 - Date().timeIntervalSince1970)! : "Due"
             
-            let recipientRow = LogisticsRow(circleImageUrl: recipient.photoUrl, circleText: nil, circleSubscript: nil, titleText: recipient.displayName, subtitleText: "Recipient".localized(key: "label.recipient"), tint: Theme().textColor, actions: nil, type: .Person)
+            let recipientRow = LogisticsRow(circleImageUrl: recipient.photoUrl, circleText: nil, circleSubscript: nil, titleText: recipient.displayName, subtitleText: String(NSLocalizedString("label.recipient", comment: "title label for recipient")), tint: Theme().textColor, actions: nil, type: .Person)
             let distanceRemainingRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: distanceRemainingString, subtitleText: "Distance Remaining", tint: Theme().textColor, actions: nil, type: .Directions)
             let timeRemainingRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: timeRemainingString, subtitleText: "Time Remaining", tint: Theme().textColor, actions: nil, type: .Time)
             return [recipientRow, distanceRemainingRow, timeRemainingRow]

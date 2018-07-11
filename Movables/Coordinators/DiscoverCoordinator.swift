@@ -18,7 +18,7 @@ class DiscoverCoordinator: Coordinator {
     override init() {
         discoverVC = DiscoverViewController()
         self.rootViewController = UINavigationController(rootViewController: discoverVC)
-        self.rootViewController.tabBarItem = UITabBarItem(title: "Explore".localized(key: "tabBar.explore"), image: UIImage(named: "tab_discover"), tag: 0)
+        self.rootViewController.tabBarItem = UITabBarItem(title:String(NSLocalizedString("tabBar.explore", comment: "Profile tab name")), image: UIImage(named: "tab_discover"), tag: 0)
     }
 }
 

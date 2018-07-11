@@ -93,7 +93,7 @@ class MCDiscoveryCardCollectionViewCell: UICollectionViewCell {
         timeLeftformatter.allowedUnits = [.day, .hour, .minute]
         
         // Use the configured formatter to generate the string.
-        let timeLeftString = packagePreview.timeLeft > 0 ? timeLeftformatter.string(from: packagePreview.timeLeft) : "Past due".localized(key: "label.pastDue")
+        let timeLeftString = packagePreview.timeLeft > 0 ? timeLeftformatter.string(from: packagePreview.timeLeft) : String(NSLocalizedString("label.pastDue", comment: "status label for past due status"))
 
         
         let distanceLeftformatter = MeasurementFormatter()
@@ -109,11 +109,11 @@ class MCDiscoveryCardCollectionViewCell: UICollectionViewCell {
         tagPillView.characterLabel.text = getEmojiForCategory(category: packagePreview.categories.first!)
         headlineLabel.text = packagePreview.headline
         headlineLabel.restartLabel()
-        toLabelView.keyLabel.text = "Recipient".localized(key: "label.recipient")
-        fromLabelView.keyLabel.text = packagePreview.destination != nil ? "Destination".localized(key: "label.destination") : "From".localized(key: "label.sender")
+        toLabelView.keyLabel.text = String(NSLocalizedString("label.recipient", comment: "label title for recipient label"))
+        fromLabelView.keyLabel.text = packagePreview.destination != nil ? String(NSLocalizedString("label.destination", comment: "label title for destination label")) : String(NSLocalizedString("label.sender", comment: "label title for sender label"))
         toLabelView.valueLabel.text = packagePreview.recipientName
         fromLabelView.valueLabel.text = packagePreview.destination != nil ? packagePreview.destination!.name ?? string(from: packagePreview.destination!.geoPoint) : "\(packagePreview.moversCount) of us"
-        toGoLabel.text = packagePreview.packageStatus != .delivered ? "\(distanceLeftString) / \(timeLeftString!)" : "Delivered".localized(key: "label.delivered")
+        toGoLabel.text = packagePreview.packageStatus != .delivered ? "\(distanceLeftString) / \(timeLeftString!)" : String(NSLocalizedString("label.delivered", comment: "label title for package delivered status"))
         infoStackView.addArrangedSubview(toLabelView)
         infoStackView.addArrangedSubview(fromLabelView)
         infoStackView.addArrangedSubview(toGoLabel)

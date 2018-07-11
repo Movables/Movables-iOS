@@ -33,7 +33,7 @@ class EmptyStateView: UIView {
         subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
         subtitleLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         subtitleLabel.textAlignment = .center
-        subtitleLabel.text = "Nothing to see here, yet.".localized(key: "copy.nothingToSee")
+        subtitleLabel.text = String(NSLocalizedString("copy.nothingToSee", comment: "empty state generic title"))
         subtitleLabel.textColor = Theme().grayTextColor
         addSubview(subtitleLabel)
         

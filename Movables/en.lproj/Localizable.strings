@@ -7,3 +7,33 @@
 */
 
 "tabBar.explore" = "Explore";
+"tabBar.move" = "Move";
+"tabBar.activities" = "Activities";
+"tabBar.organize" = "Organize";
+"tabBar.profile" = "Profile";
+"navBar.conversation" = "Conversation";
+"headerCollectionCell.conversation" = "Conversation";
+"button.pickup" = "Pickup";
+"button.dropoff" = "Dropoff";
+"button.track" = "Follow";
+"button.tracking" = "Following";
+"button.inTransit" = "In Transit";
+"button.delivered" = "Delivered";
+"button.participate" = "Participate";
+"button.moved" = "Moved";
+"button.loading" =  "Loading";
+"button.pending" = "Pending Pickup";
+"annotation.pickup" = "Pickup";
+"annotation.dropoff" = "Dropoff";
+"button.create" = "Create";
+"copy.makeItHappen" = "Make it happen.";
+"copy.makeItHappenBody" = "Create a new package using templates others have created or create something new from scratch. Your call.";
+"button.readMore" = "Read more";
+"label.recipient" = "Recipient";
+"label.sender" = "Sender";
+"label.time" = "Time";
+"label.distance" = "Distance";
+"label.pastDue" = "Past due";
+"label.delivered" = "Delivered";
+"label.destination" = "Destination";
+"copy.nothingToSee" = "Nothing to see here, yet.";

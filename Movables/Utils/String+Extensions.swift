@@ -40,8 +40,4 @@ extension String {
             }
 //        }
     }
-    
-    func localized(key: String) -> String {
-        return NSLocalizedString(key, comment: key)
-    }
 }

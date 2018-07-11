@@ -144,7 +144,7 @@ class CreatePackageReviewViewController: UIViewController {
         navigateButton = UIButton(frame: .zero)
         navigateButton.translatesAutoresizingMaskIntoConstraints = false
         navigateButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        navigateButton.setTitle("Create".localized(key: "button.create"), for: .normal)
+        navigateButton.setTitle(String(NSLocalizedString("button.create", comment: "button title for Create")), for: .normal)
         navigateButton.setTitleColor(.white, for: .normal)
         navigateButton.tintColor = .white
         navigateButton.setBackgroundColor(color: getTintForCategory(category: createPackageCoordinator.category!), forUIControlState: .normal)
@@ -328,7 +328,7 @@ extension CreatePackageReviewViewController: UICollectionViewDataSource {
             circleText: nil,
             circleSubscript: nil,
             titleText: recipient.displayName,
-            subtitleText: "Recipient".localized(key: "label.recipient"),
+            subtitleText: String(NSLocalizedString("label.recipient", comment: "recipient label title")),
             tint: getTintForCategory(category: createPackageCoordinator.category!),
             actions: recipientActions,
             type: .Person
@@ -378,7 +378,7 @@ extension CreatePackageReviewViewController: UICollectionViewDataSource {
             circleText: nil,
             circleSubscript: nil,
             titleText: totalDistanceString,
-            subtitleText: "Distance".localized(key: "label.distance"),
+            subtitleText: String(NSLocalizedString("label.distance", comment: "label title for distance")),
             tint: getTintForCategory(category: createPackageCoordinator.category!),
             actions: nil,
             type: .Directions
@@ -391,7 +391,7 @@ extension CreatePackageReviewViewController: UICollectionViewDataSource {
             circleText: nil,
             circleSubscript: nil,
             titleText: sender.displayName,
-            subtitleText: "Sender".localized(key: "label.sender"),
+            subtitleText: String(NSLocalizedString("label.sender", comment: "label title for sender")),
             tint: getTintForCategory(category: createPackageCoordinator.category!),
             actions: nil,
             type: .Person

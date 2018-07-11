@@ -31,7 +31,8 @@ class PostsViewController: SLKTextViewController {
         
         navigationController?.setNavigationBarHidden(false, animated: false)
         
-        title = "Conversation".localized(key: "navBar.conversation")
+        title = String(NSLocalizedString("navBar.conversation", comment: "navigation bar title for conversation"))
+        
         collectionView?.dataSource = self
         collectionView?.delegate = self
         collectionView?.alwaysBounceVertical = true
