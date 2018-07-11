@@ -44,11 +44,11 @@ let externalActionsEnumArray: [ExternalActionType] = [.donate, .act, .learn]
 func getStringForExternalAction(type: ExternalActionType) -> String {
     switch type {
     case .donate:
-        return "Donate"
+        return String(NSLocalizedString("label.donate", comment: "label text for donate"))
     case .act:
-        return "Take Action"
+        return String(NSLocalizedString("label.act", comment: "label text for take action"))
     case .learn:
-        return "Learn"
+        return String(NSLocalizedString("label.learn", comment: "label text for learn"))
     default:
         return ""
     }
@@ -176,7 +176,7 @@ class MCParagraphActionsCollectionViewCell: UICollectionViewCell {
                 button.translatesAutoresizingMaskIntoConstraints = false
                 button.tintColor = Theme().grayTextColor
                 button.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
-                button.setTitle("View", for: .normal)
+                button.setTitle(String(NSLocalizedString("button.view", comment: "button title for view")), for: .normal)
                 button.setTitleColor(.white, for: .normal)
                 button.setTitleColor(UIColor.white.withAlphaComponent(0.85), for: .highlighted)
                 button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)

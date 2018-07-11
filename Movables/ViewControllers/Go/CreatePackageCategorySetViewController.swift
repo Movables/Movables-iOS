@@ -99,7 +99,7 @@ class CreatePackageCategorySetViewController: UIViewController {
         tableView.contentOffset.y = -CONTENT_INSET_TOP
         view.addSubview(tableView)
         
-        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.childViewControllers.count)", image: nil, body: "Select a Category", color: .white)
+        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.childViewControllers.count)", image: nil, body: String(NSLocalizedString("label.selectACategory", comment: "label text for select a category")), color: .white)
         instructionLabel.bodyLabel.textColor = Theme().textColor
         instructionLabel.circleMask.backgroundColor = Theme().textColor
         instructionLabel.characterLabel.textColor = .white

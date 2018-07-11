@@ -185,11 +185,11 @@ extension CreatePackageTemplatesViewController: UITableViewDataSource {
             }
             cell.recipientLabel.text = template.recipient.displayName
             cell.destinationLabel.text = "\(template.destination.name!)"
-            cell.usageLabel.text = "Used in \(template.count?.packages ?? 0) package\(template.count?.packages != nil && template.count!.packages! > 1 ? "s" : "")"
+            cell.usageLabel.text = template.count?.packages == nil || template.count!.packages! > 1 ? String(format: NSLocalizedString("label.usedInPackagesPlural", comment: "label text for template usage count"), template.count?.packages ?? 0) : String(format: NSLocalizedString("label.usedInPackage", comment: "label text for singular template usage count"), template.count!.packages!)
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "buttonCell") as! ListViewButtonTableViewCell
-            cell.button.setTitle("Create My Own", for: .normal)
+            cell.button.setTitle(String(NSLocalizedString("button.createNewPackage", comment: "button title for create new package")), for: .normal)
             cell.button.addTarget(self, action: #selector(useCustom), for: .touchUpInside)
             return cell
         }

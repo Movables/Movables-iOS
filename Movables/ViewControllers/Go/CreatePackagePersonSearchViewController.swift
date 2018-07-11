@@ -202,7 +202,7 @@ class CreatePackagePersonSearchViewController: UIViewController {
         
         textField = UITextField(frame: .zero)
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "Search recipients"
+        textField.placeholder = String(NSLocalizedString("label.searchRecipients", comment: "label text for search recipients"))
         textField.textColor = Theme().textColor
         textField.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         textField.returnKeyType = .done
@@ -210,7 +210,7 @@ class CreatePackagePersonSearchViewController: UIViewController {
         textField.clearButtonMode = .whileEditing
         textFieldContainer.addSubview(textField)
         
-        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.childViewControllers.count)", image: nil, body: "Designate a Recipient", color: .white)
+        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.childViewControllers.count)", image: nil, body: String(NSLocalizedString("label.designateARecipient", comment: "label text for designate a recipient")), color: .white)
         instructionLabel.bodyLabel.textColor = Theme().textColor
         instructionLabel.circleMask.backgroundColor = Theme().textColor
         instructionLabel.characterLabel.textColor = .white
@@ -265,7 +265,7 @@ extension CreatePackagePersonSearchViewController: UITableViewDataSource {
             cell.profileImageView.image = UIImage(named: "user_black_56pt")
         }
         cell.titleLabel.text = resultItem.name
-        cell.subtitleLabel.text = resultItem.position ?? "No position available"
+        cell.subtitleLabel.text = resultItem.position ?? String(NSLocalizedString("label.noPositionAvailable", comment: "label text for no position available"))
         return cell
     }
     
