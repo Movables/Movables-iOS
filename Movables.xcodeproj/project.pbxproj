@@ -38,6 +38,8 @@
 		2C8809AC20C7BE1300DDC357 /* ProgressPathRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C8809AB20C7BE1300DDC357 /* ProgressPathRenderer.swift */; };
 		2C8809B020C7CEAA00DDC357 /* MCCountdownKeyLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C8809AF20C7CEAA00DDC357 /* MCCountdownKeyLabelView.swift */; };
 		2C8809B220C81FF000DDC357 /* GenericArithmetic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C8809B120C81FF000DDC357 /* GenericArithmetic.swift */; };
+		2C96DFCB20F84E1A002A272D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2C96DFC920F84E1A002A272D /* GoogleService-Info.plist */; };
+		2C96DFCC20F84E1A002A272D /* credentials.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2C96DFCA20F84E1A002A272D /* credentials.plist */; };
 		2C996AF120B12EEC00DC6E48 /* PackageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C996AEF20B12EEC00DC6E48 /* PackageDetailViewController.swift */; };
 		2C996AF220B12EEC00DC6E48 /* PackageDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2C996AF020B12EEC00DC6E48 /* PackageDetailViewController.xib */; };
 		2C9975FC20AC3F86008B2B3C /* MCDiscoveryCardCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9975FB20AC3F86008B2B3C /* MCDiscoveryCardCollectionViewCell.swift */; };
@@ -134,8 +136,6 @@
 		2CF5BAD020CEB0FB006A6FAE /* CreatePackageTagSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF5BACF20CEB0FB006A6FAE /* CreatePackageTagSearchViewController.swift */; };
 		38C9FDB59C99DE90596C2E7E /* Pods_MovablesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 953E128EB4E3568AAE06F43B /* Pods_MovablesTests.framework */; };
 		9971D8CB20F0A2F600A41081 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9971D8CD20F0A2F600A41081 /* Localizable.strings */; };
-		9971D8D120F0A3F100A41081 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9971D8CF20F0A3EF00A41081 /* GoogleService-Info.plist */; };
-		9971D8D220F0A3F100A41081 /* credentials.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9971D8D020F0A3F000A41081 /* credentials.plist */; };
 		B9E4C90FFF648F7E3394403E /* Pods_MovablesUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AD895961502F523A9864C36 /* Pods_MovablesUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -189,6 +189,8 @@
 		2C8809AF20C7CEAA00DDC357 /* MCCountdownKeyLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCCountdownKeyLabelView.swift; sourceTree = "<group>"; };
 		2C8809B120C81FF000DDC357 /* GenericArithmetic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericArithmetic.swift; sourceTree = "<group>"; };
 		2C90F02B20F0383F004966E4 /* mountain.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = mountain.gpx; path = /Users/eddie/Documents/Developer/Movables/Movables/Utils/mountain.gpx; sourceTree = "<absolute>"; };
+		2C96DFC920F84E1A002A272D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		2C96DFCA20F84E1A002A272D /* credentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = credentials.plist; sourceTree = "<group>"; };
 		2C996AEF20B12EEC00DC6E48 /* PackageDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageDetailViewController.swift; sourceTree = "<group>"; };
 		2C996AF020B12EEC00DC6E48 /* PackageDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PackageDetailViewController.xib; sourceTree = "<group>"; };
 		2C9975FB20AC3F86008B2B3C /* MCDiscoveryCardCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCDiscoveryCardCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -297,8 +299,6 @@
 		953E128EB4E3568AAE06F43B /* Pods_MovablesTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MovablesTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9971D8CC20F0A2F600A41081 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		9971D8CE20F0A30800A41081 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		9971D8CF20F0A3EF00A41081 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		9971D8D020F0A3F000A41081 /* credentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = credentials.plist; sourceTree = "<group>"; };
 		9AD895961502F523A9864C36 /* Pods_MovablesUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MovablesUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B175944D02DED14414EEA5E8 /* Pods-Movables.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Movables.release.xcconfig"; path = "Pods/Target Support Files/Pods-Movables/Pods-Movables.release.xcconfig"; sourceTree = "<group>"; };
 		E150EA963DE1F22C1F514C7F /* Pods_Movables.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Movables.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -543,8 +543,8 @@
 				2C9DA3DF206365EA0041098A /* Assets.xcassets */,
 				2C9DA3E1206365EA0041098A /* LaunchScreen.storyboard */,
 				2C9DA3E4206365EA0041098A /* Info.plist */,
-				9971D8D020F0A3F000A41081 /* credentials.plist */,
-				9971D8CF20F0A3EF00A41081 /* GoogleService-Info.plist */,
+				2C96DFCA20F84E1A002A272D /* credentials.plist */,
+				2C96DFC920F84E1A002A272D /* GoogleService-Info.plist */,
 				9971D8CD20F0A2F600A41081 /* Localizable.strings */,
 			);
 			path = Movables;
@@ -757,14 +757,14 @@
 				2C9DA3E3206365EA0041098A /* LaunchScreen.storyboard in Resources */,
 				2CAA8BE420A2CCC9007F625F /* LoginViewController.xib in Resources */,
 				9971D8CB20F0A2F600A41081 /* Localizable.strings in Resources */,
-				9971D8D120F0A3F100A41081 /* GoogleService-Info.plist in Resources */,
 				2C9B2B04209B293900BD66BB /* OnboardingViewController.xib in Resources */,
+				2C96DFCB20F84E1A002A272D /* GoogleService-Info.plist in Resources */,
 				2CEE36F420C1536A0097AC5F /* ProfileViewController.xib in Resources */,
 				2CAA8BEE20A40ADD007F625F /* DiscoverViewController.xib in Resources */,
 				2CEE36F520C1536A0097AC5F /* GoViewController.xib in Resources */,
 				2C996AF220B12EEC00DC6E48 /* PackageDetailViewController.xib in Resources */,
 				2C9DA3E0206365EA0041098A /* Assets.xcassets in Resources */,
-				9971D8D220F0A3F100A41081 /* credentials.plist in Resources */,
+				2C96DFCC20F84E1A002A272D /* credentials.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

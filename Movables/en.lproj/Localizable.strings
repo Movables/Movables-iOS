@@ -128,6 +128,8 @@
 "copy.accountActivity.templateUsage" = "Your template was used:%@.";
 "copy.alert.signout" = "Are you sure you want to signout?";
 "copy.alert.privateConversation" = "Private Conversation Coming Soon";
+"copy.alert.unableToDropoff" = "Unable to Dropoff";
+"copy.alert.unableToDropoffDesc" = "To dropoff the package, move closer to the destination.";
 "copy.category.animals" = "Animals";
 "copy.category.arts_culture_humanities" = "Arts, Culture, Humanities";
 "copy.category.community_development" = "Community Development";
