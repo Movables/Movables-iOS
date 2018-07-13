@@ -13,8 +13,8 @@
 "tabBar.profile" = "我的帳戶";
 "navBar.conversation" = "對話";
 "headerCollectionCell.conversation" = "對話";
-"button.pickup" = "揀取";
-"button.pickupAway" = "於%@之外揀取";
+"button.pickup" = "撿取";
+"button.pickupAway" = "於%@之外撿取";
 "button.dropoff" = "放置";
 "button.track" = "關注";
 "button.tracking" = "關注中";
@@ -47,7 +47,7 @@
 "button.view" = "檢視";
 "button.create" = "製作議題包";
 "button.readMore" = "閱讀更多";
-"annotation.pickup" = "揀取地點";
+"annotation.pickup" = "撿取地點";
 "annotation.dropoff" = "放置地點";
 "annotation.currentLocation" = "現在地點";
 "annotation.origin" = "寄送地";
@@ -113,7 +113,7 @@
 "copy.makeItHappen" = "你就是沒有人";
 "copy.makeItHappenBody" = "製作一個全新的議題包或是以範本來製作議題包。你來決定！";
 "copy.nothingToSee" = "這裡沒東西，還沒有";
-"copy.publicActivity.packagePickup" = "%@ 已揀取 %@。";
+"copy.publicActivity.packagePickup" = "%@ 已撿取 %@。";
 "copy.publicActivity.packageDelivery" = "%@ 已送達 %@。";
 "copy.publicActivity.packageDropoff" = "%@ 已放置 %@。";
 "copy.publicActivity.packageCreation" = "%@ 已製作 %@。";
