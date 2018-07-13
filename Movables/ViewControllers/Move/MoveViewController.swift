@@ -1,5 +1,5 @@
 //
-//  GoViewController.swift
+//  MoveViewController.swift
 //  Movables
 //
 //  MIT License
@@ -29,11 +29,11 @@ import MapKit
 import Firebase
 import CountdownLabel
 
-protocol GoViewControllerDelegate: class {
+protocol MoveViewControllerDelegate: class {
     func showPackageDetail(with package: Package)
 }
 
-class GoViewController: UIViewController {
+class MoveViewController: UIViewController {
     let ACTIONABLE_DISTANCE = 100.0
     let TOO_FAR_DISTANCE = 50000.0
 
@@ -46,13 +46,13 @@ class GoViewController: UIViewController {
     var mainCoordinator: MainCoordinator?
     var mainCoordinatorDelegate: MainCoordinatorDelegate?
     
-    var delegate: GoViewControllerDelegate?
+    var delegate: MoveViewControllerDelegate?
     
     var userDocumentListener: ListenerRegistration?
     var currentPackageListener: ListenerRegistration?
     var currentTransitRecordListener: ListenerRegistration?
 
-    var goCardView: MCGoCardView!
+    var moveCardView: MCMoveCardView!
     var emptyStateCardView: MCEmptyStateCardView!
     
     var userDocument: UserDocument? {
@@ -60,7 +60,7 @@ class GoViewController: UIViewController {
             if userDocument?.privateProfile.currentPackage != nil {
                 self.listenToPackage()
             } else {
-                self.goCardView.isHidden = true
+                self.moveCardView.isHidden = true
                 self.emptyStateCardView.isHidden = false
                 self.mapView.removeOverlays(self.mapView.overlays)
                 self.mapView.removeAnnotations(self.mapView.annotations)
@@ -79,7 +79,7 @@ class GoViewController: UIViewController {
                 self.routeToDestinationDrawn = false
                 self.progress = nil
             } else {
-                self.goCardView.isHidden = true
+                self.moveCardView.isHidden = true
                 self.emptyStateCardView.isHidden = false
                 self.mapView.removeOverlays(self.mapView.overlays)
                 self.mapView.removeAnnotations(self.mapView.annotations)
@@ -90,9 +90,9 @@ class GoViewController: UIViewController {
     var currentTransitRecord: TransitRecord? {
         didSet {
             if currentTransitRecord != nil {
-                self.goCardView.isHidden = false
+                self.moveCardView.isHidden = false
                 if self.currentPackage != nil {
-                    self.goCardView.pillView.pillContainerView.backgroundColor = getTintForCategory(category: self.currentPackage!.categories.first!)
+                    self.moveCardView.pillView.pillContainerView.backgroundColor = getTintForCategory(category: self.currentPackage!.categories.first!)
                 }
                 self.emptyStateCardView.isHidden = true
                 self.mapView.removeOverlays(self.mapView.overlays)
@@ -100,7 +100,7 @@ class GoViewController: UIViewController {
                 self.progress = nil
                 self.fetchMovements()
             } else {
-                self.goCardView.isHidden = true
+                self.moveCardView.isHidden = true
                 self.emptyStateCardView.isHidden = false
                 self.mapView.removeOverlays(self.mapView.overlays)
                 self.mapView.removeAnnotations(self.mapView.annotations)
@@ -140,7 +140,6 @@ class GoViewController: UIViewController {
         emptyStateCardView = MCEmptyStateCardView(frame: .zero)
         emptyStateCardView.translatesAutoresizingMaskIntoConstraints = false
         emptyStateCardView.isHidden = false
-//        emptyStateCardView.discoverButton.addTarget(self, action: #selector(didTapDiscoverButton(sender:)), for: .touchUpInside)
         emptyStateCardView.actionButton.addTarget(self, action: #selector(addPackageButtonTapped(sender:)), for: .touchUpInside)
         view.addSubview(emptyStateCardView)
         
@@ -154,30 +153,25 @@ class GoViewController: UIViewController {
         ])
 
         
-        goCardView = MCGoCardView(frame: .zero)
-        goCardView.translatesAutoresizingMaskIntoConstraints = false
-        goCardView.isHidden = true
-        view.addSubview(goCardView)
+        moveCardView = MCMoveCardView(frame: .zero)
+        moveCardView.translatesAutoresizingMaskIntoConstraints = false
+        moveCardView.isHidden = true
+        view.addSubview(moveCardView)
         
         view.addConstraints(
-            NSLayoutConstraint.constraints(withVisualFormat: "H:|[goCardView]|", options: .directionLeadingToTrailing, metrics: nil, views: ["goCardView": goCardView])
+            NSLayoutConstraint.constraints(withVisualFormat: "H:|[moveCardView]|", options: .directionLeadingToTrailing, metrics: nil, views: ["moveCardView": moveCardView])
         )
         NSLayoutConstraint.activate([
-            goCardView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-            goCardView.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 3 / 7, constant: -8),
-            goCardView.dropoffButton.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -18)
+            moveCardView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+            moveCardView.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 3 / 7, constant: -8),
+            moveCardView.dropoffButton.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -18)
             ])
         
         
         mapView.layoutMargins = UIEdgeInsets(top: view.safeAreaInsets.top + 94, left: 20, bottom: (self.view.frame.height - (self.view.safeAreaInsets.top + self.view.safeAreaInsets.bottom)) / 3 + 66, right: 20)
 
     }
-    
-    @objc private func didTapDiscoverButton(sender: UIButton) {
-        print("discover tapped")
-        mainCoordinatorDelegate?.showTab(index: 0)
-    }
-    
+        
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -255,16 +249,16 @@ class GoViewController: UIViewController {
     
     private func updateGoCard() {
         if self.currentPackage != nil {
-            self.goCardView.headlineLabel.text = self.currentPackage?.headline
-            self.goCardView.pillView.bodyLabel.text = self.currentPackage?.tag.name
-            self.goCardView.pillView.characterLabel.text = getEmojiForCategory(category: self.currentPackage!.categories.first!)
-            self.goCardView.countdownLabelView.keyLabel.text = String(NSLocalizedString("label.timeRemaining", comment: "label text for time remaining"))
-            self.goCardView.countdownLabelView.valueLabel.setCountDownDate(targetDate: self.currentTransitRecord!.pickupDate!.add(1.hours) as NSDate)
-            self.goCardView.countdownLabelView.valueLabel.start()
-            self.goCardView.distanceLabelView.keyLabel.text = "Distance Left"
+            self.moveCardView.headlineLabel.text = self.currentPackage?.headline
+            self.moveCardView.pillView.bodyLabel.text = self.currentPackage?.tag.name
+            self.moveCardView.pillView.characterLabel.text = getEmojiForCategory(category: self.currentPackage!.categories.first!)
+            self.moveCardView.countdownLabelView.keyLabel.text = String(NSLocalizedString("label.timeRemaining", comment: "label text for time remaining"))
+            self.moveCardView.countdownLabelView.valueLabel.setCountDownDate(targetDate: self.currentTransitRecord!.pickupDate!.add(1.hours) as NSDate)
+            self.moveCardView.countdownLabelView.valueLabel.start()
+            self.moveCardView.distanceLabelView.keyLabel.text = "Distance Left"
             let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapDetailsButton(sender:)))
-            self.goCardView.addGestureRecognizer(tapGestureRecognizer)
-            self.goCardView.dropoffButton.addTarget(self, action: #selector(didTapDropoffButton(sender:)), for: .touchUpInside)
+            self.moveCardView.addGestureRecognizer(tapGestureRecognizer)
+            self.moveCardView.dropoffButton.addTarget(self, action: #selector(didTapDropoffButton(sender:)), for: .touchUpInside)
         }
     }
     
@@ -305,7 +299,7 @@ class GoViewController: UIViewController {
     }
 }
 
-extension GoViewController: MKMapViewDelegate {
+extension MoveViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
         if !routeToDestinationDrawn {
             drawRouteToDestination()
@@ -356,7 +350,7 @@ extension GoViewController: MKMapViewDelegate {
 
 }
 
-extension GoViewController: CLLocationManagerDelegate {
+extension MoveViewController: CLLocationManagerDelegate {
     
     private func coordinateRegionWithCenter(_ centerCoordinate: CLLocationCoordinate2D, approximateRadiusInMeters radiusInMeters: CLLocationDistance) -> MKCoordinateRegion {
         // Multiplying by MKMapPointsPerMeterAtLatitude at the center is only approximate, since latitude isn't fixed
@@ -381,7 +375,7 @@ extension GoViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if !locations.isEmpty {
             let newLocation = locations[0]
-            if self.currentPackage != nil && self.goCardView.isHidden == false {
+            if self.currentPackage != nil && self.moveCardView.isHidden == false {
                 
                 let distanceLeftFormatter = MeasurementFormatter()
                 distanceLeftFormatter.unitStyle = .long
@@ -392,7 +386,7 @@ extension GoViewController: CLLocationManagerDelegate {
                 let destinationLocation = CLLocation(latitude: self.currentPackage!.destination.geoPoint.latitude, longitude: self.currentPackage!.destination.geoPoint.longitude)
                 let distanceLeftString = distanceLeftFormatter.string(from: Measurement(value: currentLocation.distance(from: destinationLocation), unit: UnitLength.meters))
                 
-                self.goCardView.distanceLabelView.valueLabel.text = distanceLeftString
+                self.moveCardView.distanceLabelView.valueLabel.text = distanceLeftString
                 if self.progress != nil {
                     // This is the first time we're getting a location update, so create
                     // the CrumbPath and add it to the map.

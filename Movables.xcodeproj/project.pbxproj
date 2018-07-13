@@ -27,7 +27,7 @@
 		2C522CA420E3B7D600F4EA32 /* OrganizePackageMovedTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C522CA320E3B7D600F4EA32 /* OrganizePackageMovedTableViewCell.swift */; };
 		2C62164220AA9B68002DBAC0 /* MCCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C62164120AA9B68002DBAC0 /* MCCard.swift */; };
 		2C6B407120C67EE9001679D2 /* UIDevice+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6B407020C67EE9001679D2 /* UIDevice+Extensions.swift */; };
-		2C6B407320C6A2BC001679D2 /* MCGoCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6B407220C6A2BC001679D2 /* MCGoCardView.swift */; };
+		2C6B407320C6A2BC001679D2 /* MCMoveCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6B407220C6A2BC001679D2 /* MCMoveCardView.swift */; };
 		2C6B407520C7595B001679D2 /* OrganizeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6B407420C7595B001679D2 /* OrganizeCoordinator.swift */; };
 		2C6B407720C7596E001679D2 /* ProfileCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6B407620C7596E001679D2 /* ProfileCoordinator.swift */; };
 		2C6B407A20C75A51001679D2 /* OrganizeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C6B407820C75A51001679D2 /* OrganizeViewController.swift */; };
@@ -71,11 +71,11 @@
 		2CAA8BE320A2CCC9007F625F /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAA8BE120A2CCC9007F625F /* LoginViewController.swift */; };
 		2CAA8BE420A2CCC9007F625F /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CAA8BE220A2CCC9007F625F /* LoginViewController.xib */; };
 		2CAA8BE620A40A3A007F625F /* DiscoverCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAA8BE520A40A39007F625F /* DiscoverCoordinator.swift */; };
-		2CAA8BE820A40A65007F625F /* GoCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAA8BE720A40A65007F625F /* GoCoordinator.swift */; };
-		2CAA8BEA20A40A80007F625F /* MonitorCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAA8BE920A40A80007F625F /* MonitorCoordinator.swift */; };
-		2CAA8BED20A40ADD007F625F /* DiscoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAA8BEB20A40ADD007F625F /* DiscoverViewController.swift */; };
-		2CAA8BEE20A40ADD007F625F /* DiscoverViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CAA8BEC20A40ADD007F625F /* DiscoverViewController.xib */; };
-		2CAA8BF720A40B63007F625F /* MonitorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAA8BF520A40B63007F625F /* MonitorViewController.swift */; };
+		2CAA8BE820A40A65007F625F /* MoveCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAA8BE720A40A65007F625F /* MoveCoordinator.swift */; };
+		2CAA8BEA20A40A80007F625F /* ActivitiesCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAA8BE920A40A80007F625F /* ActivitiesCoordinator.swift */; };
+		2CAA8BED20A40ADD007F625F /* ExploreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAA8BEB20A40ADD007F625F /* ExploreViewController.swift */; };
+		2CAA8BEE20A40ADD007F625F /* ExploreViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CAA8BEC20A40ADD007F625F /* ExploreViewController.xib */; };
+		2CAA8BF720A40B63007F625F /* ActivitiesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAA8BF520A40B63007F625F /* ActivitiesViewController.swift */; };
 		2CAE905920E7C37C00F23937 /* ActivityRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAE905820E7C37C00F23937 /* ActivityRowView.swift */; };
 		2CAE905B20E9298000F23937 /* OrganizeDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAE905A20E9298000F23937 /* OrganizeDetailViewController.swift */; };
 		2CAE905D20E92D9D00F23937 /* ClusterHangoutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAE905C20E92D9D00F23937 /* ClusterHangoutViewController.swift */; };
@@ -116,10 +116,9 @@
 		2CEE36E420BE71AF0097AC5F /* ActivityIndicatorCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE36E320BE71AF0097AC5F /* ActivityIndicatorCollectionViewCell.swift */; };
 		2CEE36E620BE794B0097AC5F /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE36E520BE794B0097AC5F /* EmptyStateView.swift */; };
 		2CEE36E820BFBBB30097AC5F /* VisualEffectsFabButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE36E720BFBBB30097AC5F /* VisualEffectsFabButton.swift */; };
-		2CEE36EA20BFE8950097AC5F /* MCMonitorCardCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE36E920BFE8950097AC5F /* MCMonitorCardCollectionViewCell.swift */; };
-		2CEE36F320C1536A0097AC5F /* GoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE36EF20C153690097AC5F /* GoViewController.swift */; };
+		2CEE36F320C1536A0097AC5F /* MoveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE36EF20C153690097AC5F /* MoveViewController.swift */; };
 		2CEE36F420C1536A0097AC5F /* ProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CEE36F020C1536A0097AC5F /* ProfileViewController.xib */; };
-		2CEE36F520C1536A0097AC5F /* GoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CEE36F120C1536A0097AC5F /* GoViewController.xib */; };
+		2CEE36F520C1536A0097AC5F /* MoveViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CEE36F120C1536A0097AC5F /* MoveViewController.xib */; };
 		2CEE36F620C1536A0097AC5F /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE36F220C1536A0097AC5F /* ProfileViewController.swift */; };
 		2CEFFAF320DFC631002BE812 /* TopicTrendingCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEFFAF220DFC631002BE812 /* TopicTrendingCollectionViewCell.swift */; };
 		2CEFFAF520E65558002BE812 /* ActivityAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CEFFAF420E65558002BE812 /* ActivityAnnotation.swift */; };
@@ -177,7 +176,7 @@
 		2C522CA320E3B7D600F4EA32 /* OrganizePackageMovedTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizePackageMovedTableViewCell.swift; sourceTree = "<group>"; };
 		2C62164120AA9B68002DBAC0 /* MCCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCCard.swift; sourceTree = "<group>"; };
 		2C6B407020C67EE9001679D2 /* UIDevice+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Extensions.swift"; sourceTree = "<group>"; };
-		2C6B407220C6A2BC001679D2 /* MCGoCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCGoCardView.swift; sourceTree = "<group>"; };
+		2C6B407220C6A2BC001679D2 /* MCMoveCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCMoveCardView.swift; sourceTree = "<group>"; };
 		2C6B407420C7595B001679D2 /* OrganizeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeCoordinator.swift; sourceTree = "<group>"; };
 		2C6B407620C7596E001679D2 /* ProfileCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCoordinator.swift; sourceTree = "<group>"; };
 		2C6B407820C75A51001679D2 /* OrganizeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeViewController.swift; sourceTree = "<group>"; };
@@ -228,11 +227,11 @@
 		2CAA8BE120A2CCC9007F625F /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = Auth/LoginViewController.swift; sourceTree = "<group>"; };
 		2CAA8BE220A2CCC9007F625F /* LoginViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = LoginViewController.xib; path = Auth/LoginViewController.xib; sourceTree = "<group>"; };
 		2CAA8BE520A40A39007F625F /* DiscoverCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverCoordinator.swift; sourceTree = "<group>"; };
-		2CAA8BE720A40A65007F625F /* GoCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoCoordinator.swift; sourceTree = "<group>"; };
-		2CAA8BE920A40A80007F625F /* MonitorCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorCoordinator.swift; sourceTree = "<group>"; };
-		2CAA8BEB20A40ADD007F625F /* DiscoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverViewController.swift; sourceTree = "<group>"; };
-		2CAA8BEC20A40ADD007F625F /* DiscoverViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DiscoverViewController.xib; sourceTree = "<group>"; };
-		2CAA8BF520A40B63007F625F /* MonitorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorViewController.swift; sourceTree = "<group>"; };
+		2CAA8BE720A40A65007F625F /* MoveCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveCoordinator.swift; sourceTree = "<group>"; };
+		2CAA8BE920A40A80007F625F /* ActivitiesCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitiesCoordinator.swift; sourceTree = "<group>"; };
+		2CAA8BEB20A40ADD007F625F /* ExploreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreViewController.swift; sourceTree = "<group>"; };
+		2CAA8BEC20A40ADD007F625F /* ExploreViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ExploreViewController.xib; sourceTree = "<group>"; };
+		2CAA8BF520A40B63007F625F /* ActivitiesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitiesViewController.swift; sourceTree = "<group>"; };
 		2CAE905820E7C37C00F23937 /* ActivityRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityRowView.swift; sourceTree = "<group>"; };
 		2CAE905A20E9298000F23937 /* OrganizeDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeDetailViewController.swift; sourceTree = "<group>"; };
 		2CAE905C20E92D9D00F23937 /* ClusterHangoutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClusterHangoutViewController.swift; sourceTree = "<group>"; };
@@ -274,15 +273,14 @@
 		2CEE36E320BE71AF0097AC5F /* ActivityIndicatorCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorCollectionViewCell.swift; sourceTree = "<group>"; };
 		2CEE36E520BE794B0097AC5F /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		2CEE36E720BFBBB30097AC5F /* VisualEffectsFabButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualEffectsFabButton.swift; sourceTree = "<group>"; };
-		2CEE36E920BFE8950097AC5F /* MCMonitorCardCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCMonitorCardCollectionViewCell.swift; sourceTree = "<group>"; };
-		2CEE36EF20C153690097AC5F /* GoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GoViewController.swift; path = ../Go/GoViewController.swift; sourceTree = "<group>"; };
+		2CEE36EF20C153690097AC5F /* MoveViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoveViewController.swift; sourceTree = "<group>"; };
 		2CEE36F020C1536A0097AC5F /* ProfileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileViewController.xib; sourceTree = "<group>"; };
-		2CEE36F120C1536A0097AC5F /* GoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = GoViewController.xib; path = ../Go/GoViewController.xib; sourceTree = "<group>"; };
+		2CEE36F120C1536A0097AC5F /* MoveViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MoveViewController.xib; sourceTree = "<group>"; };
 		2CEE36F220C1536A0097AC5F /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		2CEFFAF220DFC631002BE812 /* TopicTrendingCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicTrendingCollectionViewCell.swift; sourceTree = "<group>"; };
 		2CEFFAF420E65558002BE812 /* ActivityAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityAnnotation.swift; sourceTree = "<group>"; };
 		2CF5BABB20CA7540006A6FAE /* UIButton+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Extensions.swift"; sourceTree = "<group>"; };
-		2CF5BABD20CAE2DC006A6FAE /* DropoffSummaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DropoffSummaryViewController.swift; path = Movables/ViewControllers/Go/DropoffSummaryViewController.swift; sourceTree = SOURCE_ROOT; };
+		2CF5BABD20CAE2DC006A6FAE /* DropoffSummaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DropoffSummaryViewController.swift; path = Movables/ViewControllers/Move/DropoffSummaryViewController.swift; sourceTree = SOURCE_ROOT; };
 		2CF5BABF20CAE626006A6FAE /* MCRouteSummaryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCRouteSummaryCollectionViewCell.swift; sourceTree = "<group>"; };
 		2CF5BAC120CB656D006A6FAE /* MCHeroStatusCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCHeroStatusCollectionViewCell.swift; sourceTree = "<group>"; };
 		2CF5BAC320CB8589006A6FAE /* PickupAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickupAnnotation.swift; sourceTree = "<group>"; };
@@ -381,13 +379,13 @@
 			path = Organize;
 			sourceTree = "<group>";
 		};
-		2C6B407D20C75A6B001679D2 /* Me */ = {
+		2C6B407D20C75A6B001679D2 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
 				2CEE36F220C1536A0097AC5F /* ProfileViewController.swift */,
 				2CEE36F020C1536A0097AC5F /* ProfileViewController.xib */,
 			);
-			path = Me;
+			path = Profile;
 			sourceTree = "<group>";
 		};
 		2C996AF320B12EF100DC6E48 /* Shared */ = {
@@ -411,8 +409,8 @@
 				2C6B407620C7596E001679D2 /* ProfileCoordinator.swift */,
 				2CAA8BDF20A2BFB9007F625F /* MainCoordinator.swift */,
 				2CAA8BE520A40A39007F625F /* DiscoverCoordinator.swift */,
-				2CAA8BE720A40A65007F625F /* GoCoordinator.swift */,
-				2CAA8BE920A40A80007F625F /* MonitorCoordinator.swift */,
+				2CAA8BE720A40A65007F625F /* MoveCoordinator.swift */,
+				2CAA8BE920A40A80007F625F /* ActivitiesCoordinator.swift */,
 				2CAA8BDD20A2BD11007F625F /* AuthCoordinator.swift */,
 				2C9B2AFB209B23F700BD66BB /* Coordinator.swift */,
 			);
@@ -455,8 +453,7 @@
 				2CF5BAC120CB656D006A6FAE /* MCHeroStatusCollectionViewCell.swift */,
 				2CF5BABF20CAE626006A6FAE /* MCRouteSummaryCollectionViewCell.swift */,
 				2C8809AF20C7CEAA00DDC357 /* MCCountdownKeyLabelView.swift */,
-				2C6B407220C6A2BC001679D2 /* MCGoCardView.swift */,
-				2CEE36E920BFE8950097AC5F /* MCMonitorCardCollectionViewCell.swift */,
+				2C6B407220C6A2BC001679D2 /* MCMoveCardView.swift */,
 				2CEE36E720BFBBB30097AC5F /* VisualEffectsFabButton.swift */,
 				2CEE36E520BE794B0097AC5F /* EmptyStateView.swift */,
 				2CEE36E320BE71AF0097AC5F /* ActivityIndicatorCollectionViewCell.swift */,
@@ -490,11 +487,11 @@
 			children = (
 				2CAA8BDB20A2B775007F625F /* Auth */,
 				2C9B2B0A209B298F00BD66BB /* Marketing */,
-				2CAA8BEF20A40AE2007F625F /* Discover */,
-				2CAA8BF420A40B09007F625F /* Go */,
-				2CAA8BF920A40B6A007F625F /* Monitor */,
+				2CAA8BEF20A40AE2007F625F /* Explore */,
+				2CAA8BF420A40B09007F625F /* Move */,
+				2CAA8BF920A40B6A007F625F /* Activities */,
 				2C6B407C20C75A57001679D2 /* Organize */,
-				2C6B407D20C75A6B001679D2 /* Me */,
+				2C6B407D20C75A6B001679D2 /* Profile */,
 				2C996AF320B12EF100DC6E48 /* Shared */,
 			);
 			path = ViewControllers;
@@ -589,19 +586,19 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		2CAA8BEF20A40AE2007F625F /* Discover */ = {
+		2CAA8BEF20A40AE2007F625F /* Explore */ = {
 			isa = PBXGroup;
 			children = (
-				2CAA8BEB20A40ADD007F625F /* DiscoverViewController.swift */,
-				2CAA8BEC20A40ADD007F625F /* DiscoverViewController.xib */,
+				2CAA8BEB20A40ADD007F625F /* ExploreViewController.swift */,
+				2CAA8BEC20A40ADD007F625F /* ExploreViewController.xib */,
 			);
-			path = Discover;
+			path = Explore;
 			sourceTree = "<group>";
 		};
-		2CAA8BF420A40B09007F625F /* Go */ = {
+		2CAA8BF420A40B09007F625F /* Move */ = {
 			isa = PBXGroup;
 			children = (
-				2CEE36EF20C153690097AC5F /* GoViewController.swift */,
+				2CEE36EF20C153690097AC5F /* MoveViewController.swift */,
 				2CF5BACF20CEB0FB006A6FAE /* CreatePackageTagSearchViewController.swift */,
 				2CCE46BA20D21EBB0090591C /* CreatePackageCategorySetViewController.swift */,
 				2C4EACF520D11C2600CD741A /* CreatePackageDestinationSearchViewController.swift */,
@@ -610,17 +607,17 @@
 				2C4EACF120CFB78A00CD741A /* CreatePackageTemplatesViewController.swift */,
 				2C4EACF320CFB8B800CD741A /* CreatePackageReviewViewController.swift */,
 				2CF5BABD20CAE2DC006A6FAE /* DropoffSummaryViewController.swift */,
-				2CEE36F120C1536A0097AC5F /* GoViewController.xib */,
+				2CEE36F120C1536A0097AC5F /* MoveViewController.xib */,
 			);
-			path = Go;
+			path = Move;
 			sourceTree = "<group>";
 		};
-		2CAA8BF920A40B6A007F625F /* Monitor */ = {
+		2CAA8BF920A40B6A007F625F /* Activities */ = {
 			isa = PBXGroup;
 			children = (
-				2CAA8BF520A40B63007F625F /* MonitorViewController.swift */,
+				2CAA8BF520A40B63007F625F /* ActivitiesViewController.swift */,
 			);
-			path = Monitor;
+			path = Activities;
 			sourceTree = "<group>";
 		};
 		9E22C24DB7A928E63B98F132 /* Pods */ = {
@@ -760,8 +757,8 @@
 				2C9B2B04209B293900BD66BB /* OnboardingViewController.xib in Resources */,
 				2C96DFCB20F84E1A002A272D /* GoogleService-Info.plist in Resources */,
 				2CEE36F420C1536A0097AC5F /* ProfileViewController.xib in Resources */,
-				2CAA8BEE20A40ADD007F625F /* DiscoverViewController.xib in Resources */,
-				2CEE36F520C1536A0097AC5F /* GoViewController.xib in Resources */,
+				2CAA8BEE20A40ADD007F625F /* ExploreViewController.xib in Resources */,
+				2CEE36F520C1536A0097AC5F /* MoveViewController.xib in Resources */,
 				2C996AF220B12EEC00DC6E48 /* PackageDetailViewController.xib in Resources */,
 				2C9DA3E0206365EA0041098A /* Assets.xcassets in Resources */,
 				2C96DFCC20F84E1A002A272D /* credentials.plist in Resources */,
@@ -975,7 +972,7 @@
 				2CF5BABC20CA7540006A6FAE /* UIButton+Extensions.swift in Sources */,
 				2CDE1EBC20B2F47700D45170 /* CurrentLocationAnnotation.swift in Sources */,
 				2CDE1EB620B2EF5100D45170 /* PersonAnnotationView.swift in Sources */,
-				2CAA8BEA20A40A80007F625F /* MonitorCoordinator.swift in Sources */,
+				2CAA8BEA20A40A80007F625F /* ActivitiesCoordinator.swift in Sources */,
 				2C9ABE7520E25CB2003E2D63 /* EventActivityTableViewCell.swift in Sources */,
 				2CA1187720EB6B0C00EBA4A8 /* CreateConversationCoordinator.swift in Sources */,
 				2C6B407720C7596E001679D2 /* ProfileCoordinator.swift in Sources */,
@@ -985,7 +982,7 @@
 				2C996AF120B12EEC00DC6E48 /* PackageDetailViewController.swift in Sources */,
 				2C8809B220C81FF000DDC357 /* GenericArithmetic.swift in Sources */,
 				2CA1187520EB59A100EBA4A8 /* SectionHeaderTableViewHeaderView.swift in Sources */,
-				2CEE36F320C1536A0097AC5F /* GoViewController.swift in Sources */,
+				2CEE36F320C1536A0097AC5F /* MoveViewController.swift in Sources */,
 				2CDE1EB020B2A24400D45170 /* UILabel+Extensions.swift in Sources */,
 				2CA1186D20E5191700EBA4A8 /* ActivityTableViewCell.swift in Sources */,
 				2CDE1EBA20B2F44D00D45170 /* OriginAnnotation.swift in Sources */,
@@ -996,7 +993,6 @@
 				2CA1187F20EF1C7300EBA4A8 /* String+Extensions.swift in Sources */,
 				2C4EACEE20CFB75C00CD741A /* CreatePackagePersonSearchViewController.swift in Sources */,
 				2CD4BAA020DE04D400D72E25 /* TextFieldWithBorder.swift in Sources */,
-				2CEE36EA20BFE8950097AC5F /* MCMonitorCardCollectionViewCell.swift in Sources */,
 				2CDE1EA820B2737500D45170 /* ExpandableTextCollectionViewCell.swift in Sources */,
 				2CEE36E620BE794B0097AC5F /* EmptyStateView.swift in Sources */,
 				2CE12D812089923F00C4625A /* Package.swift in Sources */,
@@ -1012,7 +1008,7 @@
 				2C47AB5320AAB1A80050DC0D /* MCPill.swift in Sources */,
 				2CA1187320EA0FFF00EBA4A8 /* UnderlineTableViewHeaderView.swift in Sources */,
 				2CD4BA9C20DCADE400D72E25 /* RowButtonTableViewCell.swift in Sources */,
-				2C6B407320C6A2BC001679D2 /* MCGoCardView.swift in Sources */,
+				2C6B407320C6A2BC001679D2 /* MCMoveCardView.swift in Sources */,
 				2CCE46B520D0D3EF0090591C /* LargeTitleWithSubtitleTableViewCell.swift in Sources */,
 				2CAA8BE620A40A3A007F625F /* DiscoverCoordinator.swift in Sources */,
 				2C8809AC20C7BE1300DDC357 /* ProgressPathRenderer.swift in Sources */,
@@ -1028,12 +1024,12 @@
 				2CAE905D20E92D9D00F23937 /* ClusterHangoutViewController.swift in Sources */,
 				2C47AB5920AAC7700050DC0D /* MCCardHeadline.swift in Sources */,
 				2CA1187B20EB727800EBA4A8 /* CreateConversationLegislativeAreaViewController.swift in Sources */,
-				2CAA8BED20A40ADD007F625F /* DiscoverViewController.swift in Sources */,
+				2CAA8BED20A40ADD007F625F /* ExploreViewController.swift in Sources */,
 				2CD4BA9820DC981E00D72E25 /* ProfileActionsTableViewCell.swift in Sources */,
 				2CDE1EAA20B28F5E00D45170 /* Theme.swift in Sources */,
 				2C4EACF420CFB8B800CD741A /* CreatePackageReviewViewController.swift in Sources */,
 				2CCE46B920D20E7A0090591C /* FloatingLabel.swift in Sources */,
-				2CAA8BE820A40A65007F625F /* GoCoordinator.swift in Sources */,
+				2CAA8BE820A40A65007F625F /* MoveCoordinator.swift in Sources */,
 				2CA1186F20E61D0100EBA4A8 /* UserEventView.swift in Sources */,
 				2CD4BA9620DC8F2900D72E25 /* ProfileFaceTableViewCell.swift in Sources */,
 				2C4EACF020CFB76A00CD741A /* CreatePackageContentViewController.swift in Sources */,
@@ -1042,7 +1038,7 @@
 				2CF5BAC620CB8612006A6FAE /* DropoffAnnotation.swift in Sources */,
 				2C7A735D20B7B493009748E6 /* PostsViewController.swift in Sources */,
 				2C4EACF220CFB78A00CD741A /* CreatePackageTemplatesViewController.swift in Sources */,
-				2CAA8BF720A40B63007F625F /* MonitorViewController.swift in Sources */,
+				2CAA8BF720A40B63007F625F /* ActivitiesViewController.swift in Sources */,
 				2C386BD420A94D4A00AC5F5D /* PackageAnnotation.swift in Sources */,
 				2CE12D8C208F2B5900C4625A /* LocationManager.swift in Sources */,
 				2C9B2AF7209B20BF00BD66BB /* AppCoordinator.swift in Sources */,

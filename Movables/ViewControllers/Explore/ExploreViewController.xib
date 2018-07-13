@@ -10,7 +10,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DiscoverViewController" customModule="Movables" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ExploreViewController" customModule="Movables" customModuleProvider="target">
             <connections>
                 <outlet property="cardPeekCollectionView" destination="vgN-ek-ajD" id="oBm-WL-N7M"/>
                 <outlet property="mapView" destination="YJ6-Zz-H3f" id="C9W-nn-pOO"/>

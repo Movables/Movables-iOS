@@ -1,5 +1,5 @@
 //
-//  DiscoverCoordinator.swift
+//  ExploreCoordinator.swift
 //  Movables
 //
 //  MIT License
@@ -27,20 +27,20 @@
 import Foundation
 import UIKit
 
-class DiscoverCoordinator: Coordinator {
+class ExploreCoordinator: Coordinator {
     
     let rootViewController: UINavigationController
-    let discoverVC: DiscoverViewController
+    let exploreVC: ExploreViewController
     var packageDetailVC: PackageDetailViewController?
     
     override init() {
-        discoverVC = DiscoverViewController()
-        self.rootViewController = UINavigationController(rootViewController: discoverVC)
-        self.rootViewController.tabBarItem = UITabBarItem(title:String(NSLocalizedString("tabBar.explore", comment: "Profile tab name")), image: UIImage(named: "tab_discover"), tag: 0)
+        exploreVC = ExploreViewController()
+        self.rootViewController = UINavigationController(rootViewController: exploreVC)
+        self.rootViewController.tabBarItem = UITabBarItem(title:String(NSLocalizedString("tabBar.explore", comment: "Profile tab name")), image: UIImage(named: "tab_explore"), tag: 0)
     }
 }
 
-extension DiscoverCoordinator: DiscoverViewControllerDelegate {    
+extension ExploreCoordinator: ExploreViewControllerDelegate {
     func showPackageDetail(with packagePreview: PackagePreview) {
         packageDetailVC = PackageDetailViewController()
         packageDetailVC?.headline = packagePreview.headline
@@ -55,7 +55,7 @@ extension DiscoverCoordinator: DiscoverViewControllerDelegate {
     
 }
 
-extension DiscoverCoordinator: PackageDetailViewControllerDelegate {
+extension ExploreCoordinator: PackageDetailViewControllerDelegate {
     func dismissPackageDetailVC() {
         packageDetailVC?.view.endEditing(true)
         packageDetailVC?.dismiss(animated: true, completion: {

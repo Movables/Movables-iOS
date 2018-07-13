@@ -1,5 +1,5 @@
 //
-//  MCGoCardView.swift
+//  MCMoveCardView.swift
 //  Movables
 //
 //  MIT License
@@ -27,7 +27,7 @@
 import UIKit
 import CountdownLabel
 
-class MCGoCardView: UIView {
+class MCMoveCardView: UIView {
 
     var cardView: MCCard!
     var pillView: MCPill!

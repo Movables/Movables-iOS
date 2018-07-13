@@ -1,5 +1,5 @@
 //
-//  GoCoordinator.swift
+//  MoveCoordinator.swift
 //  Movables
 //
 //  MIT License
@@ -27,15 +27,15 @@
 import Foundation
 import UIKit
 
-class GoCoordinator: Coordinator {
+class MoveCoordinator: Coordinator {
     
     let rootViewController: UINavigationController
-    var goVC: GoViewController
+    var moveVC: MoveViewController
     var packageDetailVC: PackageDetailViewController?
     
     override init() {
-        goVC = GoViewController()
-        self.rootViewController = UINavigationController(rootViewController: goVC)
+        moveVC = MoveViewController()
+        self.rootViewController = UINavigationController(rootViewController: moveVC)
         self.rootViewController.tabBarItem = UITabBarItem(title: String(NSLocalizedString("tabBar.move", comment: "Move tab name")), image: UIImage(named: "tab_move"), tag: 1)
     }
     
@@ -44,7 +44,7 @@ class GoCoordinator: Coordinator {
     }
 }
 
-extension GoCoordinator: GoViewControllerDelegate {
+extension MoveCoordinator: MoveViewControllerDelegate {
     func showPackageDetail(with package: Package) {
         packageDetailVC = PackageDetailViewController()
         packageDetailVC?.headline = package.headline
@@ -58,7 +58,7 @@ extension GoCoordinator: GoViewControllerDelegate {
     }
 }
 
-extension GoCoordinator: PackageDetailViewControllerDelegate {
+extension MoveCoordinator: PackageDetailViewControllerDelegate {
     func dismissPackageDetailVC() {
         packageDetailVC?.view.endEditing(true)
         packageDetailVC?.dismiss(animated: true, completion: {
