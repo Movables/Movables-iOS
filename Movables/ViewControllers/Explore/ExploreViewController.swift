@@ -1,5 +1,5 @@
 //
-//  DiscoverViewController.swift
+//  ExploreViewController.swift
 //  Movables
 //
 //  MIT License
@@ -28,11 +28,11 @@ import UIKit
 import MapKit
 import AlgoliaSearch
 
-protocol DiscoverViewControllerDelegate: class {
+protocol ExploreViewControllerDelegate: class {
     func showPackageDetail(with packagePreview: PackagePreview)
 }
 
-class DiscoverViewController: UIViewController {
+class ExploreViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var cardPeekCollectionView: UICollectionView!
@@ -52,7 +52,7 @@ class DiscoverViewController: UIViewController {
     
     var topics: [TopicResultItem] = []
     
-    var delegate: DiscoverViewControllerDelegate?
+    var delegate: ExploreViewControllerDelegate?
     
     var tagName: String? {
         didSet {
@@ -212,7 +212,7 @@ class DiscoverViewController: UIViewController {
     private func setupCollectionView() {
         collectionViewFlowLayout.minimumLineSpacing = 0
         collectionViewFlowLayout.scrollDirection = .horizontal
-        cardPeekCollectionView.register(MCDiscoveryCardCollectionViewCell.self, forCellWithReuseIdentifier: "discoveryCard")
+        cardPeekCollectionView.register(MCExploreCardCollectionViewCell.self, forCellWithReuseIdentifier: "exploreCard")
         cardPeekCollectionView.dataSource = self
         cardPeekCollectionView.delegate = self
         cardPeekCollectionView.backgroundColor = .clear
@@ -357,7 +357,7 @@ class DiscoverViewController: UIViewController {
         
         // 1. group the annotations by coordinate
         
-        self.coordinateToAnnotations = DiscoverViewController.groupAnnotationsByCoordinate(annotations: annotations)
+        self.coordinateToAnnotations = ExploreViewController.groupAnnotationsByCoordinate(annotations: annotations)
         
         // 2. go through the groups and redistribute
         
@@ -393,7 +393,7 @@ class DiscoverViewController: UIViewController {
         
         let contestedCoordinates = annotations.map{ $0.coordinate }
         
-        let newCoordinates = DiscoverViewController.coordinatesByDistributingCoordinates(coordinates: contestedCoordinates)
+        let newCoordinates = ExploreViewController.coordinatesByDistributingCoordinates(coordinates: contestedCoordinates)
         
         for (i, annotation) in annotations.enumerated() {
             
@@ -454,7 +454,7 @@ class DiscoverViewController: UIViewController {
 }
 
 
-extension DiscoverViewController: MKMapViewDelegate {
+extension ExploreViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if let userLocation = annotation as? MKUserLocation {
             userLocation.title = ""
@@ -526,7 +526,7 @@ extension DiscoverViewController: MKMapViewDelegate {
     
 }
 
-extension DiscoverViewController: UICollectionViewDelegate {
+extension ExploreViewController: UICollectionViewDelegate {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         if scrollView == self.cardPeekCollectionView {
             indexOfCellBeforeDragging = indexOfMajorCell()
@@ -580,7 +580,7 @@ extension DiscoverViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if collectionView == cardPeekCollectionView {
-            (cell as! MCDiscoveryCardCollectionViewCell).progressBarView.animateProgress()
+            (cell as! MCExploreCardCollectionViewCell).progressBarView.animateProgress()
         }
     }
     
@@ -649,7 +649,7 @@ extension DiscoverViewController: UICollectionViewDelegate {
     
 }
 
-extension DiscoverViewController: UICollectionViewDataSource {
+extension ExploreViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == cardPeekCollectionView {
             return packagePreviews.count
@@ -663,7 +663,7 @@ extension DiscoverViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == cardPeekCollectionView {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "discoveryCard", for: indexPath) as! MCDiscoveryCardCollectionViewCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "exploreCard", for: indexPath) as! MCExploreCardCollectionViewCell
             cell.packagePreview = packagePreviews[indexPath.item]
             cell.layout()
             return cell
@@ -694,7 +694,7 @@ extension DiscoverViewController: UICollectionViewDataSource {
     
 }
 
-extension DiscoverViewController: CLLocationManagerDelegate {
+extension ExploreViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if !initialFetchAttemptMade {
             fetchNearbyPackagePreviews()

@@ -1,5 +1,5 @@
 //
-//  MonitorViewController.swift
+//  ActivitiesViewController.swift
 //  Movables
 //
 //  MIT License
@@ -32,14 +32,14 @@ import Firebase
 import NVActivityIndicatorView
 import TTTAttributedLabel
 
-protocol MonitorViewControllerDelegate: class {
+protocol ActivitiesViewControllerDelegate: class {
     func showPackageDetail(with packageId: String, and headline: String)
 }
 
 
-class MonitorViewController: UIViewController {
+class ActivitiesViewController: UIViewController {
     
-    var delegate: MonitorViewControllerDelegate?
+    var delegate: ActivitiesViewControllerDelegate?
     var mainCoordinatorDelegate: MainCoordinatorDelegate?
     var mainCoordinator: MainCoordinator?
     var tableView: UITableView!
@@ -187,7 +187,7 @@ class MonitorViewController: UIViewController {
 
 }
 
-extension MonitorViewController: UITableViewDataSource {
+extension ActivitiesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // activity row
         let cell = tableView.dequeueReusableCell(withIdentifier: "activityCell") as! ActivityTableViewCell
@@ -389,7 +389,7 @@ extension MonitorViewController: UITableViewDataSource {
 
 }
 
-extension MonitorViewController: UITableViewDelegate {
+extension ActivitiesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("selected \(indexPath.row)")
         let activity = self.publicActivities![indexPath.row]
@@ -397,7 +397,7 @@ extension MonitorViewController: UITableViewDelegate {
     }
 }
 
-extension MonitorViewController: TTTAttributedLabelDelegate {
+extension ActivitiesViewController: TTTAttributedLabelDelegate {
     func attributedLabel(_ label: TTTAttributedLabel!, didSelectLinkWith url: URL!) {
         print(url.absoluteString)
         let decodedString = url.absoluteString.removingPercentEncoding!

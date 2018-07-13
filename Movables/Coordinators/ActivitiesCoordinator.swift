@@ -1,5 +1,5 @@
 //
-//  MonitorCoordinator.swift
+//  ActivitiesCoordinator.swift
 //  Movables
 //
 //  MIT License
@@ -26,21 +26,21 @@
 
 import Foundation
 import UIKit
-class MonitorCoordinator: Coordinator {
+class ActivitiesCoordinator: Coordinator {
     
     let rootViewController: UINavigationController
-    var monitorVC: MonitorViewController
+    var activitiesVC: ActivitiesViewController
     var packageDetailVC: PackageDetailViewController?
     
     override init() {
-        monitorVC = MonitorViewController()
-        self.rootViewController = UINavigationController(rootViewController: monitorVC)
-        self.rootViewController.tabBarItem = UITabBarItem(title: String(NSLocalizedString("tabBar.activities", comment: "Activities tab name")), image: UIImage(named: "tab_track"), tag: 2)
+        activitiesVC = ActivitiesViewController()
+        self.rootViewController = UINavigationController(rootViewController: activitiesVC)
+        self.rootViewController.tabBarItem = UITabBarItem(title: String(NSLocalizedString("tabBar.activities", comment: "Activities tab name")), image: UIImage(named: "tab_activities"), tag: 2)
     }
     
 }
 
-extension MonitorCoordinator: MonitorViewControllerDelegate {
+extension ActivitiesCoordinator: ActivitiesViewControllerDelegate {
     func showPackageDetail(with packageId: String, and headline: String) {
         packageDetailVC = PackageDetailViewController()
         packageDetailVC?.headline = headline
@@ -54,7 +54,7 @@ extension MonitorCoordinator: MonitorViewControllerDelegate {
     }
 }
 
-extension MonitorCoordinator: PackageDetailViewControllerDelegate {
+extension ActivitiesCoordinator: PackageDetailViewControllerDelegate {
     func dismissPackageDetailVC() {
         packageDetailVC?.view.endEditing(true)
         packageDetailVC?.dismiss(animated: true, completion: {

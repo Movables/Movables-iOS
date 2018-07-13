@@ -1,5 +1,5 @@
 //
-//  MDDiscoveryCardCollectionViewCell.swift
+//  MDExploreCardCollectionViewCell.swift
 //  Movables
 //
 //  MIT License
@@ -26,7 +26,7 @@
 
 import UIKit
 
-class MCDiscoveryCardCollectionViewCell: UICollectionViewCell {
+class MCExploreCardCollectionViewCell: UICollectionViewCell {
     
     var packagePreview: PackagePreview!
     var cardView: MCCard!

@@ -39,9 +39,9 @@ class MainCoordinator: Coordinator {
     let tabBarController: UITabBarController
     var delegate: MainCoordinatorDelegate?
     
-    let discoverCoordinator: DiscoverCoordinator
-    let goCoordinator: GoCoordinator
-    let monitorCoordinator: MonitorCoordinator
+    let exploreCoordinator: ExploreCoordinator
+    let moveCoordinator: MoveCoordinator
+    let activitiesCoordinator: ActivitiesCoordinator
     let organizeCoordinator: OrganizeCoordinator
     let profileCoordinator: ProfileCoordinator
     
@@ -51,23 +51,20 @@ class MainCoordinator: Coordinator {
         self.tabBarController = UITabBarController()
         self.tabBarController.tabBar.tintColor = Theme().textColor
         
-        discoverCoordinator = DiscoverCoordinator()
-//        let discoverVC = discoverCoordinator.rootViewController.childViewControllers[0] as! DiscoverViewController
+        exploreCoordinator = ExploreCoordinator()
         
-        goCoordinator = GoCoordinator()
-//        let goVC = goCoordinator.rootViewController.childViewControllers[0] as! GoViewController
+        moveCoordinator = MoveCoordinator()
         
-        monitorCoordinator = MonitorCoordinator()
-//        let monitorVC = monitorCoordinator.rootViewController.childViewControllers[0] as! MonitorViewController
+        activitiesCoordinator = ActivitiesCoordinator()
         
         organizeCoordinator = OrganizeCoordinator()
         
         profileCoordinator = ProfileCoordinator()
         
         let controllers: [UIViewController] = [
-            discoverCoordinator.rootViewController,
-            goCoordinator.rootViewController,
-            monitorCoordinator.rootViewController,
+            exploreCoordinator.rootViewController,
+            moveCoordinator.rootViewController,
+            activitiesCoordinator.rootViewController,
             organizeCoordinator.rootViewController,
             profileCoordinator.rootViewController
        ]
@@ -79,13 +76,13 @@ class MainCoordinator: Coordinator {
     }
     
     func showMainTabController() {
-        let monitorVC = self.monitorCoordinator.rootViewController.childViewControllers.first as! MonitorViewController
-        monitorVC.mainCoordinatorDelegate = delegate
-        monitorVC.mainCoordinator = self
+        let activitiesVC = self.activitiesCoordinator.rootViewController.childViewControllers.first as! ActivitiesViewController
+        activitiesVC.mainCoordinatorDelegate = delegate
+        activitiesVC.mainCoordinator = self
         
-        let goVC = self.goCoordinator.rootViewController.childViewControllers.first as! GoViewController
-        goVC.mainCoordinatorDelegate = delegate
-        goVC.mainCoordinator = self
+        let moveVC = self.moveCoordinator.rootViewController.childViewControllers.first as! MoveViewController
+        moveVC.mainCoordinatorDelegate = delegate
+        moveVC.mainCoordinator = self
         
         let profileVC = self.profileCoordinator.rootViewController.childViewControllers.first as! ProfileViewController
         profileVC.mainCoordinatorDelegate = delegate
@@ -97,9 +94,9 @@ class MainCoordinator: Coordinator {
         
         window.rootViewController = self.tabBarController
         
-        self.discoverCoordinator.discoverVC.delegate = self.discoverCoordinator
-        self.monitorCoordinator.monitorVC.delegate = self.monitorCoordinator
-        self.goCoordinator.goVC.delegate = self.goCoordinator
+        self.exploreCoordinator.exploreVC.delegate = self.exploreCoordinator
+        self.activitiesCoordinator.activitiesVC.delegate = self.activitiesCoordinator
+        self.moveCoordinator.moveVC.delegate = self.moveCoordinator
         self.organizeCoordinator.organizeVC.delegate = self.organizeCoordinator
         self.profileCoordinator.profileVC.delegate = self.profileCoordinator
         print("presented main tab controller")

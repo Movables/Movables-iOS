@@ -76,7 +76,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Give access to your camera to take picutres and add them to your packages or posts.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Give access to your location to discover and move packages.</string>
+	<string>Give access to your location to explore and move packages.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Give access to your photo library to add picutres to your packages or posts.</string>
 	<key>UILaunchStoryboardName</key>
