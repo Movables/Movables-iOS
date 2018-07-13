@@ -76,7 +76,7 @@ class CreatePackageContentViewController: UIViewController {
         contentStackView.spacing = 18
         scrollView.addSubview(contentStackView)
         
-        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.childViewControllers.count)", image: nil, body: "Package Contents", color: .white)
+        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.childViewControllers.count)", image: nil, body: String(NSLocalizedString("label.packageContents", comment: "label text for package contents")), color: .white)
         instructionLabel.bodyLabel.textColor = Theme().textColor
         instructionLabel.circleMask.backgroundColor = Theme().textColor
         instructionLabel.characterLabel.textColor = .white
@@ -108,9 +108,9 @@ class CreatePackageContentViewController: UIViewController {
         let toolbar = UIToolbar()
         toolbar.tintColor = Theme().textColor
         toolbar.sizeToFit()
-        let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(didTapDoneDatePicker(sender:)))
+        let doneButton = UIBarButtonItem(title: String(NSLocalizedString("button.done", comment: "button title for done")), style: .done, target: self, action: #selector(didTapDoneDatePicker(sender:)))
         let spaceButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(didTapCancelDatePicker(sender:)))
+        let cancelButton = UIBarButtonItem(title: String(NSLocalizedString("button.cancel", comment: "button title for cancel")), style: .plain, target: self, action: #selector(didTapCancelDatePicker(sender:)))
 
         toolbar.setItems([cancelButton, spaceButton, doneButton], animated: false)
         phantomDueDateTextField.inputAccessoryView = toolbar
@@ -124,7 +124,7 @@ class CreatePackageContentViewController: UIViewController {
         addCoverPhotoButton.clipsToBounds = true
         addCoverPhotoButton.layer.borderWidth = 1
         addCoverPhotoButton.layer.borderColor = Theme().borderColor.cgColor
-        addCoverPhotoButton.setTitle("Add Cover Photo", for: .normal)
+        addCoverPhotoButton.setTitle(String(NSLocalizedString("button.addCoverPhoto", comment: "button title for add cover photo")), for: .normal)
         addCoverPhotoButton.setBackgroundColor(color: .white, forUIControlState: .normal)
         addCoverPhotoButton.setBackgroundColor(color: Theme().borderColor, forUIControlState: .highlighted)
         addCoverPhotoButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
@@ -138,7 +138,7 @@ class CreatePackageContentViewController: UIViewController {
         setDueDateButton.clipsToBounds = true
         setDueDateButton.layer.borderWidth = 1
         setDueDateButton.layer.borderColor = Theme().borderColor.cgColor
-        setDueDateButton.setTitle("Set Due Date", for: .normal)
+        setDueDateButton.setTitle(String(NSLocalizedString("button.setDueDate", comment: "button title for set due date")), for: .normal)
         setDueDateButton.setBackgroundColor(color: .white, forUIControlState: .normal)
         setDueDateButton.setBackgroundColor(color: Theme().borderColor, forUIControlState: .highlighted)
         setDueDateButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
@@ -149,7 +149,7 @@ class CreatePackageContentViewController: UIViewController {
         headlineTextView = UITextView(frame: .zero)
         headlineTextView.translatesAutoresizingMaskIntoConstraints = false
         headlineTextView.delegate = self
-        headlineTextView.placeholder = "Headline"
+        headlineTextView.placeholder = String(NSLocalizedString("label.headline", comment: "label text for headline"))
         headlineTextView.layer.cornerRadius = 8
         headlineTextView.autocapitalizationType = .words
         headlineTextView.clipsToBounds = true
@@ -163,7 +163,7 @@ class CreatePackageContentViewController: UIViewController {
         descriptionTextView = UITextView(frame: .zero)
         descriptionTextView.translatesAutoresizingMaskIntoConstraints = false
         descriptionTextView.delegate = self
-        descriptionTextView.placeholder = "Description"
+        descriptionTextView.placeholder = String(NSLocalizedString("label.description", comment: "label text for description"))
         descriptionTextView.layer.cornerRadius = 8
         descriptionTextView.clipsToBounds = true
         descriptionTextView.layer.borderWidth = 1
@@ -176,7 +176,7 @@ class CreatePackageContentViewController: UIViewController {
         messageTextView = UITextView(frame: .zero)
         messageTextView.translatesAutoresizingMaskIntoConstraints = false
         messageTextView.delegate = self
-        messageTextView.placeholder = "Message"
+        messageTextView.placeholder = String(NSLocalizedString("label.message", comment: "label text for message"))
         messageTextView.layer.cornerRadius = 8
         messageTextView.clipsToBounds = true
         messageTextView.layer.borderWidth = 1
@@ -192,7 +192,7 @@ class CreatePackageContentViewController: UIViewController {
         addExternalActionButton.clipsToBounds = true
         addExternalActionButton.layer.borderWidth = 1
         addExternalActionButton.layer.borderColor = Theme().borderColor.cgColor
-        addExternalActionButton.setTitle("Add Dropoff Action", for: .normal)
+        addExternalActionButton.setTitle(String(NSLocalizedString("button.addDropoffAction", comment: "button title for add dropoff action")), for: .normal)
         addExternalActionButton.setBackgroundColor(color: .white, forUIControlState: .normal)
         addExternalActionButton.setBackgroundColor(color: Theme().borderColor, forUIControlState: .highlighted)
         addExternalActionButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
@@ -245,7 +245,7 @@ class CreatePackageContentViewController: UIViewController {
         actionTypePicker.dataSource = self
         actionTypePicker.delegate = self
     
-        let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(didTapDoneActionTypePicker(sender:)))
+        let doneButton = UIBarButtonItem(title: String(NSLocalizedString("button.done", comment: "button title for done")), style: .done, target: self, action: #selector(didTapDoneActionTypePicker(sender:)))
         let spaceButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
 //            let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(didTapCancelActionTypePicker(sender:)))
     
@@ -295,7 +295,7 @@ class CreatePackageContentViewController: UIViewController {
         print("did tap add cover photo button")
         
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        alertController.addAction(UIAlertAction(title: "Camera", style: .default, handler: { (action) in
+        alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.camera", comment: "button title for camera")), style: .default, handler: { (action) in
             print("Camera")
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
                 self.picker.allowsEditing = false
@@ -319,7 +319,7 @@ class CreatePackageContentViewController: UIViewController {
                     completion: nil)
             }
         }))
-        alertController.addAction(UIAlertAction(title: "Photo Library", style: .default, handler: { (action) in
+        alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.photoLibrary", comment: "button title for photo library")), style: .default, handler: { (action) in
             print("Photo Library")
             self.picker.allowsEditing = false
             self.picker.sourceType = .photoLibrary
@@ -327,7 +327,7 @@ class CreatePackageContentViewController: UIViewController {
             self.picker.modalPresentationStyle = .overCurrentContext
             self.present(self.picker, animated: true, completion: nil)
         }))
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
+        alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.cancel", comment: "button title for cancel")), style: .cancel, handler: { (action) in
             print("Cancel")
         }))
         present(alertController, animated: true) {
@@ -340,7 +340,7 @@ class CreatePackageContentViewController: UIViewController {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
         dateFormatter.timeStyle = .short
-        let setDueDateButtonString = "Due \(dateFormatter.string(from: dueDateDatePicker.date))"
+        let setDueDateButtonString = String(format: NSLocalizedString("button.dueDate", comment: "button title for due date"), dateFormatter.string(from: dueDateDatePicker.date))
         setDueDateButton.setTitle(setDueDateButtonString, for: .normal)
         nextButton.isEnabled = nextButtonEnabled()
         phantomDueDateTextField.resignFirstResponder()
@@ -453,12 +453,12 @@ class CreatePackageContentViewController: UIViewController {
         if externalActionsComplete() {
             prepareContentForReview(withExternalActions: true)
         } else {
-            let alertController = UIAlertController(title: "Incomplete Dropoff Actions", message: "Some information is missing. Review or skip including dropoff actions.", preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: "Review", style: .default, handler: { (action) in
+            let alertController = UIAlertController(title: String(NSLocalizedString("label.incompleteDropoffActions", comment: "title text for incomplete dropoff actions")), message: String(NSLocalizedString("label.incompleteDropoffActionsDesc", comment: "alert body label for incomplete dropoff actions")), preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.review", comment: "button title for review")), style: .default, handler: { (action) in
                 print("review")
                 sender.isEnabled = true
             }))
-            alertController.addAction(UIAlertAction(title: "Skip", style: .default, handler: { (action) in
+            alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.skip", comment: "button title for skip")), style: .default, handler: { (action) in
                 print("skip")
                 self.prepareContentForReview(withExternalActions: false)
             }))
@@ -578,8 +578,8 @@ extension CreatePackageContentViewController: CropViewControllerDelegate {
     }
     
     @objc private func didTapCoverPhoto(sender: UITapGestureRecognizer) {
-        let alertController = UIAlertController(title: "Cover Photo", message: nil, preferredStyle: .actionSheet)
-        alertController.addAction(UIAlertAction(title: "Remove", style: .destructive, handler: { (action) in
+        let alertController = UIAlertController(title: String(NSLocalizedString("label.coverPhoto", comment: "label text for cover photo")), message: nil, preferredStyle: .actionSheet)
+        alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.remove", comment: "button title for remove")), style: .destructive, handler: { (action) in
             if self.coverPhotoImageView != nil {
                 self.contentStackView.removeArrangedSubview(self.coverPhotoImageView!)
                 self.coverPhotoImageView!.removeFromSuperview()
@@ -592,7 +592,7 @@ extension CreatePackageContentViewController: CropViewControllerDelegate {
             }
             self.nextButton.isEnabled = self.nextButtonEnabled()
         }))
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
+        alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.cancel", comment: "button title for cancel")), style: .cancel, handler: { (action) in
             print("canceled")
             self.nextButton.isEnabled = self.nextButtonEnabled()
         }))

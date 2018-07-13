@@ -17,7 +17,7 @@ class MonitorCoordinator: Coordinator {
     override init() {
         monitorVC = MonitorViewController()
         self.rootViewController = UINavigationController(rootViewController: monitorVC)
-        self.rootViewController.tabBarItem = UITabBarItem(title: "Activities", image: UIImage(named: "tab_track"), tag: 2)
+        self.rootViewController.tabBarItem = UITabBarItem(title: String(NSLocalizedString("tabBar.activities", comment: "Activities tab name")), image: UIImage(named: "tab_track"), tag: 2)
     }
     
 }

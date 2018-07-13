@@ -202,7 +202,7 @@ class CreatePackageTagSearchViewController: UIViewController {
         
         textField = UITextField(frame: .zero)
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "Search tags"
+        textField.placeholder = String(NSLocalizedString("label.searchTags", comment: "label text for search tags"))
         textField.textColor = Theme().textColor
         textField.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         textField.returnKeyType = .done
@@ -212,7 +212,7 @@ class CreatePackageTagSearchViewController: UIViewController {
         textField.autocapitalizationType = .none
         textFieldContainer.addSubview(textField)
         
-        instructionLabel = MCPill(frame: .zero, character: "1", image: nil, body: "Tag Your Package", color: .white)
+        instructionLabel = MCPill(frame: .zero, character: "1", image: nil, body: String(NSLocalizedString("label.tagYourPackage", comment: "label text for tag your package")), color: .white)
         instructionLabel.bodyLabel.textColor = Theme().textColor
         instructionLabel.circleMask.backgroundColor = Theme().textColor
         instructionLabel.characterLabel.textColor = .white
@@ -265,9 +265,9 @@ extension CreatePackageTagSearchViewController: UITableViewDataSource {
             let resultItem = self.results[indexPath.row]
             let cell = tableView.dequeueReusableCell(withIdentifier: "tagResultItem") as! LargeTitleWithSubtitleTableViewCell
             cell.largeTitleLabel.text = "#\(resultItem.tag)"
-            let templatesCountString: String = resultItem.templatesCount == nil || resultItem.templatesCount == 0 ? "No templates" : "\(resultItem.templatesCount!) template\(resultItem.templatesCount! > 1 ? "s" : "")"
-            let packagesCountString: String = resultItem.packagesCount == nil || resultItem.packagesCount! == 0 ? "" : "\(resultItem.packagesCount!) package\(resultItem.packagesCount! > 1 ? "s" : "")."
-            cell.subtitleLabel.text = "\(templatesCountString). \(packagesCountString)"
+            let templatesCountString: String = resultItem.templatesCount == nil || resultItem.templatesCount == 0 ? "" : (resultItem.templatesCount! == 1 ? String(format: NSLocalizedString("label.templateCount", comment: "label text for singular template count"), resultItem.templatesCount!) : String(format: NSLocalizedString("label.templatesCount", comment: "label text for plural template count"), resultItem.templatesCount!))
+            let packagesCountString: String = resultItem.packagesCount == nil || resultItem.packagesCount! == 0 ? "" : (resultItem.packagesCount! == 1 ? String(format: NSLocalizedString("label.packageCount", comment: "label text for singular package count"), resultItem.packagesCount!) : String(format: NSLocalizedString("label.packagesCount", comment: "label text for plural packages count"), resultItem.packagesCount!))
+            cell.subtitleLabel.text = "\(templatesCountString)\(packagesCountString)"
             cell.subtitleLabel.textColor = Theme().textColor
             return cell
         } else {

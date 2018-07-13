@@ -240,7 +240,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
             circleText: nil,
             circleSubscript: nil,
             titleText: "\(timeLeftString)",
-            subtitleText: "Time Elapsed",
+            subtitleText: String(NSLocalizedString("label.timeElapsed", comment: "label text for time elapsed")),
             tint: getTintForCategory(category: self.package.categories.first!),
             actions: nil,
             type: .Time
@@ -251,7 +251,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
             circleText: nil,
             circleSubscript: nil,
             titleText: "\(response["credits_earned"] as! Double)",
-            subtitleText: "Earned Credits",
+            subtitleText: String(NSLocalizedString("label.creditsEarned", comment: "label text for credits earned")),
             tint: getTintForCategory(category: self.package.categories.first!),
             actions: nil,
             type: .Award
@@ -265,7 +265,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
                 circleText: nil,
                 circleSubscript: nil,
                 titleText: "\(response["delivery_bonus"] as! Double)",
-                subtitleText: "Delivery Bonus",
+                subtitleText: String(NSLocalizedString("label.deliveryBonus", comment: "label text for delivery bonus")),
                 tint: getTintForCategory(category: self.package.categories.first!),
                 actions: nil,
                 type: .Award
@@ -279,7 +279,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
             circleText: nil,
             circleSubscript: nil,
             titleText: "\(response["new_balance"] as! Double)",
-            subtitleText: "Total Credits",
+            subtitleText: String(NSLocalizedString("creditsTotal", comment: "label text for credits total")),
             tint: getTintForCategory(category: self.package.categories.first!),
             actions: nil,
             type: .Balance

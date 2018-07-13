@@ -16,7 +16,7 @@ class PickupAnnotation: NSObject, MKAnnotation {
     
     init(with transitRecord: TransitRecord) {
         self.transitRecord = transitRecord
-        self.title = "Pickup"
+        self.title = String(NSLocalizedString("annotation.pickup", comment: "title for pickup location annotation view"))
         self.coordinate = CLLocationCoordinate2D(latitude: transitRecord.pickupGeoPoint!.latitude, longitude: transitRecord.pickupGeoPoint!.longitude)
         
         super.init()

@@ -226,14 +226,14 @@ extension MonitorViewController: UITableViewDataSource {
                 cell.annotationView.circleMask.layer.borderColor = Theme().textColor.cgColor
             case .packageDropoff:
                 cell.annotationView.imageView.image = UIImage(named: "ActivityType--packageDropoff")
-                cell.annotationView.labelTextLabel.text = "Dropoff"
+                cell.annotationView.labelTextLabel.text = String(NSLocalizedString("annotation.dropoff", comment: "title for dropoff annotation view"))
                 cell.annotationView.imageView.tintColor = Theme().grayTextColor
                 cell.annotationView.imageView.backgroundColor = UIColor.white.withAlphaComponent(0.5)
                 cell.annotationView.labelContainer.backgroundColor = Theme().grayTextColor
                 cell.annotationView.circleMask.layer.borderColor = Theme().grayTextColor.cgColor
             case .packagePickup:
                 cell.annotationView.imageView.image = UIImage(named: "ActivityType--packagePickup")
-                cell.annotationView.labelTextLabel.text = "Pickup"
+                cell.annotationView.labelTextLabel.text = String(NSLocalizedString("annotation.pickup", comment: "title for pickup annotation view"))
                 cell.annotationView.imageView.tintColor = Theme().grayTextColor
                 cell.annotationView.imageView.backgroundColor = UIColor.white.withAlphaComponent(0.5)
                 cell.annotationView.labelContainer.backgroundColor = Theme().grayTextColor
@@ -288,9 +288,9 @@ extension MonitorViewController: UITableViewDataSource {
             timeTotalformatter.allowedUnits = [.day, .hour, .minute]
             
             
-            let destinationRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: destination.name ?? string(from: destination.geoPoint), subtitleText: "Destination", tint: Theme().textColor, actions: nil, type: .Destination)
-            let moversCountRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: "\(moversCount)", subtitleText: "Movers", tint: Theme().textColor, actions: nil, type: .PersonCount)
-            let distanceTotalRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: distanceTotalString, subtitleText: "Distance Total", tint: Theme().textColor, actions: nil, type: .Distance)
+            let destinationRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: destination.name ?? string(from: destination.geoPoint), subtitleText: String(NSLocalizedString("label.destination", comment: "label text for recipient annotation view")), tint: Theme().textColor, actions: nil, type: .Destination)
+            let moversCountRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: "\(moversCount)", subtitleText: String(NSLocalizedString("label.moversTotal", comment: "label text for movers total")), tint: Theme().textColor, actions: nil, type: .PersonCount)
+            let distanceTotalRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: distanceTotalString, subtitleText: String(NSLocalizedString("label.distanceTotal", comment: "label text for distance total")), tint: Theme().textColor, actions: nil, type: .Distance)
             return [destinationRow, moversCountRow, distanceTotalRow]
         case .pickup:
             print("configure pickup")
@@ -308,9 +308,9 @@ extension MonitorViewController: UITableViewDataSource {
             
             let distanceString = distanceFormatter.string(from: distanceMeasurement)
             
-            let recipientRow = LogisticsRow(circleImageUrl: recipient.photoUrl, circleText: nil, circleSubscript: nil, titleText: recipient.displayName, subtitleText: "Recipient", tint: Theme().textColor, actions: nil, type: .Person)
-            let destinationRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: destination.name ?? string(from: destination.geoPoint), subtitleText: "Destination", tint: Theme().textColor, actions: nil, type: .Destination)
-            let distanceRemainingRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: distanceString, subtitleText: "Distance Remaining", tint: Theme().textColor, actions: nil, type: .Directions)
+            let recipientRow = LogisticsRow(circleImageUrl: recipient.photoUrl, circleText: nil, circleSubscript: nil, titleText: recipient.displayName, subtitleText: String(NSLocalizedString("label.recipient", comment: "title label for recipient")), tint: Theme().textColor, actions: nil, type: .Person)
+            let destinationRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: destination.name ?? string(from: destination.geoPoint), subtitleText: String(NSLocalizedString("label.destination", comment: "label text for recipient annotation view")), tint: Theme().textColor, actions: nil, type: .Destination)
+            let distanceRemainingRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: distanceString, subtitleText: String(NSLocalizedString("label.distanceRemaining", comment: "label text for distance remaining")), tint: Theme().textColor, actions: nil, type: .Directions)
             return [recipientRow, destinationRow, distanceRemainingRow]
         case .dropoff:
             print("configure dropoff")
@@ -332,14 +332,14 @@ extension MonitorViewController: UITableViewDataSource {
             let timeFormatter = DateComponentsFormatter()
             timeFormatter.unitsStyle = .full
             timeFormatter.includesApproximationPhrase = false
-            timeFormatter.includesTimeRemainingPhrase = true
+            timeFormatter.includesTimeRemainingPhrase = false
             timeFormatter.allowedUnits = [.day, .hour, .minute]
             
-            let timeRemainingString = (dueDate.timeIntervalSince1970 - Date().timeIntervalSince1970) > 0 ? timeFormatter.string(from: dueDate.timeIntervalSince1970 - Date().timeIntervalSince1970)! : "Due"
+            let timeRemainingString = (dueDate.timeIntervalSince1970 - Date().timeIntervalSince1970) > 0 ? timeFormatter.string(from: dueDate.timeIntervalSince1970 - Date().timeIntervalSince1970)! : String(NSLocalizedString("label.due", comment: "label text for due"))
             
-            let recipientRow = LogisticsRow(circleImageUrl: recipient.photoUrl, circleText: nil, circleSubscript: nil, titleText: recipient.displayName, subtitleText: "Recipient", tint: Theme().textColor, actions: nil, type: .Person)
-            let distanceRemainingRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: distanceRemainingString, subtitleText: "Distance Remaining", tint: Theme().textColor, actions: nil, type: .Directions)
-            let timeRemainingRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: timeRemainingString, subtitleText: "Time Remaining", tint: Theme().textColor, actions: nil, type: .Time)
+            let recipientRow = LogisticsRow(circleImageUrl: recipient.photoUrl, circleText: nil, circleSubscript: nil, titleText: recipient.displayName, subtitleText: String(NSLocalizedString("label.recipient", comment: "title label for recipient")), tint: Theme().textColor, actions: nil, type: .Person)
+            let distanceRemainingRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: distanceRemainingString, subtitleText: String(NSLocalizedString("label.distanceRemaining", comment: "label text for distance remaining")), tint: Theme().textColor, actions: nil, type: .Directions)
+            let timeRemainingRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: timeRemainingString, subtitleText: String(NSLocalizedString("label.timeRemaining", comment: "label text for time remaining")), tint: Theme().textColor, actions: nil, type: .Time)
             return [recipientRow, distanceRemainingRow, timeRemainingRow]
         case .unknown:
             print("configure unknown")

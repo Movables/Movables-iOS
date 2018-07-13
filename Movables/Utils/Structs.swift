@@ -127,15 +127,15 @@ struct AccountActivity {
 func generateLabelTextForAccountActivity(accountActivity: AccountActivity) -> String {
     switch accountActivity.type {
     case .packageCreation:
-        return "You created \(accountActivity.objectName)."
+        return String(format: NSLocalizedString("copy.accountActivity.packageCreation", comment: "label text for package creation account activity"), accountActivity.objectName)
     case .packageDelivery:
-        return "You delivered \(accountActivity.objectName)."
+        return String(format: NSLocalizedString("copy.accountActivity.packageDelivery", comment: "label text for package delivery account activity"), accountActivity.objectName)
     case .packageDropoff:
-        return "You moved \(accountActivity.objectName)."
+        return String(format: NSLocalizedString("copy.accountActivity.packageDropoff", comment: "label text for package dropoff account activity"), accountActivity.objectName)
     case .templateUsage:
-        return "Your template was used: \(accountActivity.objectName)."
+        return String(format: NSLocalizedString("copy.accountActivity.templateUsage", comment: "label text for template usage account activity"), accountActivity.objectName)
     case .templateCreation:
-        return "You created a template for #\(accountActivity.objectName)."
+        return String(format: NSLocalizedString("copy.accountActivity.templateCreation", comment: "label text for template creation account activity"), accountActivity.objectName)
     default:
         return "unkwown activity"
     }
@@ -144,13 +144,13 @@ func generateLabelTextForAccountActivity(accountActivity: AccountActivity) -> St
 func generateLabelTextForPublicActivity(publicActivity: PublicActivity) -> String {
     switch publicActivity.type {
     case .packagePickup:
-        return "\(publicActivity.actorName) picked up \(publicActivity.objectName)."
+        return String(format: NSLocalizedString("copy.publicActivity.packagePickup", comment: "label text for package pickup public activity"), publicActivity.actorName, publicActivity.objectName)
     case .packageDelivery:
-        return "\(publicActivity.actorName) delivered \(publicActivity.objectName)."
+        return String(format: NSLocalizedString("copy.publicActivity.packageDelivery", comment: "label text for package delivery public activity"), publicActivity.actorName, publicActivity.objectName)
     case .packageDropoff:
-        return "\(publicActivity.actorName) dropped off \(publicActivity.objectName)."
+        return String(format: NSLocalizedString("copy.publicActivity.packageDropoff", comment: "label text for package dropoff public activity"), publicActivity.actorName, publicActivity.objectName)
     case .packageCreation:
-        return "\(publicActivity.actorName) created \(publicActivity.objectName)."
+        return String(format: NSLocalizedString("copy.publicActivity.packageCreation", comment: "label text for package creation public activity"), publicActivity.actorName, publicActivity.objectName)
     default:
         return "unkwown activity"
     }
@@ -203,22 +203,22 @@ enum CommunityType {
 func getStringForCommunityType(type: CommunityType) -> String {
     switch type {
     case .location:
-        return "Local"
+        return String(NSLocalizedString("label.conversationTypeLocal", comment: "label text for local conversation"))
     case .package:
-        return "Package"
+        return String(NSLocalizedString("label.conversationTypePackage", comment: "label text for package conversation"))
     default:
-        return "Private"
+        return String(NSLocalizedString("label.conversationTypePrivate", comment: "label text for private conversation"))
     }
 }
 
 func getDescriptionForCommunityType(type: CommunityType) -> String {
     switch type {
     case .location:
-        return "Converse with your local community. Choose from a list of legislative areas."
+        return String(NSLocalizedString("label.conversationTypeLocalDesc", comment: "label text for conversation type local description"))
     case .package:
-        return "Converse with those that have moved the same package as you."
+        return String(NSLocalizedString("label.conversationTypePackageDesc", comment: "label text for conversation type package description"))
     default:
-        return "Converse with a private group of your choosing."
+        return String(NSLocalizedString("label.conversationTypePrivateDesc", comment: "label text for conversation type private description"))
     }
 }
 
@@ -288,11 +288,11 @@ enum PackageStatus {
 func getReadableForStatusEnum(statusEnum: PackageStatus) -> String {
     switch statusEnum {
     case .pending:
-        return "Pending Pickup"
+        return String(NSLocalizedString("button.pending", comment: "button title for pending pickup"))
     case .transit:
-        return "In Transit"
+        return String(NSLocalizedString("button.inTransit", comment: "button title for in transit"))
     case .delivered:
-        return "Delivered"
+        return String(NSLocalizedString("button.delivered", comment: "button title for delivered"))
     case .draft:
         return "Draft"
     default:

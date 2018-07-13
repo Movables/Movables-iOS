@@ -14,7 +14,7 @@ class CurrentLocationAnnotation: NSObject, MKAnnotation {
     let coordinate: CLLocationCoordinate2D
     
     init(with coordinate: CLLocationCoordinate2D) {
-        self.title = "Current Location"
+        self.title = String(NSLocalizedString("annotation.currentLocation", comment: "title for current location annotation view"))
         self.coordinate = coordinate
         
         super.init()

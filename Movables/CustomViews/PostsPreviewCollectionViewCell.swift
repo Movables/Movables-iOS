@@ -153,7 +153,7 @@ class PostsPreviewCollectionViewCell: UICollectionViewCell {
                         postsStackView.addConstraint(NSLayoutConstraint(item: postContainerView, attribute: .width, relatedBy: .equal, toItem: postsStackView, attribute: .width, multiplier: 1, constant: 0)
                         )
                         
-                        let subtitleString = "\(post.createdAt.timeAgoSinceNow) by \(post.author.displayName)"
+                        let subtitleString = "\(post.author.displayName) . \(post.createdAt.timeAgoSinceNow)"
                         
                         let metaLabel = UILabel(frame: .zero)
                         metaLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -196,7 +196,7 @@ class PostsPreviewCollectionViewCell: UICollectionViewCell {
                     // show empty state
                     let emptyStateView = EmptyStateView(frame: .zero)
                     emptyStateView.translatesAutoresizingMaskIntoConstraints = false
-                    emptyStateView.actionButton.setTitle("Participate", for: .normal)
+                    emptyStateView.actionButton.setTitle(String(NSLocalizedString("button.participate", comment: "button title for participate action")), for: .normal)
                     self.emptyStateButton = emptyStateView.actionButton
                     postsStackView.addArrangedSubview(emptyStateView)
                     

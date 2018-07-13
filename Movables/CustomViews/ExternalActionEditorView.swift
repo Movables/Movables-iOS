@@ -37,21 +37,21 @@ class ExternalActionEditorView: UIView {
         descriptionTextView = UITextViewFixed(frame: .zero)
         descriptionTextView.translatesAutoresizingMaskIntoConstraints = false
         descriptionTextView.isScrollEnabled = false
-        descriptionTextView.placeholder = "Description"
+        descriptionTextView.placeholder = String(NSLocalizedString("label.description", comment: "label text for description"))
         descriptionTextView.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         descriptionTextView.textContainerInset = .zero
         containerView.addSubview(descriptionTextView)
         
         linkTextField = UITextField(frame: .zero)
         linkTextField.translatesAutoresizingMaskIntoConstraints = false
-        linkTextField.placeholder = "Link URL"
+        linkTextField.placeholder = String(NSLocalizedString("label.linkUrl", comment: "label text for link url"))
         linkTextField.autocapitalizationType = .none
         linkTextField.returnKeyType = .done
         containerView.addSubview(linkTextField)
         
         actionTypeButton = UIButton(frame: .zero)
         actionTypeButton.translatesAutoresizingMaskIntoConstraints = false
-        actionTypeButton.setTitle("Select Action Type", for: .normal)
+        actionTypeButton.setTitle(String(NSLocalizedString("button.selectActionType", comment: "button title for select action type")), for: .normal)
         actionTypeButton.setTitleColor(Theme().keyTint, for: .normal)
         actionTypeButton.setTitleColor(Theme().keyTintHighlightDark, for: .highlighted)
         containerView.addSubview(actionTypeButton)
@@ -63,7 +63,7 @@ class ExternalActionEditorView: UIView {
         
         removeActionButton = UIButton(frame: .zero)
         removeActionButton.translatesAutoresizingMaskIntoConstraints = false
-        removeActionButton.setTitle("Remove", for: .normal)
+        removeActionButton.setTitle(String(NSLocalizedString("button.remove", comment: "button title for remove")), for: .normal)
         removeActionButton.setTitleColor(Theme().keyTint, for: .normal)
         removeActionButton.setTitleColor(Theme().keyTintHighlightDark, for: .highlighted)
         containerView.addSubview(removeActionButton)

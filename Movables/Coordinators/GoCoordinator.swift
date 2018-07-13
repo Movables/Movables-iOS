@@ -18,7 +18,7 @@ class GoCoordinator: Coordinator {
     override init() {
         goVC = GoViewController()
         self.rootViewController = UINavigationController(rootViewController: goVC)
-        self.rootViewController.tabBarItem = UITabBarItem(title: "Move", image: UIImage(named: "tab_move"), tag: 1)
+        self.rootViewController.tabBarItem = UITabBarItem(title: String(NSLocalizedString("tabBar.move", comment: "Move tab name")), image: UIImage(named: "tab_move"), tag: 1)
     }
     
     func start() {

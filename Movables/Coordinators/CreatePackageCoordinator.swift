@@ -81,12 +81,12 @@ class CreatePackageCoordinator: Coordinator {
     
     func setContentAndPushToReview(promptTemplate: Bool, coverImageUrl: URL?) {
         if promptTemplate {
-            let alertController = UIAlertController(title: "Package Templates", message: "By saving the contents of your package as a template, others will be able to reuse your cover photo, headline, description, due date, and dropoff actions when they create packages with the #\(self.tagResultItem!.tag) tag.", preferredStyle: .actionSheet)
-            alertController.addAction(UIAlertAction(title: "Create Template", style: .default, handler: { (action) in
+            let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.packageTemplates", comment: "alert title for package templates")), message: String(format: NSLocalizedString("copy.alert.packageTemplateDesc", comment: "alert body label for package templates"), self.tagResultItem!.tag), preferredStyle: .actionSheet)
+            alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.createTemplate", comment: "button title for create template")), style: .default, handler: { (action) in
                 self.shouldSaveAsTemplate = true
                 self.pushToReview(coverImageUrl: coverImageUrl)
             }))
-            alertController.addAction(UIAlertAction(title: "Don't Create Template", style: .default, handler: { (action) in
+            alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.dontCreateTemplate", comment: "button title for dont create template")), style: .default, handler: { (action) in
                 self.shouldSaveAsTemplate = false
                 self.pushToReview(coverImageUrl: coverImageUrl)
             }))
@@ -126,8 +126,8 @@ class CreatePackageCoordinator: Coordinator {
             if userDoc != nil {
                 self.userDoc = userDoc
                 // self.userDoc is available
-                let alertController = UIAlertController(title: "Confirm Package Creation", message: "100 credits will be deducted from your account to create this package. After the deduction, you will have \(Int(self.userDoc!.privateProfile.timeBankBalance - 100)) credits in your account.", preferredStyle: .alert)
-                alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
+                let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.packageCreation", comment: "alert title for package creation")), message: String(format: NSLocalizedString("copy.alert.packageCreationDesc", comment: "alert body for packageCreation"), Int(self.userDoc!.privateProfile.timeBankBalance - 100)), preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.ok", comment: "button title for ok")), style: .default, handler: { (action) in
                     print("confirmed creation")
                     self.constructPackage(coverImageUrl: coverImageUrl, completion: { (success, packageData) in
                         if success {
@@ -154,7 +154,7 @@ class CreatePackageCoordinator: Coordinator {
                         }
                     })
                 }))
-                alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
+                alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.cancel", comment: "button title for cancel")), style: .cancel, handler: { (action) in
                     print("cancel creation")
                     completion(false)
                 }))

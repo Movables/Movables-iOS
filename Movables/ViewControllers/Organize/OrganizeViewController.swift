@@ -192,7 +192,7 @@ extension OrganizeViewController: UITableViewDataSource {
         let organizeTopic = self.organizeTopics![indexPath.row]
         
         cell.topicLabel.text = "#\(organizeTopic.tag)"
-        cell.packageCountLabel.text = "\(organizeTopic.packagesMoved.count) package\(organizeTopic.packagesMoved.count > 1 ? "s" : "") moved"
+        cell.packageCountLabel.text = String(format: NSLocalizedString(organizeTopic.packagesMoved.count == 1 ? "label.packageMoved" : "label.packagesMovedPlural", comment: "label text for packages moved"), organizeTopic.packagesMoved.count)
         cell.supplementLabel.text = "\(organizeTopic.unreadTotal)"
         cell.supplementLabelContainerView.backgroundColor = Theme().mapStampTint
         if organizeTopic.unreadTotal <= 0 {

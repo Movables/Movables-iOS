@@ -37,7 +37,7 @@ class MCEmptyStateCardView: UIView {
         titleLabel.font = UIFont.systemFont(ofSize: 26, weight: .semibold)
         titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 0
-        titleLabel.text = "Make it happen."
+        titleLabel.text = String(NSLocalizedString("copy.makeItHappen", comment: "Move tab empty state title"))
         cardView.addSubview(titleLabel)
         
         descriptionLabel = UILabel(frame: .zero)
@@ -45,12 +45,12 @@ class MCEmptyStateCardView: UIView {
         descriptionLabel.numberOfLines = 0
         descriptionLabel.textAlignment = .center
         descriptionLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
-        descriptionLabel.text = "Create a new package using templates others have created or create something new from scratch. Your call."
+        descriptionLabel.text = String(NSLocalizedString("copy.makeItHappenBody", comment: "Move tab empty state body"))
         cardView.addSubview(descriptionLabel)
         
         actionButton = UIButton(frame: .zero)
         actionButton.translatesAutoresizingMaskIntoConstraints = false
-        actionButton.setTitle("Create", for: .normal)
+        actionButton.setTitle(String(NSLocalizedString("button.create", comment: "Create button title")), for: .normal)
         actionButton.setTitleColor(.white, for: .normal)
         actionButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
         actionButton.setBackgroundColor(color: Theme().grayTextColor, forUIControlState: .normal)

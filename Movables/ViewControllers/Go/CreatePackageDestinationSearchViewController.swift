@@ -189,7 +189,7 @@ class CreatePackageDestinationSearchViewController: UIViewController {
         
         textField = UITextField(frame: .zero)
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "Search destinations"
+        textField.placeholder = String(NSLocalizedString("label.searchDestinations", comment: "label text for search destinations"))
         textField.textColor = Theme().textColor
         textField.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         textField.returnKeyType = .search
@@ -197,7 +197,7 @@ class CreatePackageDestinationSearchViewController: UIViewController {
         textField.clearButtonMode = .whileEditing
         textFieldContainer.addSubview(textField)
         
-        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.childViewControllers.count)", image: nil, body: "Set a Destination", color: .white)
+        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.childViewControllers.count)", image: nil, body: String(NSLocalizedString("label.setADestination", comment: "label text for set a destination")), color: .white)
         instructionLabel.bodyLabel.textColor = Theme().textColor
         instructionLabel.circleMask.backgroundColor = Theme().textColor
         instructionLabel.characterLabel.textColor = .white

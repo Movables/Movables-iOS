@@ -101,27 +101,27 @@ func getTintForPackageStatus(packageStatus: PackageStatus) -> UIColor {
 func getReadableStringForCategory(category: PackageCategory) -> String{
     switch category {
     case .animals:
-        return "Animals"
+        return String(NSLocalizedString("copy.category.animals", comment: "label text for category animals"))
     case .arts_culture_humanities:
-        return "Arts, Culture, Humanities"
+        return String(NSLocalizedString("copy.category.arts_culture_humanities", comment: "label text for category arts, culture and humanities"))
     case .community_development:
-        return "Community Development"
+        return String(NSLocalizedString("copy.category.community_development", comment: "label text for category community development"))
     case .education:
-        return "Education"
+        return String(NSLocalizedString("copy.category.education", comment: "label text for category education"))
     case .environment:
-        return "Environment"
+        return String(NSLocalizedString("copy.category.environment", comment: "label text for category environment"))
     case .health:
-        return "Health"
+        return String(NSLocalizedString("copy.category.health", comment: "label text for category health"))
     case .human_and_civil_rights:
-        return "Human and Civil Rights"
+        return String(NSLocalizedString("copy.category.human_and_civil_rights", comment: "label text for category human and civil rights"))
     case .human_services:
-        return "Human Services"
+        return String(NSLocalizedString("copy.category.human_services", comment: "label text for category human services"))
     case .international:
-        return "International"
+        return String(NSLocalizedString("copy.category.international", comment: "label text for category international"))
     case .research_and_public_policy:
-        return "Research and Public Policy"
+        return String(NSLocalizedString("copy.category.research_and_public_policy", comment: "label text for category research and public policy"))
     case .religion:
-        return "Religion"
+        return String(NSLocalizedString("copy.category.religion", comment: "label text for category religion"))
     default:
         return "Unknown"
     }

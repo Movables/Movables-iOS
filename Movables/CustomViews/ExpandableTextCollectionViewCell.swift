@@ -38,7 +38,7 @@ class ExpandableTextCollectionViewCell: UICollectionViewCell {
         
         button = UIButton(frame: .zero)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Read more", for: .normal)
+        button.setTitle(String(NSLocalizedString("button.readMore", comment: "button title for read more in expandable collection view cell")), for: .normal)
         button.setTitleColor(Theme().keyTint, for: .normal)
         button.setTitleColor(Theme().keyTint.withAlphaComponent(0.7), for: .highlighted)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 15)

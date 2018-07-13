@@ -178,18 +178,18 @@ extension CreatePackageTemplatesViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: "templateCard") as! TemplateCardTableViewCell
             let template = self.templates[indexPath.row]
             cell.headlineLabel.text = template.headline
-            cell.authorLabel.text = "Template by \(template.templateBy!.displayName)"
+            cell.authorLabel.text = String(format: NSLocalizedString("label.templateBy", comment: "label text for template by"), template.templateBy!.displayName)
             cell.descriptionLabel.text = template.description
             cell.recipientImageView.sd_setImage(with: URL(string: template.recipient.photoUrl!)) { (image, error, cacheType, url) in
                 print("loaded image")
             }
             cell.recipientLabel.text = template.recipient.displayName
             cell.destinationLabel.text = "\(template.destination.name!)"
-            cell.usageLabel.text = "Used in \(template.count?.packages ?? 0) package\(template.count?.packages != nil && template.count!.packages! > 1 ? "s" : "")"
+            cell.usageLabel.text = template.count?.packages == nil || template.count!.packages! > 1 ? String(format: NSLocalizedString("label.usedInPackagesPlural", comment: "label text for template usage count"), template.count?.packages ?? 0) : String(format: NSLocalizedString("label.usedInPackage", comment: "label text for singular template usage count"), template.count!.packages!)
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "buttonCell") as! ListViewButtonTableViewCell
-            cell.button.setTitle("Create My Own", for: .normal)
+            cell.button.setTitle(String(NSLocalizedString("button.createNewPackage", comment: "button title for create new package")), for: .normal)
             cell.button.addTarget(self, action: #selector(useCustom), for: .touchUpInside)
             return cell
         }

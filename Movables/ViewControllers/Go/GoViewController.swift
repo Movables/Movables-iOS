@@ -240,7 +240,7 @@ class GoViewController: UIViewController {
             self.goCardView.headlineLabel.text = self.currentPackage?.headline
             self.goCardView.pillView.bodyLabel.text = self.currentPackage?.tag.name
             self.goCardView.pillView.characterLabel.text = getEmojiForCategory(category: self.currentPackage!.categories.first!)
-            self.goCardView.countdownLabelView.keyLabel.text = "Time Remaining"
+            self.goCardView.countdownLabelView.keyLabel.text = String(NSLocalizedString("label.timeRemaining", comment: "label text for time remaining"))
             self.goCardView.countdownLabelView.valueLabel.setCountDownDate(targetDate: self.currentTransitRecord!.pickupDate!.add(1.hours) as NSDate)
             self.goCardView.countdownLabelView.valueLabel.start()
             self.goCardView.distanceLabelView.keyLabel.text = "Distance Left"

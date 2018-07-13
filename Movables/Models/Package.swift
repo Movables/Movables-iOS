@@ -1416,10 +1416,10 @@ func dropoffPackageWithRef(packageReference: DocumentReference, userReference: D
                 print(dropoffError)
                 var alertBody: String?
                 if dropoffError == .DropoffLocationNotCloserThanPickupLocation {
-                    alertBody = "You cannot dropoff at a location that's further away from the destination than where you picked up."
+                    alertBody = String(NSLocalizedString("copy.alert.unableToDropoffDesc", comment: "alert body for unable to dropoff"))
                 }
-                let alertController = UIAlertController(title: "Unable to Dropoff", message: alertBody, preferredStyle: .alert)
-                let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: { (action) in
+                let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.unableToDropoff", comment: "alert title for unable to dropoff")), message: alertBody, preferredStyle: .alert)
+                let cancelAction = UIAlertAction(title: String(NSLocalizedString("button.ok", comment: "button title for ok")), style: .cancel, handler: { (action) in
                     print("tapped ok")
                 })
                 alertController.addAction(cancelAction)

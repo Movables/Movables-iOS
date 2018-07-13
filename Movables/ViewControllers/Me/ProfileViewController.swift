@@ -134,7 +134,7 @@ extension ProfileViewController: UITableViewDataSource {
             cell.balanceLabel.text = "\(Int(userDoc!.privateProfile.timeBankBalance))"
             let dateFormatter = DateFormatter()
             dateFormatter.dateStyle = .long
-            cell.journeyLabel.text = "Since \(dateFormatter.string(from: userDoc!.publicProfile.createdDate))"
+            cell.journeyLabel.text = String(format: NSLocalizedString("label.sinceDate", comment: "label text for since date"), dateFormatter.string(from: userDoc!.publicProfile.createdDate))
             var interestsString: String = ""
             for interest in userDoc!.privateProfile.interests {
                interestsString += getEmojiForCategory(category: interest)
@@ -191,17 +191,17 @@ extension ProfileViewController: UITableViewDataSource {
     
     @objc private func didTapOnSettings(sender: UIButton) {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        alertController.addAction(UIAlertAction(title: "Notifications", style: .default, handler: { (action) in
+        alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.notifications", comment: "button title for notifications")), style: .default, handler: { (action) in
             print("go to notifications")
         }))
-        alertController.addAction(UIAlertAction(title: "Privacy Policy", style: .default, handler: { (action) in
+        alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.privacyPolicy", comment: "button title for privacy policy")), style: .default, handler: { (action) in
             print("go to privacy policy")
             self.navigationController?.present(SFSafariViewController(url: URL(string: "https://www.google.com")!), animated: true)
         }))
-        alertController.addAction(UIAlertAction(title: "Signout", style: .default, handler: { (action) in
+        alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.signout", comment: "button title for signout")), style: .default, handler: { (action) in
             print("signout")
-            let alertVC = UIAlertController(title: "Signout", message: "Are you sure you want to signout?", preferredStyle: .alert)
-            alertVC.addAction(UIAlertAction(title: "Signout", style: .default, handler: { (action) in
+            let alertVC = UIAlertController(title: String(NSLocalizedString("copy.alert.signout", comment: "alert body for signout")), message: nil, preferredStyle: .alert)
+            alertVC.addAction(UIAlertAction(title: String(NSLocalizedString("button.signout", comment: "button title for signout")), style: .default, handler: { (action) in
                 do {
                     try Auth.auth().signOut()
                     GIDSignIn.sharedInstance().signOut()
@@ -211,14 +211,14 @@ extension ProfileViewController: UITableViewDataSource {
                     self.mainCoordinatorDelegate?.coordinatorDidSignout(coordinator: self.mainCoordinator!)
                 } catch let error { print(error) }
             }))
-            alertVC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
+            alertVC.addAction(UIAlertAction(title: String(NSLocalizedString("button.cancel", comment: "button title for cancel")), style: .cancel, handler: { (action) in
                 print("canceled signout")
             }))
             self.present(alertVC, animated: true) {
                 print("presented signout prompt")
             }
         }))
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
+        alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.cancel", comment: "button title for cancel")), style: .cancel, handler: { (action) in
             print("cancel")
         }))
 

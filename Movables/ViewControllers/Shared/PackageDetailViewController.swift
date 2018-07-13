@@ -130,7 +130,7 @@ class PackageDetailViewController: UIViewController {
         
         followButton = UIButton(frame: .zero)
         followButton.translatesAutoresizingMaskIntoConstraints = false
-        followButton.setTitle("Loading", for: .normal)
+        followButton.setTitle(String(NSLocalizedString("button.loading", comment: "button title for loading state")), for: .normal)
         followButton.setTitle("", for: .disabled)
         followButton.setTitleColor(.white, for: .normal)
         followButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
@@ -150,7 +150,7 @@ class PackageDetailViewController: UIViewController {
         
         packageActionButton = UIButton(frame: .zero)
         packageActionButton.translatesAutoresizingMaskIntoConstraints = false
-        packageActionButton.setTitle("Loading", for: .normal)
+        packageActionButton.setTitle(String(NSLocalizedString("button.loading", comment: "button title for loading state")), for: .normal)
         packageActionButton.setTitle("", for: .disabled)
         packageActionButton.setTitleColor(.white, for: .normal)
         packageActionButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
@@ -236,7 +236,6 @@ class PackageDetailViewController: UIViewController {
         fetchPackage(with: self.packageDocumentId)
         fetchPosts()
         listenForFollowStatus()
-        
     }
     
     private func checkAlreadyMoving() {
@@ -290,10 +289,10 @@ class PackageDetailViewController: UIViewController {
             self.followButtonActivityIndicatorView.stopAnimating()
             if self.checkUserIsFollowingPackage() {
                 print("is following")
-                self.followButton.setTitle("Tracking", for: .normal)
+                self.followButton.setTitle(String(NSLocalizedString("button.tracking", comment: "button title for Following")), for: .normal)
             } else {
                 print("is not following")
-                self.followButton.setTitle("Track", for: .normal)
+                self.followButton.setTitle(String(NSLocalizedString("button.track", comment: "button title for Follow")), for: .normal)
             }
             self.followButton.isEnabled = true
         }
@@ -434,9 +433,9 @@ extension PackageDetailViewController: UICollectionViewDataSource {
             if item == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "headerLabelCell", for: indexPath) as! HeaderLabelCollectionViewCell
                 if self.package!.templateBy != nil {
-                cell.label.text = "Template by \(self.package!.templateBy!.displayName)"
+                    cell.label.text = String(format: NSLocalizedString("label.templateBy", comment: "label text for template by"), self.package!.templateBy!.displayName)
                 } else {
-                    cell.label.text = "By \(self.package!.sender.displayName)"
+                    cell.label.text = String(format: NSLocalizedString("label.by", comment: "label text for authored by") , self.package!.sender.displayName)
                 }
                 return cell
             }
@@ -508,7 +507,7 @@ extension PackageDetailViewController: UICollectionViewDataSource {
                 return cell
             } else if item == 3 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "headerLabelCell", for: indexPath) as! HeaderLabelCollectionViewCell
-                cell.label.text = "Conversation"
+                cell.label.text = String(NSLocalizedString("headerCollectionCell.conversation", comment: "collection view cell title for Conversation"))
                 return cell
             } else if item == 4{
                 // posts stack with view more button
@@ -638,7 +637,7 @@ extension PackageDetailViewController: UICollectionViewDataSource {
             circleText: nil,
             circleSubscript: nil,
             titleText: package.recipient.displayName,
-            subtitleText: "Recipient",
+            subtitleText: String(NSLocalizedString("label.recipient", comment: "label title for recipient")),
             tint: getTintForCategory(category: package.categories.first!),
             actions: recipientActions,
             type: .Person
@@ -650,18 +649,18 @@ extension PackageDetailViewController: UICollectionViewDataSource {
         let timeLeftformatter = DateComponentsFormatter()
         timeLeftformatter.unitsStyle = .full
         timeLeftformatter.includesApproximationPhrase = false
-        timeLeftformatter.includesTimeRemainingPhrase = true
+        timeLeftformatter.includesTimeRemainingPhrase = false
         timeLeftformatter.allowedUnits = [.day, .hour, .minute]
         
         // Use the configured formatter to generate the string.
-        let timeLeftString = packagePreview.timeLeft > 0 ? timeLeftformatter.string(from: packagePreview.timeLeft)! : "Past due"
+        let timeLeftString = packagePreview.timeLeft > 0 ? timeLeftformatter.string(from: packagePreview.timeLeft)! : String(NSLocalizedString("label.pastDue", comment: "label title for package past due state"))
 
         let timeRow = LogisticsRow(
             circleImageUrl: nil,
             circleText: nil,
             circleSubscript: nil,
             titleText: "\(timeLeftString)",
-            subtitleText: "Time",
+            subtitleText: String(NSLocalizedString("label.time", comment: "label title for time")),
             tint: getTintForCategory(category: package.categories.first!),
             actions: nil,
             type: .Time
@@ -689,8 +688,8 @@ extension PackageDetailViewController: UICollectionViewDataSource {
             circleImageUrl: nil,
             circleText: nil,
             circleSubscript: nil,
-            titleText: packagePreview.packageStatus != .delivered ? "\(distanceLeftString) / \(totalDistanceLeftString)" : "Delivered",
-            subtitleText: "Distance",
+            titleText: packagePreview.packageStatus != .delivered ? "\(distanceLeftString) / \(totalDistanceLeftString)" : String(NSLocalizedString("label.delivered", comment: "label text for delivered")),
+            subtitleText: String(NSLocalizedString("label.distance", comment: "label title for distance")),
             tint: getTintForCategory(category: package.categories.first!),
             actions: nil,
             type: .Directions
@@ -703,7 +702,7 @@ extension PackageDetailViewController: UICollectionViewDataSource {
             circleText: nil,
             circleSubscript: nil,
             titleText: package.sender.displayName,
-            subtitleText: "Sender",
+            subtitleText: String(NSLocalizedString("label.sender", comment: "label title for sender")),
             tint: getTintForCategory(category: package.categories.first!),
             actions: nil,
             type: .Person
@@ -844,7 +843,7 @@ extension PackageDetailViewController: CLLocationManagerDelegate {
                         }
                     } else {
                         // if current location is not available
-                        self.packageActionButton.setTitle("Loading", for: .disabled)
+                        self.packageActionButton.setTitle(String(NSLocalizedString("button.loading", comment: "button title for loading status")), for: .disabled)
                         applyDisabledStyleToButton(button: self.packageActionButton)
                         self.packageActionButton.setBackgroundColor(color: .white, forUIControlState: .disabled)
                     }
@@ -852,7 +851,7 @@ extension PackageDetailViewController: CLLocationManagerDelegate {
                     // current user is not moving the package
                     if location != nil && self.package!.status != .transit && self.package!.status != .delivered && self.packageAlreadyMovedByCurrentUser() {
                         // if package is in not in transit and the package had already been moved by current user
-                        self.packageActionButton.setTitle("Moved", for: .disabled)
+                        self.packageActionButton.setTitle(String(NSLocalizedString("button.moved", comment: "button title for moved status")), for: .disabled)
                         applyDisabledStyleToButton(button: self.packageActionButton)
                         self.packageActionButton.setBackgroundColor(color: .white, forUIControlState: .disabled)
                     } else if self.package!.status == .transit {
@@ -868,7 +867,7 @@ extension PackageDetailViewController: CLLocationManagerDelegate {
                                 let distanceFromPickup = location!.distance(from: CLLocation(latitude: self.package!.currentLocation.coordinate.latitude, longitude: self.package!.currentLocation.coordinate.longitude))
                                 if distanceFromPickup < self.ACTIONABLE_DISTANCE  {
                                     // if current location is with actionable distance from package location
-                                    self.packageActionButton.setTitle("Pickup", for: .normal)
+                                    self.packageActionButton.setTitle(String(NSLocalizedString("button.pickup", comment: "button title for pickup")), for: .normal)
                                     applyEnabledStyleToButton(button: self.packageActionButton, withTint: self.categoryTint!)
                                 } else if distanceFromPickup >= self.ACTIONABLE_DISTANCE {
                                     if distanceFromPickup > self.TOO_FAR_DISTANCE {
@@ -879,7 +878,7 @@ extension PackageDetailViewController: CLLocationManagerDelegate {
 
                                     } else {
                                         let distanceLeftString = self.buttonDistanceLeftformatter.string(from: Measurement(value: distanceFromPickup, unit: UnitLength.meters))
-                                        self.packageActionButton.setTitle("Pickup \(distanceLeftString) away", for: .disabled)
+                                        self.packageActionButton.setTitle(String(format: NSLocalizedString("button.pickupAway", comment: "button title for pickup some distance away"), distanceLeftString), for: .disabled)
                                         applyDisabledStyleToButton(button: self.packageActionButton)
                                         self.packageActionButton.setBackgroundColor(color: .white, forUIControlState: .disabled)
 
@@ -887,7 +886,7 @@ extension PackageDetailViewController: CLLocationManagerDelegate {
                                 } else {
                                     // if current location is outside actionable distance from package location
                                     let distanceLeftString = self.buttonDistanceLeftformatter.string(from: Measurement(value: distanceFromPickup, unit: UnitLength.meters))
-                                    self.packageActionButton.setTitle("Pickup \(distanceLeftString) away", for: .disabled)
+                                    self.packageActionButton.setTitle(String(format: NSLocalizedString("button.pickupAway", comment: "button title for pickup some distance away"), distanceLeftString), for: .disabled)
                                     applyDisabledStyleToButton(button: self.packageActionButton)
                                     self.packageActionButton.setBackgroundColor(color: .white, forUIControlState: .disabled)
 
@@ -900,14 +899,14 @@ extension PackageDetailViewController: CLLocationManagerDelegate {
                             }
                         } else {
                             // if current location is unavailable
-                            self.packageActionButton.setTitle("Loading", for: .disabled)
+                            self.packageActionButton.setTitle(String(NSLocalizedString("button.loading", comment: "button title for loading status")), for: .disabled)
                             applyDisabledStyleToButton(button: self.packageActionButton)
                             self.packageActionButton.setBackgroundColor(color: .white, forUIControlState: .disabled)
 
                         }
                     } else if self.package!.status == .delivered {
                         // if package status is delivered
-                        self.packageActionButton.setTitle("Delivered", for: .disabled)
+                        self.packageActionButton.setTitle(String(NSLocalizedString("button.delivered", comment: "button title for package delivered")), for: .disabled)
                         applyDisabledStyleToButton(button: self.packageActionButton)
                         self.packageActionButton.setBackgroundColor(color: .white, forUIControlState: .disabled)
 
@@ -920,7 +919,7 @@ extension PackageDetailViewController: CLLocationManagerDelegate {
                     }
                 }
             } else {
-                self.packageActionButton.setTitle("Loading", for: .disabled)
+                self.packageActionButton.setTitle(String(NSLocalizedString("button.loading", comment: "button title for loading status")), for: .disabled)
                 applyDisabledStyleToButton(button: self.packageActionButton)
                 self.packageActionButton.setBackgroundColor(color: .white, forUIControlState: .disabled)
                 // if current location is unavailable

@@ -93,7 +93,7 @@ class MCDiscoveryCardCollectionViewCell: UICollectionViewCell {
         timeLeftformatter.allowedUnits = [.day, .hour, .minute]
         
         // Use the configured formatter to generate the string.
-        let timeLeftString = packagePreview.timeLeft > 0 ? timeLeftformatter.string(from: packagePreview.timeLeft) : "Past due"
+        let timeLeftString = packagePreview.timeLeft > 0 ? timeLeftformatter.string(from: packagePreview.timeLeft) : String(NSLocalizedString("label.pastDue", comment: "status label for past due status"))
 
         
         let distanceLeftformatter = MeasurementFormatter()
@@ -109,11 +109,11 @@ class MCDiscoveryCardCollectionViewCell: UICollectionViewCell {
         tagPillView.characterLabel.text = getEmojiForCategory(category: packagePreview.categories.first!)
         headlineLabel.text = packagePreview.headline
         headlineLabel.restartLabel()
-        toLabelView.keyLabel.text = "To"
-        fromLabelView.keyLabel.text = packagePreview.destination != nil ? "Destination" : "From"
+        toLabelView.keyLabel.text = String(NSLocalizedString("label.recipient", comment: "label title for recipient label"))
+        fromLabelView.keyLabel.text = packagePreview.destination != nil ? String(NSLocalizedString("label.destination", comment: "label title for destination label")) : String(NSLocalizedString("label.sender", comment: "label title for sender label"))
         toLabelView.valueLabel.text = packagePreview.recipientName
         fromLabelView.valueLabel.text = packagePreview.destination != nil ? packagePreview.destination!.name ?? string(from: packagePreview.destination!.geoPoint) : "\(packagePreview.moversCount) of us"
-        toGoLabel.text = packagePreview.packageStatus != .delivered ? "\(distanceLeftString) left / \(timeLeftString!)" : "Delivered"
+        toGoLabel.text = packagePreview.packageStatus != .delivered ? "\(distanceLeftString) / \(timeLeftString!)" : String(NSLocalizedString("label.delivered", comment: "label title for package delivered status"))
         infoStackView.addArrangedSubview(toLabelView)
         infoStackView.addArrangedSubview(fromLabelView)
         infoStackView.addArrangedSubview(toGoLabel)

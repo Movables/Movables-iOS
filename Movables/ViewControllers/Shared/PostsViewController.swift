@@ -31,7 +31,8 @@ class PostsViewController: SLKTextViewController {
         
         navigationController?.setNavigationBarHidden(false, animated: false)
         
-        title = "Conversation"
+        title = String(NSLocalizedString("navBar.conversation", comment: "navigation bar title for conversation"))
+        
         collectionView?.dataSource = self
         collectionView?.delegate = self
         collectionView?.alwaysBounceVertical = true
@@ -51,10 +52,10 @@ class PostsViewController: SLKTextViewController {
         self.navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
         self.navigationController?.navigationBar.shadowImage = nil
         
-        textInputbar.rightButton.setTitle("Send", for: .normal)
+        textInputbar.rightButton.setTitle(String(NSLocalizedString("button.send", comment: "button title for send")), for: .normal)
         textInputbar.autoHideRightButton = false
         textInputbar.isTranslucent = false
-        textInputbar.textView.placeholder = "Say something..."
+        textInputbar.textView.placeholder = String(NSLocalizedString("label.saySomething", comment: "label text for say something"))
         
         let moreButton = UIBarButtonItem(image: UIImage(named: "round_more_black_24pt"), style: .plain, target: self, action: #selector(didTapMoreButton(sender:)))
         navigationItem.rightBarButtonItem = moreButton
