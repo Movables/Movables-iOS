@@ -120,8 +120,6 @@ class MoveViewController: UIViewController {
         navigationItem.title = "Go"
         navigationController?.setNavigationBarHidden(true, animated: false)
         
-        LocationManager.shared.startUpdatingHeading()
-        LocationManager.shared.startUpdatingLocation()
         LocationManager.shared.delegate = self
         LocationManager.shared.activityType = .fitness
         
@@ -231,8 +229,13 @@ class MoveViewController: UIViewController {
         self.currentPackageListener = userDocument?.privateProfile.currentPackage?.addSnapshotListener({ (documentSnapshot, error) in
             guard let snapshot = documentSnapshot else {
                 print("error fetching document: \(error!)")
+                LocationManager.shared.stopUpdatingHeading()
+                LocationManager.shared.stopUpdatingLocation()
                 return
             }
+            LocationManager.shared.requestLocation()
+            LocationManager.shared.startUpdatingHeading()
+            LocationManager.shared.startUpdatingLocation()
             if self.currentPackage != nil {
                 let snapshotPackage = Package(snapshot: snapshot)
                 if snapshotPackage == self.currentPackage! {
@@ -370,7 +373,9 @@ extension MoveViewController: CLLocationManagerDelegate {
         return region
     }
     
-
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("did fail with error: \(error)")
+    }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if !locations.isEmpty {

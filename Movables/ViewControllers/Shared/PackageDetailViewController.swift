@@ -267,6 +267,7 @@ class PackageDetailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        LocationManager.shared.requestLocation()
         navigationController?.setNavigationBarHidden(false, animated: false)
         if collectionView.contentOffset.y > (50 + UIApplication.shared.keyWindow!.safeAreaInsets.top)  && navBarIsTransparent == true {
             self.updateNavigationBarAppearance(withTransparency: false)
@@ -634,7 +635,6 @@ extension PackageDetailViewController: UICollectionViewDataSource {
             } else {
                 self.transitRecords = newTransitRecords
             }
-            LocationManager.shared.requestLocation()
             self.setupFAB()
             LocationManager.shared.startUpdatingLocation()
         })

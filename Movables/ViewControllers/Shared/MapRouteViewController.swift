@@ -45,10 +45,16 @@ class MapRouteViewController: UIViewController {
 
         navigationController?.setNavigationBarHidden(true, animated: false)
         
+        setupLocationManager()
         setupMapView()
         setupFAB()
         activateMapView()
         activateMapTransitRecords()
+    }
+    
+    private func setupLocationManager() {
+        LocationManager.shared.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+        LocationManager.shared.requestLocation()
     }
     
     private func setupMapView() {

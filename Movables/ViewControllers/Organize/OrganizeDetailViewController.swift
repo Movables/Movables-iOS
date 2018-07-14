@@ -92,13 +92,15 @@ class OrganizeDetailViewController: UIViewController {
         addButton.isEnabled = false
         navigationItem.rightBarButtonItem = addButton
         
+        LocationManager.shared.desiredAccuracy = kCLLocationAccuracyHundredMeters
+
         setupTableView()
         fetchTopicDetail()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+    
         if let indexPath = tableView.indexPathForSelectedRow {
             tableView.deselectRow(at: indexPath, animated: true)
         }
@@ -144,6 +146,7 @@ class OrganizeDetailViewController: UIViewController {
     }
     
     func loadNearByConversations() {
+        LocationManager.shared.requestLocation()
         let geoCoder = CLGeocoder()
         geoCoder.reverseGeocodeLocation(LocationManager.shared.location!) { (placemarks, error) in
             if let error = error {

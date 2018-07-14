@@ -28,6 +28,7 @@ import Foundation
 import Firebase
 import UIKit
 import SafariServices
+import CoreLocation
 
 class CreatePackageCoordinator: Coordinator {
     let rootViewController: UIViewController
@@ -53,6 +54,7 @@ class CreatePackageCoordinator: Coordinator {
         self.rootViewController = rootViewController
         self.tagSearchVC = CreatePackageTagSearchViewController()
         self.navigationController = UINavigationController(rootViewController: self.tagSearchVC)
+        LocationManager.shared.desiredAccuracy = kCLLocationAccuracyBestForNavigation
     }
     
     func start() {
@@ -121,6 +123,8 @@ class CreatePackageCoordinator: Coordinator {
     private func pushToReview(coverImageUrl: URL?) {
         let reviewVC = CreatePackageReviewViewController()
         
+        LocationManager.shared.requestLocation()
+        
         if coverImageUrl != nil {
             reviewVC.coverImageUrl = coverImageUrl!
         } else {
@@ -183,31 +187,12 @@ class CreatePackageCoordinator: Coordinator {
                 completion(false)
             }
         })
-        
-        // save cover photo first
-        
-        // process tagResultItem -> PackageTag
-        // -- handle the case of templatesCount nil AND packagesCount nil
-        // -- -- create tag with placeholder reference
-        // -- handle the case of templatesCount not nil AND packagesCount not nil
-        // -- -- fetch tag with reference
-        
-        // check category != nil
-        
-        // process recipientResultItem -> Person
-        
-        // save package and package template transaction
-        
-        // batch -- add package
-        
-        // transaction
-        // -- save package with in_transit_by
-        // -- update private_profile.current_package in user document
     }
     
     func constructPackage(coverImageUrl: URL?, completion: @escaping (Bool, [String: Any]) -> ()) {
         var packageData: [String: Any] = [:]
         
+        LocationManager.shared.requestLocation()
         let location = LocationManager.shared.location
         packageData["_geoloc"] = GeoPoint(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
         
@@ -337,6 +322,9 @@ class CreatePackageCoordinator: Coordinator {
         let db = Firestore.firestore()
         var newPackageRef: DocumentReference?
         var topicTemplateRef: DocumentReference?
+        
+        LocationManager.shared.requestLocation()
+        
         db.runTransaction({ (transaction, errorPointer) -> Any? in
             let userReference: DocumentReference = db.collection("users").document(Auth.auth().currentUser!.uid)
             // -- save package with in_transit_by

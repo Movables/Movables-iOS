@@ -247,6 +247,8 @@ class CreatePackageDestinationSearchViewController: UIViewController {
     
     func performSearch(with text:String) {
         print("begin search")
+        LocationManager.shared.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        LocationManager.shared.requestLocation()
         let request = MKLocalSearchRequest()
         request.naturalLanguageQuery = text
         request.region = MKCoordinateRegionMakeWithDistance(LocationManager.shared.location!.coordinate, 100000, 100000)
