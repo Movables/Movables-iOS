@@ -189,6 +189,10 @@ class DeliveryLogisticsCollectionViewCell: UICollectionViewCell {
                     boundingRect = route.polyline.boundingMapRect
                 }
             }
+            
+            LocationManager.shared.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+            LocationManager.shared.requestLocation()
+            
             let coordinates = [LocationManager.shared.location!.coordinate, currentLocation.coordinate, recipient.coordinate]
             let mapPoints = coordinates.map { MKMapPointForCoordinate($0) }
             let mapRects = mapPoints.map { MKMapRect(origin: $0, size: MKMapSize(width: 1, height: 1)) }

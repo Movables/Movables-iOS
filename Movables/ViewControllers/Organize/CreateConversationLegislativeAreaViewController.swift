@@ -152,6 +152,8 @@ class CreateConversationLegislativeAreaViewController: UIViewController {
     }
     
     func fetchAddressInfo() {
+        LocationManager.shared.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        LocationManager.shared.requestLocation()
         let location = LocationManager.shared.location
         let geoCoder = CLGeocoder()
         geoCoder.reverseGeocodeLocation(location!) { (placemarks, error) in
