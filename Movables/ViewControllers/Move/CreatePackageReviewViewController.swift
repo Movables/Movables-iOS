@@ -36,8 +36,8 @@ class CreatePackageReviewViewController: UIViewController {
     
     var backButtonBaseView: UIView!
     var backButton: UIButton!
-    var navigateButtonBaseView: UIView!
-    var navigateButton: UIButton!
+    var createButtonBaseView: UIView!
+    var createButton: UIButton!
     
     var collectionView: UICollectionView!
     var deliveryRouteDrawn: Bool = false
@@ -151,39 +151,39 @@ class CreatePackageReviewViewController: UIViewController {
         let backVConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|[backButton(50)]|", options: .alignAllTrailing, metrics: nil, views: ["backButton": backButton])
         backButtonBaseView.addConstraints(backVConstraints)
         
-        navigateButtonBaseView = UIView(frame: .zero)
-        navigateButtonBaseView.translatesAutoresizingMaskIntoConstraints = false
-        navigateButtonBaseView.layer.shadowColor = UIColor.black.cgColor
-        navigateButtonBaseView.layer.shadowOpacity = 0.3
-        navigateButtonBaseView.layer.shadowRadius = 14
-        navigateButtonBaseView.layer.shadowOffset = CGSize(width: 0, height: 0)
-        view.addSubview(navigateButtonBaseView)
+        createButtonBaseView = UIView(frame: .zero)
+        createButtonBaseView.translatesAutoresizingMaskIntoConstraints = false
+        createButtonBaseView.layer.shadowColor = UIColor.black.cgColor
+        createButtonBaseView.layer.shadowOpacity = 0.3
+        createButtonBaseView.layer.shadowRadius = 14
+        createButtonBaseView.layer.shadowOffset = CGSize(width: 0, height: 0)
+        view.addSubview(createButtonBaseView)
         
-        navigateButton = UIButton(frame: .zero)
-        navigateButton.translatesAutoresizingMaskIntoConstraints = false
-        navigateButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        navigateButton.setTitle(String(NSLocalizedString("button.create", comment: "button title for Create")), for: .normal)
-        navigateButton.setTitleColor(.white, for: .normal)
-        navigateButton.tintColor = .white
-        navigateButton.setBackgroundColor(color: getTintForCategory(category: createPackageCoordinator.category!), forUIControlState: .normal)
-        navigateButton.setBackgroundColor(color: getTintForCategory(category: createPackageCoordinator.category!).withAlphaComponent(0.85), forUIControlState: .highlighted)
-        navigateButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        navigateButton.layer.cornerRadius = 25
-        navigateButton.clipsToBounds = true
-        navigateButton.addTarget(self, action: #selector(didTapNavigateButton(sender:)), for: .touchUpInside)
-        navigateButtonBaseView.addSubview(navigateButton)
+        createButton = UIButton(frame: .zero)
+        createButton.translatesAutoresizingMaskIntoConstraints = false
+        createButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        createButton.setTitle(String(NSLocalizedString("button.create", comment: "button title for Create")), for: .normal)
+        createButton.setTitleColor(.white, for: .normal)
+        createButton.tintColor = .white
+        createButton.setBackgroundColor(color: getTintForCategory(category: createPackageCoordinator.category!), forUIControlState: .normal)
+        createButton.setBackgroundColor(color: getTintForCategory(category: createPackageCoordinator.category!).withAlphaComponent(0.85), forUIControlState: .highlighted)
+        createButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        createButton.layer.cornerRadius = 25
+        createButton.clipsToBounds = true
+        createButton.addTarget(self, action: #selector(didTapNavigateButton(sender:)), for: .touchUpInside)
+        createButtonBaseView.addSubview(createButton)
         
-        let nextHConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[navigateButton]|", options: .directionLeadingToTrailing, metrics: nil, views: ["navigateButton": navigateButton])
-        navigateButtonBaseView.addConstraints(nextHConstraints)
-        let nextVConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|[navigateButton(50)]|", options: .alignAllTrailing, metrics: nil, views: ["navigateButton": navigateButton])
-        navigateButtonBaseView.addConstraints(nextVConstraints)
+        let nextHConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[createButton]|", options: .directionLeadingToTrailing, metrics: nil, views: ["createButton": createButton])
+        createButtonBaseView.addConstraints(nextHConstraints)
+        let nextVConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|[createButton(50)]|", options: .alignAllTrailing, metrics: nil, views: ["createButton": createButton])
+        createButtonBaseView.addConstraints(nextVConstraints)
         
         
         NSLayoutConstraint.activate([
             backButtonBaseView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 18),
             backButtonBaseView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -(UIDevice.isIphoneX ? 0 : 18)),
-            navigateButtonBaseView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -18),
-            navigateButtonBaseView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -(UIDevice.isIphoneX ? 0 : 18)),
+            createButtonBaseView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -18),
+            createButtonBaseView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -(UIDevice.isIphoneX ? 0 : 18)),
             ])
 
     }

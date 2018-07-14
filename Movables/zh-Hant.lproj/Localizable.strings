@@ -46,6 +46,7 @@
 "button.dontCreateTemplate" = "不製作範本";
 "button.view" = "檢視";
 "button.create" = "製作議題包";
+"button.preview" = "預覽議題包";
 "button.readMore" = "閱讀更多";
 "annotation.pickup" = "撿取地點";
 "annotation.dropoff" = "放置地點";
