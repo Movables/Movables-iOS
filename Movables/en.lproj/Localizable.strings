@@ -64,6 +64,7 @@
 "button.dontCreateTemplate" = "Don't Create Template";
 "button.view" = "View";
 "button.create" = "Create";
+"button.preview" = "Preview";
 "button.readMore" = "Read more";
 "annotation.pickup" = "Pickup";
 "annotation.dropoff" = "Dropoff";
@@ -118,7 +119,7 @@
 "label.timeRemaining" = "Time Remaining";
 "label.due" = "Due";
 "label.headline" = "Headline";
-"label.description" = "sDescription";
+"label.description" = "Description";
 "label.message" = "Message";
 "label.linkUrl" = "Link URL";
 "label.coverPhoto" = "Cover Photo";

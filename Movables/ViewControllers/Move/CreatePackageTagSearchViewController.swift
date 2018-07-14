@@ -41,9 +41,9 @@ struct PackageTagResultItem {
 }
 
 class CreatePackageTagSearchViewController: UIViewController {
-
-    let CONTENT_INSET_TOP: CGFloat = UIApplication.shared.keyWindow!.safeAreaInsets.top + 39.5 + 12
-    let CONTENT_INSET_BOTTOM: CGFloat = UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 30 + (UIDevice.isIphoneX ? 10 : 28)
+    
+    let CONTENT_INSET_TOP: CGFloat = UIApplication.shared.keyWindow!.safeAreaInsets.top != 0 ? UIApplication.shared.keyWindow!.safeAreaInsets.top + 39.5 + 12 : 45.5 + 39.5 + 12
+    let CONTENT_INSET_BOTTOM: CGFloat = UIApplication.shared.keyWindow!.safeAreaInsets.bottom != 0 ? UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 30 + 10 : 34 + 30 + 28
     
     var createPackageCoordinator: CreatePackageCoordinator!
     var tag: PackageTag?
@@ -70,7 +70,7 @@ class CreatePackageTagSearchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        print("top safe: \(UIApplication.shared.keyWindow!.safeAreaInsets.top)")
+        print("bottom safe: \(UIApplication.shared.keyWindow!.safeAreaInsets.bottom)")
         
         navigationController?.setNavigationBarHidden(true, animated: false)
         

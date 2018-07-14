@@ -30,9 +30,9 @@ import CropViewController
 
 class CreatePackageContentViewController: UIViewController {
 
-    let CONTENT_INSET_TOP: CGFloat = UIApplication.shared.keyWindow!.safeAreaInsets.top + 20
-    let CONTENT_INSET_BOTTOM: CGFloat = UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 30 + (UIDevice.isIphoneX ? 10 : 28)
-    
+    let CONTENT_INSET_TOP: CGFloat = UIApplication.shared.keyWindow!.safeAreaInsets.top != 0 ? UIApplication.shared.keyWindow!.safeAreaInsets.top: 45.5
+    let CONTENT_INSET_BOTTOM: CGFloat = UIApplication.shared.keyWindow!.safeAreaInsets.bottom != 0 ? UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 30 + 10 : 34 + 30 + 28
+
     var createPackageCoordinator: CreatePackageCoordinator!
     
     var externalActions: [ExternalAction] = []
@@ -51,8 +51,8 @@ class CreatePackageContentViewController: UIViewController {
     
     var backButtonBaseView: UIView!
     var backButton: UIButton!
-    var nextButtonBaseView: UIView!
-    var nextButton: UIButton!
+    var previewButtonBaseView: UIView!
+    var previewButton: UIButton!
     
     var picker: UIImagePickerController = UIImagePickerController()
     var cropVC: CropViewController?
@@ -360,13 +360,13 @@ class CreatePackageContentViewController: UIViewController {
         dateFormatter.timeStyle = .short
         let setDueDateButtonString = String(format: NSLocalizedString("button.dueDate", comment: "button title for due date"), dateFormatter.string(from: dueDateDatePicker.date))
         setDueDateButton.setTitle(setDueDateButtonString, for: .normal)
-        nextButton.isEnabled = nextButtonEnabled()
+        previewButton.isEnabled = previewButtonEnabled()
         phantomDueDateTextField.resignFirstResponder()
     }
     
     @objc private func didTapCancelDatePicker(sender: UIBarButtonItem) {
         print("cancel tapped with date \(dueDateDatePicker.date)")
-        nextButton.isEnabled = nextButtonEnabled()
+        previewButton.isEnabled = previewButtonEnabled()
         phantomDueDateTextField.resignFirstResponder()
     }
     
@@ -402,38 +402,42 @@ class CreatePackageContentViewController: UIViewController {
         let backVConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|[backButton(50)]|", options: .alignAllTrailing, metrics: nil, views: ["backButton": backButton])
         backButtonBaseView.addConstraints(backVConstraints)
         
-        nextButtonBaseView = UIView(frame: .zero)
-        nextButtonBaseView.translatesAutoresizingMaskIntoConstraints = false
-        nextButtonBaseView.layer.shadowColor = UIColor.black.cgColor
-        nextButtonBaseView.layer.shadowOpacity = 0.3
-        nextButtonBaseView.layer.shadowRadius = 14
-        nextButtonBaseView.layer.shadowOffset = CGSize(width: 0, height: 0)
-        view.addSubview(nextButtonBaseView)
+        previewButtonBaseView = UIView(frame: .zero)
+        previewButtonBaseView.translatesAutoresizingMaskIntoConstraints = false
+        previewButtonBaseView.layer.shadowColor = UIColor.black.cgColor
+        previewButtonBaseView.layer.shadowOpacity = 0.3
+        previewButtonBaseView.layer.shadowRadius = 14
+        previewButtonBaseView.layer.shadowOffset = CGSize(width: 0, height: 0)
+        view.addSubview(previewButtonBaseView)
 
-        nextButton = UIButton(frame: .zero)
-        nextButton.translatesAutoresizingMaskIntoConstraints = false
-        nextButton.setImage(UIImage(named: "round_next_black_50pt"), for: .normal)
-        nextButton.tintColor = Theme().disabledTextColor
-        nextButton.setBackgroundColor(color: Theme().grayTextColor, forUIControlState: .normal)
-        nextButton.setBackgroundColor(color: Theme().borderColor, forUIControlState: .disabled)
-        nextButton.setBackgroundColor(color: Theme().grayTextColorHighlight, forUIControlState: .highlighted)
-        nextButton.contentEdgeInsets = .zero
-        nextButton.layer.cornerRadius = 25
-        nextButton.clipsToBounds = true
-        nextButton.addTarget(self, action: #selector(didTapNextButton(sender:)), for: .touchUpInside)
-        nextButton.isEnabled = false
-        nextButtonBaseView.addSubview(nextButton)
+        previewButton = UIButton(frame: .zero)
+        previewButton.translatesAutoresizingMaskIntoConstraints = false
+        previewButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        previewButton.setTitle(String(NSLocalizedString("button.preview", comment: "button title for Preview")), for: .normal)
+        previewButton.tintColor = .white
+        previewButton.setTitleColor(.white, for: .normal)
+        previewButton.setTitleColor(Theme().disabledTextColor, for: .disabled)
+        previewButton.setTitleColor(.white, for: .highlighted)
+        previewButton.setBackgroundColor(color: Theme().grayTextColor, forUIControlState: .normal)
+        previewButton.setBackgroundColor(color: Theme().borderColor, forUIControlState: .disabled)
+        previewButton.setBackgroundColor(color: Theme().grayTextColorHighlight, forUIControlState: .highlighted)
+        previewButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        previewButton.layer.cornerRadius = 25
+        previewButton.clipsToBounds = true
+        previewButton.addTarget(self, action: #selector(didTapNextButton(sender:)), for: .touchUpInside)
+        previewButton.isEnabled = false
+        previewButtonBaseView.addSubview(previewButton)
 
-        let nextHConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[nextButton(50)]|", options: .directionLeadingToTrailing, metrics: nil, views: ["nextButton": nextButton])
-        nextButtonBaseView.addConstraints(nextHConstraints)
-        let nextVConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|[nextButton(50)]|", options: .alignAllTrailing, metrics: nil, views: ["nextButton": nextButton])
-        nextButtonBaseView.addConstraints(nextVConstraints)
+        let nextHConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[previewButton]|", options: .directionLeadingToTrailing, metrics: nil, views: ["previewButton": previewButton])
+        previewButtonBaseView.addConstraints(nextHConstraints)
+        let nextVConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|[previewButton(50)]|", options: .alignAllTrailing, metrics: nil, views: ["previewButton": previewButton])
+        previewButtonBaseView.addConstraints(nextVConstraints)
         
         NSLayoutConstraint.activate([
             backButtonBaseView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 18),
             backButtonBaseView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -(UIDevice.isIphoneX ? 0 : 18)),
-            nextButtonBaseView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -18),
-            nextButtonBaseView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -(UIDevice.isIphoneX ? 0 : 18)),
+            previewButtonBaseView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -18),
+            previewButtonBaseView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -(UIDevice.isIphoneX ? 0 : 18)),
         ])
     }
 
@@ -450,11 +454,11 @@ class CreatePackageContentViewController: UIViewController {
         print("backed")
     }
     
-    private func nextButtonEnabled() -> Bool {
+    private func previewButtonEnabled() -> Bool {
         let enabled = coverPhotoImageView?.image != nil &&
             !headlineTextView.text.isEmpty &&
             !descriptionTextView.text.isEmpty
-        self.nextButton.tintColor = enabled ? .white : Theme().disabledTextColor
+        self.previewButton.tintColor = enabled ? .white : Theme().disabledTextColor
         return enabled
     }
     
@@ -590,7 +594,7 @@ extension CreatePackageContentViewController: CropViewControllerDelegate {
                     self.coverPhotoImageView!.widthAnchor.constraint(equalTo: self.scrollView.widthAnchor, constant: -36),
                     self.coverPhotoImageView!.heightAnchor.constraint(equalTo: self.coverPhotoImageView!.widthAnchor, multiplier: 5/7),
                 ])
-                self.nextButton.isEnabled = self.nextButtonEnabled()
+                self.previewButton.isEnabled = self.previewButtonEnabled()
             }
         }
     }
@@ -608,11 +612,11 @@ extension CreatePackageContentViewController: CropViewControllerDelegate {
                     self.addCoverPhotoButton.widthAnchor.constraint(equalTo: self.scrollView.widthAnchor, constant: -36),
                 ])
             }
-            self.nextButton.isEnabled = self.nextButtonEnabled()
+            self.previewButton.isEnabled = self.previewButtonEnabled()
         }))
         alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.cancel", comment: "button title for cancel")), style: .cancel, handler: { (action) in
             print("canceled")
-            self.nextButton.isEnabled = self.nextButtonEnabled()
+            self.previewButton.isEnabled = self.previewButtonEnabled()
         }))
         self.present(alertController, animated: true) {
             print("presented image tap action sheet")
@@ -628,7 +632,7 @@ extension CreatePackageContentViewController: UIGestureRecognizerDelegate {
 
 extension CreatePackageContentViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
-        nextButton.isEnabled = nextButtonEnabled()
+        previewButton.isEnabled = previewButtonEnabled()
     }
 }
 
