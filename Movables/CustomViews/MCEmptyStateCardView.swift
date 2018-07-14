@@ -28,6 +28,7 @@ import UIKit
 
 class MCEmptyStateCardView: UIView {
 
+    var containerView: UIView!
     var cardView: MCCard!
     var titleLabel: UILabel!
     var descriptionLabel: UILabel!
@@ -50,13 +51,17 @@ class MCEmptyStateCardView: UIView {
                 NSLayoutConstraint.constraints(withVisualFormat: "V:|[cardView]|", options: .directionLeadingToTrailing, metrics: nil, views: ["cardView": cardView])
         )
         
+        containerView = UIView(frame: .zero)
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        cardView.addSubview(containerView)
+        
         titleLabel = UILabel(frame: .zero)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.font = UIFont.systemFont(ofSize: 26, weight: .semibold)
         titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 0
         titleLabel.text = String(NSLocalizedString("copy.makeItHappen", comment: "Move tab empty state title"))
-        cardView.addSubview(titleLabel)
+        containerView.addSubview(titleLabel)
         
         descriptionLabel = UILabel(frame: .zero)
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -64,7 +69,7 @@ class MCEmptyStateCardView: UIView {
         descriptionLabel.textAlignment = .center
         descriptionLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         descriptionLabel.text = String(NSLocalizedString("copy.makeItHappenBody", comment: "Move tab empty state body"))
-        cardView.addSubview(descriptionLabel)
+        containerView.addSubview(descriptionLabel)
         
         actionButton = UIButton(frame: .zero)
         actionButton.translatesAutoresizingMaskIntoConstraints = false
@@ -76,17 +81,23 @@ class MCEmptyStateCardView: UIView {
         actionButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 14, bottom: 0, right: 14)
         actionButton.layer.cornerRadius = 22
         actionButton.clipsToBounds = true
-        cardView.addSubview(actionButton)
+        containerView.addSubview(actionButton)
         
         NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 36),
-            titleLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -36),
+            containerView.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 44),
+            containerView.centerXAnchor.constraint(equalTo: cardView.centerXAnchor),
+            containerView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 36),
+            containerView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -36),
+            titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
             descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
             descriptionLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
             actionButton.heightAnchor.constraint(equalToConstant: 44),
-            actionButton.centerXAnchor.constraint(equalTo: cardView.centerXAnchor),
+            actionButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            actionButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
             actionButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 18)
-            ])
+        ])
     }
 }

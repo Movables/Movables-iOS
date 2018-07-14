@@ -75,6 +75,7 @@ class ExploreViewController: UIViewController {
     private var collectionViewFlowLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout.init()
     
     var initialFetchMade = false
+    var collectionViewHeightConstraint: NSLayoutConstraint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -103,11 +104,12 @@ class ExploreViewController: UIViewController {
         let inset: CGFloat = calculateSectionInset()
         collectionViewFlowLayout.sectionInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
         
-        collectionViewFlowLayout.itemSize = CGSize(width: view.safeAreaLayoutGuide.layoutFrame.width - inset * 2, height: cardPeekCollectionView.frame.height)
+        collectionViewFlowLayout.itemSize = UICollectionViewFlowLayoutAutomaticSize
+        collectionViewFlowLayout.estimatedItemSize = CGSize(width: view.safeAreaLayoutGuide.layoutFrame.width - inset * 2, height: cardPeekCollectionView.frame.height)
     }
     
     private func indexOfMajorCell() -> Int {
-        let itemWidth = collectionViewFlowLayout.itemSize.width
+        let itemWidth = collectionViewFlowLayout.estimatedItemSize.width
         let proportionalOffset = collectionViewFlowLayout.collectionView!.contentOffset.x / itemWidth
         return Int(round(proportionalOffset))
     }
@@ -140,8 +142,8 @@ class ExploreViewController: UIViewController {
         mapView.delegate = self
         mapView.register(MKMarkerAnnotationView.self, forAnnotationViewWithReuseIdentifier: MKMapViewDefaultAnnotationViewReuseIdentifier)
         mapView.register(PackagesClusterView.self, forAnnotationViewWithReuseIdentifier: MKMapViewDefaultClusterAnnotationViewReuseIdentifier)
-        mapView.layoutMargins = UIEdgeInsets(top: view.safeAreaInsets.top + 94 + 50, left: 50, bottom: cardPeekCollectionView.frame.height + 66, right: 50)
-        
+        mapView.layoutMargins = UIEdgeInsets(top: view.safeAreaInsets.top + 94 + 20, left: 20, bottom: view.safeAreaInsets.bottom + cardPeekCollectionView.frame.height + 30 + 8, right: 20)
+
         searchButton = VisualEffectsFabButton(frame: .zero, dimension: 56)
         searchButton.isHidden = true
         searchButton.translatesAutoresizingMaskIntoConstraints = false
@@ -231,6 +233,11 @@ class ExploreViewController: UIViewController {
         cardPeekCollectionView.showsHorizontalScrollIndicator = false
         cardPeekCollectionView.collectionViewLayout = collectionViewFlowLayout
         cardPeekCollectionView.alwaysBounceHorizontal = true
+        collectionViewHeightConstraint = cardPeekCollectionView.heightAnchor.constraint(greaterThanOrEqualToConstant: self.view.frame.height * 3 / 7 - 70)
+        collectionViewHeightConstraint.priority = .defaultHigh
+        NSLayoutConstraint.activate([
+            collectionViewHeightConstraint
+        ])
     }
     
     func fetchNearbyPackagePreviews() {
@@ -285,22 +292,23 @@ class ExploreViewController: UIViewController {
                         print("hits error")
                         return
                     }
-                    for hit in hits {
-                        let packagePreview = PackagePreview(hit: hit)
-                        packagePreviews.append(packagePreview)
-                        
-                        let packageAnnotation = PackageAnnotation(with: packagePreview)
-                        self.annotations.append(packageAnnotation)
-                    }
-                    self.packagePreviews.removeAll()
-                    self.packagePreviews = packagePreviews
-                    self.cardPeekCollectionView.reloadData()
-                    
-                    DispatchQueue.main.async {
-                        if self.annotations.count > 0 {
-                            // construct new annotations
-
+                        for hit in hits {
+                            let packagePreview = PackagePreview(hit: hit)
+                            packagePreviews.append(packagePreview)
                             
+                            let packageAnnotation = PackageAnnotation(with: packagePreview)
+                            self.annotations.append(packageAnnotation)
+                        }
+                        self.packagePreviews.removeAll()
+                        self.packagePreviews = packagePreviews
+                        self.cardPeekCollectionView.reloadData()
+                        let height: CGFloat = self.cardPeekCollectionView.collectionViewLayout.collectionViewContentSize.height
+                        self.collectionViewHeightConstraint.constant = height
+                        self.view.layoutIfNeeded()
+
+                        DispatchQueue.main.async {
+                            if self.annotations.count > 0 {
+                                // construct new annotations
 
                             let newAnnotations = self.annotationsByDistributingAnnotations(annotations: self.annotations) { (oldAnnotation:PackageAnnotation, newCoordinate:CLLocationCoordinate2D) in
                                 return PackageAnnotation(with: oldAnnotation.title, coordinate: newCoordinate, packagePreview: oldAnnotation.packagePreview!)
@@ -563,7 +571,7 @@ extension ExploreViewController: UICollectionViewDelegate {
             if didUseSwipeToSkipCell {
                 print("did use swipe to skip cell")
                 let snapToIndex = indexOfCellBeforeDragging + (hasEnoughVelocityToSlideToTheNextCell ? 1 : -1)
-                let toValue = collectionViewFlowLayout.itemSize.width * CGFloat(snapToIndex)
+                let toValue = collectionViewFlowLayout.estimatedItemSize.width * CGFloat(snapToIndex)
                 
                 // Damping equal 1 => no oscillations => decay animation:
                 UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: velocity.x, options: .allowUserInteraction, animations: {
@@ -676,6 +684,7 @@ extension ExploreViewController: UICollectionViewDataSource {
         if collectionView == cardPeekCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "exploreCard", for: indexPath) as! MCExploreCardCollectionViewCell
             cell.packagePreview = packagePreviews[indexPath.item]
+            cell.cellWidth = collectionViewFlowLayout.estimatedItemSize.width
             cell.layout()
             return cell
         } else if collectionView == togglesCollectionView {

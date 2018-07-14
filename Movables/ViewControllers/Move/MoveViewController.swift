@@ -146,8 +146,8 @@ class MoveViewController: UIViewController {
         )
         NSLayoutConstraint.activate([
             emptyStateCardView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-            emptyStateCardView.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 3 / 7, constant: -8),
-            emptyStateCardView.descriptionLabel.bottomAnchor.constraint(equalTo: emptyStateCardView.centerYAnchor, constant: -20)
+            emptyStateCardView.heightAnchor.constraint(greaterThanOrEqualTo: self.view.heightAnchor, multiplier: 3 / 7, constant: -8),
+            emptyStateCardView.containerView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -44),
         ])
 
         
