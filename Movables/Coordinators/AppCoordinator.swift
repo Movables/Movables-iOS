@@ -41,6 +41,7 @@ class AppCoordinator: Coordinator {
     
     func start() {
         if Auth.auth().currentUser != nil {
+            UserManager.shared.startListening()
             showMain()
         } else {
             showLogin()

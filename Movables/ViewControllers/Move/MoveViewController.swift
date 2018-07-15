@@ -48,7 +48,6 @@ class MoveViewController: UIViewController {
     
     var delegate: MoveViewControllerDelegate?
     
-    var userDocumentListener: ListenerRegistration?
     var currentPackageListener: ListenerRegistration?
     var currentTransitRecordListener: ListenerRegistration?
 
@@ -137,7 +136,7 @@ class MoveViewController: UIViewController {
 
         emptyStateCardView = MCEmptyStateCardView(frame: .zero)
         emptyStateCardView.translatesAutoresizingMaskIntoConstraints = false
-        emptyStateCardView.isHidden = false
+        emptyStateCardView.isHidden = true
         emptyStateCardView.actionButton.addTarget(self, action: #selector(addPackageButtonTapped(sender:)), for: .touchUpInside)
         view.addSubview(emptyStateCardView)
         
@@ -168,18 +167,23 @@ class MoveViewController: UIViewController {
         
         mapView.layoutMargins = UIEdgeInsets(top: view.safeAreaInsets.top + 94, left: 20, bottom: (self.view.frame.height - (self.view.safeAreaInsets.top + self.view.safeAreaInsets.bottom)) / 3 + 66, right: 20)
 
+        self.userDocument = UserManager.shared.userDocument
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(userDocumentUpdated(notification:)), name: Notification.Name.currentUserDocumentUpdated, object: nil)
+    }
+    
+    @objc private func userDocumentUpdated(notification: Notification) {
+        self.userDocument = (notification.object as! [String: Any])["userDocument"] as? UserDocument
+        print("received notification and set userDocument")
     }
         
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        self.listenToUserDocument()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        userDocumentListener?.remove()
         currentPackageListener?.remove()
         currentTransitRecordListener?.remove()
     }
@@ -192,36 +196,18 @@ class MoveViewController: UIViewController {
     @objc private func addPackageButtonTapped(sender: UIButton) {
         print("add package button tapped")
         // check if current package exists for user
-        let db = Firestore.firestore()
-        db.document("users/\(Auth.auth().currentUser!.uid)").getDocument { (snapshot, error) in
-            if error != nil {
-                print(error!)
-            } else {
-                let userDoc = UserDocument(with: snapshot!.data()!, reference: snapshot!.reference)
-                if userDoc.privateProfile.currentPackage != nil {
-                    let alertController = UIAlertController(title: "Unable to Add Package", message: "Add a package when you're finished moving the package on hand.", preferredStyle: .alert)
-                    alertController.addAction(UIAlertAction(title: "OK", style: .cancel, handler: { (action) in
-                        print("canceld no add package alert")
-                    }))
-                    self.present(alertController, animated: true, completion: {
-                        print("presented ")
-                    })
-                } else {
-                    let createPackageCoordinator = CreatePackageCoordinator(rootViewController: self)
-                    createPackageCoordinator.start()
-                }
-            }
+        if userDocument?.privateProfile.currentPackage != nil {
+            let alertController = UIAlertController(title: "Unable to Add Package", message: "Add a package when you're finished moving the package on hand.", preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .cancel, handler: { (action) in
+                print("canceld no add package alert")
+            }))
+            self.present(alertController, animated: true, completion: {
+                print("presented ")
+            })
+        } else {
+            let createPackageCoordinator = CreatePackageCoordinator(rootViewController: self)
+            createPackageCoordinator.start()
         }
-    }
-    
-    private func listenToUserDocument() {
-        self.userDocumentListener = Firestore.firestore().collection("users").document(Auth.auth().currentUser!.uid).addSnapshotListener({ (documentSnapshot, error) in
-            guard documentSnapshot != nil else {
-                print("Error fetching snapshots: \(error!)")
-                return
-            }
-            self.userDocument = UserDocument(with: documentSnapshot!.data()!, reference: documentSnapshot!.reference)
-        })
     }
     
     private func listenToPackage() {
@@ -296,7 +282,6 @@ class MoveViewController: UIViewController {
                 sender.isEnabled = true
                 self.currentPackage = nil
                 self.currentTransitRecord = nil
-                self.listenToUserDocument()
             }
         }
     }

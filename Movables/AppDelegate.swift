@@ -150,7 +150,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, FBSDKL
     
     func coordinatorDidAuthenticate(with authDataResult: AuthDataResult?) {
         print("did log in")
-        
+        UserManager.shared.startListening()
         if authDataResult?.additionalUserInfo != nil && authDataResult!.additionalUserInfo!.isNewUser {
             createUserProfile(authDataResult: authDataResult!) { (success) in
                 if success {
