@@ -35,7 +35,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>com.googleusercontent.apps.821676050997-sba0i1rda1lsntl283ka78377vs2jsck</string>
-				<string>fb209161136365034</string>
+				<string>$(FBCFBundleURLSchemes)</string>
 			</array>
 		</dict>
 	</array>
@@ -56,9 +56,9 @@
 		</array>
 	</dict>
 	<key>FacebookAppID</key>
-	<string>209161136365034</string>
+	<string>$(FacebookAppID)</string>
 	<key>FacebookDisplayName</key>
-	<string>Movables</string>
+	<string>$(FacebookDisplayName)</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>twitter</string>

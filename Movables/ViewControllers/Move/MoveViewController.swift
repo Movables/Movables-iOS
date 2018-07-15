@@ -173,7 +173,7 @@ class MoveViewController: UIViewController {
     }
     
     @objc private func userDocumentUpdated(notification: Notification) {
-        self.userDocument = (notification.object as! [String: Any])["userDocument"] as? UserDocument
+        self.userDocument = (notification.userInfo as! [String: Any])["userDocument"] as? UserDocument
         print("received notification and set userDocument")
     }
         

@@ -1275,6 +1275,9 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3DZ3S2K7LU;
+				FBCFBundleURLSchemes = fb486581298446475;
+				FacebookAppID = 486581298446475;
+				FacebookDisplayName = "Movables Development";
 				INFOPLIST_FILE = Movables/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1295,6 +1298,9 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3DZ3S2K7LU;
+				FBCFBundleURLSchemes = fb209161136365034;
+				FacebookAppID = 209161136365034;
+				FacebookDisplayName = Movables;
 				INFOPLIST_FILE = Movables/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

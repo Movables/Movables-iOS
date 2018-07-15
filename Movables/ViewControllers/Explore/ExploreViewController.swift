@@ -216,6 +216,14 @@ class ExploreViewController: UIViewController {
         ])
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if !initialFetchMade {
+            LocationManager.shared.startUpdatingLocation()
+        }
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -716,7 +724,6 @@ extension ExploreViewController: UICollectionViewDataSource {
 
 extension ExploreViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print("did update locations: \(locations)")
         if !initialFetchMade {
             fetchNearbyPackagePreviews()
         }

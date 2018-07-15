@@ -79,6 +79,7 @@ class ActivitiesViewController: UIViewController {
     }
     
     private func fetchPublicActivities() {
+        print("fetch public activities")
         let db = Firestore.firestore()
         db.collection("public_activities").whereField("followers.\(Auth.auth().currentUser!.uid)", isGreaterThan: 0).order(by: "followers.\(Auth.auth().currentUser!.uid)", descending: true).getDocuments { (querySnapshot, error) in
             if let error = error {
@@ -86,21 +87,32 @@ class ActivitiesViewController: UIViewController {
                 return
             } else {
                 if let snapshot = querySnapshot {
+
                     var publicActivitiesTemp:[PublicActivity] = []
                     snapshot.documents.forEach({ (docSnapshot) in
                         publicActivitiesTemp.append(PublicActivity(with: docSnapshot.data()))
                     })
                     self.publicActivities = publicActivitiesTemp
-                    self.rowsForIndexPaths.removeAll()
-                    self.annotationsForIndexPaths.removeAll()
-                    for (index, activity) in self.publicActivities!.enumerated() {
-                        self.rowsForIndexPaths.updateValue(self.generateRows(for: activity.supplements!, with: activity.supplementsType!), forKey: IndexPath(row: index, section: 0))
-                    self.annotationsForIndexPaths.updateValue(self.generateAnnotations(for: activity.supplements!, with: activity.supplementsType!), forKey: IndexPath(row: index, section: 0))
+                    if self.publicActivities!.count > 0 {
+                        print("more than 0")
+                        self.rowsForIndexPaths.removeAll()
+                        self.annotationsForIndexPaths.removeAll()
+                        for (index, activity) in self.publicActivities!.enumerated() {
+                            self.rowsForIndexPaths.updateValue(self.generateRows(for: activity.supplements!, with: activity.supplementsType!), forKey: IndexPath(row: index, section: 0))
+                        self.annotationsForIndexPaths.updateValue(self.generateAnnotations(for: activity.supplements!, with: activity.supplementsType!), forKey: IndexPath(row: index, section: 0))
+                        }
+                        self.generateMapImages()
+                    } else {
+                        print("== 0")
+                        self.activityIndicatorView.stopAnimating()
+                        self.tableView.reloadData()
+                        self.refreshControl.endRefreshing()
                     }
-                    
-                    self.generateMapImages()
                 } else {
                     print("snapshot nil")
+                    self.activityIndicatorView.stopAnimating()
+                    self.tableView.reloadData()
+                    self.refreshControl.endRefreshing()
                 }
             }
         }

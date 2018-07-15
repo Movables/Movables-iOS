@@ -78,7 +78,7 @@ class ProfileViewController: UIViewController {
     }
     
     @objc private func userDocumentUpdated(notification: Notification) {
-        self.userDocument = (notification.object as! [String: Any])["userDocument"] as? UserDocument
+        self.userDocument = (notification.userInfo as! [String: Any])["userDocument"] as? UserDocument
         print("received notification and set userDocument")
     }
 
@@ -161,6 +161,7 @@ extension ProfileViewController: UITableViewDataSource {
             dateFormatter.dateStyle = .long
             cell.journeyLabel.text = String(format: NSLocalizedString("label.sinceDate", comment: "label text for since date"), dateFormatter.string(from: userDocument!.publicProfile.createdDate))
             var interestsString: String = ""
+            print(userDocument)
             for interest in userDocument!.privateProfile.interests {
                interestsString += getEmojiForCategory(category: interest)
             }
@@ -229,6 +230,7 @@ extension ProfileViewController: UITableViewDataSource {
             alertVC.addAction(UIAlertAction(title: String(NSLocalizedString("button.signout", comment: "button title for signout")), style: .default, handler: { (action) in
                 do {
                     try Auth.auth().signOut()
+                    UserManager.shared.stopListening()
                     GIDSignIn.sharedInstance().signOut()
                     FBSDKLoginManager().logOut()
                     
