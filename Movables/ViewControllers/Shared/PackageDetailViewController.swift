@@ -257,11 +257,9 @@ class PackageDetailViewController: UIViewController {
     }
     
     private func checkAlreadyMoving() {
-        fetchUserDoc(uid: Auth.auth().currentUser!.uid) { (userDoc) in
-            if userDoc != nil {
-                self.alreadyMoving = userDoc!.privateProfile.currentPackage != nil
-                self.newUpdatePackageActionButton(with: LocationManager.shared.location!)
-            }
+        if UserManager.shared.userDocument != nil {
+            self.alreadyMoving = UserManager.shared.userDocument!.privateProfile.currentPackage != nil
+            self.newUpdatePackageActionButton(with: LocationManager.shared.location!)
         }
     }
     
@@ -595,6 +593,7 @@ extension PackageDetailViewController: UICollectionViewDataSource {
                 self.categoryTint = getTintForCategory(category: self.package!.categories.first!)
                 self.packageActionButton.setBackgroundColor(color: self.categoryTint!, forUIControlState: .normal)
                 self.packageActionButton.setBackgroundColor(color: self.categoryTint!.withAlphaComponent(0.85), forUIControlState: .highlighted)
+                (self.navigationItem.titleView as! TitleView).subtitleLabel.text = "#\(self.package!.tag.name)"
 
             }
             print("finished attacing package listener")

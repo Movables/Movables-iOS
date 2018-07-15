@@ -146,16 +146,14 @@ class InterestPickerViewController: UIViewController {
         for category in self.categories {
             interestsDictionary.updateValue(true, forKey: getStringForCategory(category: category))
         }
-        fetchUserDoc(uid: Auth.auth().currentUser!.uid) { (userDoc) in
-            userDoc?.reference.updateData(["private_profile.interests": interestsDictionary], completion: { (error) in
-                if let error = error {
-                    print(error)
-                } else {
-                    // show main
-                    self.authCoordinator.delegate?.coordinatorDidAuthenticate(with: nil)
-                }
-            })
-        }
+        UserManager.shared.userDocument?.reference.updateData(["private_profile.interests": interestsDictionary], completion: { (error) in
+            if let error = error {
+                print(error)
+            } else {
+                // show main
+                self.authCoordinator.delegate?.coordinatorDidAuthenticate(with: nil)
+            }
+        })
     }
 
 }

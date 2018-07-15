@@ -43,8 +43,22 @@ class ProfileViewController: UIViewController {
     
     var navBarIsTransparent: Bool = true
     
-    var userDoc: UserDocument?
-    var accountActivities: [AccountActivity] = []
+    var userDocument: UserDocument? {
+        didSet {
+            if userDocument != nil {
+                self.fetchAccountActivities(userDoc: userDocument!, completion: { (success, accountActivities) in
+                    if success {
+                        self.accountActivities = accountActivities!
+                        self.activityIndicatorView?.stopAnimating()
+                        self.tableView.reloadData()
+                    } else {
+                        print("error loading account activities")
+                    }
+                })
+            }
+        }
+    }
+    var accountActivities: [AccountActivity]?
     
     var tableView: UITableView!
     
@@ -59,22 +73,16 @@ class ProfileViewController: UIViewController {
         
         setupTableView()
         
-        fetchUserDoc(uid: Auth.auth().currentUser!.uid) { (userDoc) in
-            if userDoc != nil {
-                self.userDoc = userDoc
-                self.fetchAccountActivities(userDoc: self.userDoc!, completion: { (success, accountActivities) in
-                    if success {
-                        self.accountActivities = accountActivities!
-                        self.activityIndicatorView?.stopAnimating()
-                        self.tableView.reloadData()
-                    } else {
-                        print("error loading account activities")
-                    }
-                })
-            }
-        }
-
+        userDocument = UserManager.shared.userDocument
+        NotificationCenter.default.addObserver(self, selector: #selector(userDocumentUpdated(notification:)), name: Notification.Name.currentUserDocumentUpdated, object: nil)
     }
+    
+    @objc private func userDocumentUpdated(notification: Notification) {
+        self.userDocument = (notification.object as! [String: Any])["userDocument"] as? UserDocument
+        print("received notification and set userDocument")
+    }
+
+    
     
     private func fetchAccountActivities(userDoc: UserDocument, completion: @escaping (Bool, [AccountActivity]?) -> ()) {
         userDoc.reference.collection("account_activities").order(by: "date", descending: true).limit(to: 10).getDocuments { (querySnapshot, error) in
@@ -104,7 +112,6 @@ class ProfileViewController: UIViewController {
         tableView.estimatedRowHeight = 250
         tableView.separatorStyle = .none
         tableView.register(ProfileFaceTableViewCell.self, forCellReuseIdentifier: "profileFace")
-        tableView.register(ProfileActionsTableViewCell.self, forCellReuseIdentifier: "profileActions")
         tableView.register(RowButtonTableViewCell.self, forCellReuseIdentifier: "buttonRow")
         tableView.register(EventActivityTableViewCell.self, forCellReuseIdentifier: "eventActivity")
         tableView.dataSource = self
@@ -130,8 +137,8 @@ class ProfileViewController: UIViewController {
 
 extension ProfileViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if self.userDoc != nil {
-            return 1 + self.accountActivities.count
+        if self.userDocument != nil {
+            return 1 + (self.accountActivities?.count ?? 0)
         } else {
             return 0
         }
@@ -141,20 +148,20 @@ extension ProfileViewController: UITableViewDataSource {
         switch indexPath.row {
         case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: "profileFace") as! ProfileFaceTableViewCell
-            cell.nameLabel.text = userDoc?.publicProfile.displayName
-            cell.profilePicImageView.sd_setImage(with: URL(string: self.userDoc!.publicProfile.picUrl!)) { (image, error, cacheType, url) in
+            cell.nameLabel.text = userDocument!.publicProfile.displayName
+            cell.profilePicImageView.sd_setImage(with: URL(string: self.userDocument!.publicProfile.picUrl!)) { (image, error, cacheType, url) in
                 print("loaded image")
             }
             cell.accessoryButton.setImage(UIImage(named: "profile_settings"), for: .normal)
             cell.secondaryButton.setImage(UIImage(named: "profile_edit"), for: .normal)
             cell.accessoryButton.addTarget(self, action: #selector(didTapOnSettings(sender:)), for: .touchUpInside)
             cell.secondaryButton.addTarget(self, action: #selector(didTapOnEdit(sender:)), for: .touchUpInside)
-            cell.balanceLabel.text = "\(Int(userDoc!.privateProfile.timeBankBalance))"
+            cell.balanceLabel.text = "\(Int(userDocument!.privateProfile.timeBankBalance))"
             let dateFormatter = DateFormatter()
             dateFormatter.dateStyle = .long
-            cell.journeyLabel.text = String(format: NSLocalizedString("label.sinceDate", comment: "label text for since date"), dateFormatter.string(from: userDoc!.publicProfile.createdDate))
+            cell.journeyLabel.text = String(format: NSLocalizedString("label.sinceDate", comment: "label text for since date"), dateFormatter.string(from: userDocument!.publicProfile.createdDate))
             var interestsString: String = ""
-            for interest in userDoc!.privateProfile.interests {
+            for interest in userDocument!.privateProfile.interests {
                interestsString += getEmojiForCategory(category: interest)
             }
             cell.interestsLabel.text = interestsString
@@ -162,7 +169,7 @@ extension ProfileViewController: UITableViewDataSource {
         default:
             // activity row
             let cell = tableView.dequeueReusableCell(withIdentifier: "eventActivity") as! EventActivityTableViewCell
-            let activity = self.accountActivities[indexPath.row - 1]
+            let activity = self.accountActivities![indexPath.row - 1]
             let eventText = generateLabelTextForAccountActivity(accountActivity: activity)
             cell.eventLabel.text = eventText
             let eventTextNSString = eventText as NSString

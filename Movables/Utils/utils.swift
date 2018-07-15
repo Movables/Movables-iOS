@@ -246,20 +246,3 @@ func getStatusEnum(with string: String) -> PackageStatus {
         return .unknown
     }
 }
-
-func fetchUserDoc(uid: String, completion: @escaping (UserDocument?) -> ()) {
-    Firestore.firestore().collection("users").whereField("public_profile.uid", isEqualTo: uid).limit(to: 1).getDocuments { (querySnapshot, error) in
-        if let error = error as NSError? {
-            print(error)
-            completion(nil)
-        } else {
-            if let userDocData = querySnapshot?.documents.first?.data() {
-                completion(UserDocument(with: userDocData, reference:querySnapshot!.documents.first!.reference))
-            } else {
-                // show error retrieving user doc
-                print("error")
-                completion(nil)
-            }
-        }
-    }
-}

@@ -140,69 +140,45 @@ class CreatePackageCoordinator: Coordinator {
     }
     
     func savePackageAndDismiss(coverImageUrl: URL?, completion: @escaping (Bool) -> ()) {
-        fetchUserDoc(uid: Auth.auth().currentUser!.uid, completion: { (userDoc) in
-            if userDoc != nil {
-                self.userDoc = userDoc
-                // self.userDoc is available
-                let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.packageCreation", comment: "alert title for package creation")), message: String(format: NSLocalizedString("copy.alert.packageCreationDesc", comment: "alert body for packageCreation"), Int(self.userDoc!.privateProfile.timeBankBalance - 100)), preferredStyle: .alert)
-                alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.ok", comment: "button title for ok")), style: .default, handler: { (action) in
-                    print("confirmed creation")
-                    self.constructPackage(coverImageUrl: coverImageUrl, completion: { (success, packageData) in
-                        if success {
-                            self.preparePackage(with: packageData, completion: { (success, packageData) in
-                                if success {
-                                    self.savePackageWithTransaction(with: coverImageUrl, packageData: packageData, makeTemplate: self.shouldSaveAsTemplate!, completion: { (success) in
-                                        if success {
-                                            print("package saved everything saved")
-                                            completion(true)
-                                        } else {
-                                            // something went wrong saving package data
-                                            completion(false)
-                                            print("something wrong and something didn't get saved :(")
-                                        }
-                                    })
-                                } else {
-                                    // something wrong with tag processing
-                                    completion(false)
-                                }
-                            })
-                        } else {
-                            // something went wrong constructing data
-                            completion(false)
-                        }
-                    })
-                }))
-                alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.cancel", comment: "button title for cancel")), style: .cancel, handler: { (action) in
-                    print("cancel creation")
-                    completion(false)
-                }))
-                self.navigationController.present(alertController, animated: true, completion: {
-                    print("presented bank alert")
+        if UserManager.shared.userDocument != nil {
+            let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.packageCreation", comment: "alert title for package creation")), message: String(format: NSLocalizedString("copy.alert.packageCreationDesc", comment: "alert body for packageCreation"), Int(UserManager.shared.userDocument!.privateProfile.timeBankBalance - 100)), preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.ok", comment: "button title for ok")), style: .default, handler: { (action) in
+                print("confirmed creation")
+                self.constructPackage(coverImageUrl: coverImageUrl, completion: { (success, packageData) in
+                    if success {
+                        self.preparePackage(with: packageData, completion: { (success, packageData) in
+                            if success {
+                                self.savePackageWithTransaction(with: coverImageUrl, packageData: packageData, makeTemplate: self.shouldSaveAsTemplate!, completion: { (success) in
+                                    if success {
+                                        print("package saved everything saved")
+                                        completion(true)
+                                    } else {
+                                        // something went wrong saving package data
+                                        completion(false)
+                                        print("something wrong and something didn't get saved :(")
+                                    }
+                                })
+                            } else {
+                                // something wrong with tag processing
+                                completion(false)
+                            }
+                        })
+                    } else {
+                        // something went wrong constructing data
+                        completion(false)
+                    }
                 })
-            } else {
+            }))
+            alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.cancel", comment: "button title for cancel")), style: .cancel, handler: { (action) in
+                print("cancel creation")
                 completion(false)
-            }
-        })
-        
-        // save cover photo first
-        
-        // process tagResultItem -> PackageTag
-        // -- handle the case of templatesCount nil AND packagesCount nil
-        // -- -- create tag with placeholder reference
-        // -- handle the case of templatesCount not nil AND packagesCount not nil
-        // -- -- fetch tag with reference
-        
-        // check category != nil
-        
-        // process recipientResultItem -> Person
-        
-        // save package and package template transaction
-        
-        // batch -- add package
-        
-        // transaction
-        // -- save package with in_transit_by
-        // -- update private_profile.current_package in user document
+            }))
+            self.navigationController.present(alertController, animated: true, completion: {
+                print("presented bank alert")
+            })
+        } else {
+            completion(false)
+        }
     }
     
     func constructPackage(coverImageUrl: URL?, completion: @escaping (Bool, [String: Any]) -> ()) {
@@ -489,7 +465,7 @@ class CreatePackageCoordinator: Coordinator {
                 }
             }
             transaction.setData(packageData, forDocument: newPackageRef!)
-            transaction.updateData(["private_profile.current_package": newPackageRef!, "private_profile.time_bank_balance": self.userDoc!.privateProfile.timeBankBalance - 100], forDocument: userReference)
+            transaction.updateData(["private_profile.current_package": newPackageRef!, "private_profile.time_bank_balance": UserManager.shared.userDocument!.privateProfile.timeBankBalance - 100], forDocument: userReference)
             transaction.setData(
                 [
                     "author_reference": userReference,

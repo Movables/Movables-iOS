@@ -11,6 +11,8 @@
 		2C0AC76120D7E24000437FCC /* TemplateCardTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0AC76020D7E24000437FCC /* TemplateCardTableViewCell.swift */; };
 		2C0AC76320D8F75400437FCC /* SmallPillLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0AC76220D8F75400437FCC /* SmallPillLabel.swift */; };
 		2C0AC76520DA296300437FCC /* ListViewButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0AC76420DA296300437FCC /* ListViewButtonTableViewCell.swift */; };
+		2C2F0FD720FAB980001BBC17 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2F0FD620FAB980001BBC17 /* UserManager.swift */; };
+		2C2F0FD920FABCF4001BBC17 /* Notification.Name+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2F0FD820FABCF4001BBC17 /* Notification.Name+Extensions.swift */; };
 		2C386BD420A94D4A00AC5F5D /* PackageAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C386BD320A94D4A00AC5F5D /* PackageAnnotation.swift */; };
 		2C386BD620A954C000AC5F5D /* utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C386BD520A954C000AC5F5D /* utils.swift */; };
 		2C47AB4E20AAA85B0050DC0D /* MCCardFlag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C47AB4D20AAA85B0050DC0D /* MCCardFlag.swift */; };
@@ -88,7 +90,6 @@
 		2CCE46BB20D21EBB0090591C /* CreatePackageCategorySetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CCE46BA20D21EBB0090591C /* CreatePackageCategorySetViewController.swift */; };
 		2CCE46BD20D21FDE0090591C /* CategoryLabelsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CCE46BC20D21FDE0090591C /* CategoryLabelsTableViewCell.swift */; };
 		2CD4BA9620DC8F2900D72E25 /* ProfileFaceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD4BA9520DC8F2900D72E25 /* ProfileFaceTableViewCell.swift */; };
-		2CD4BA9820DC981E00D72E25 /* ProfileActionsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD4BA9720DC981E00D72E25 /* ProfileActionsTableViewCell.swift */; };
 		2CD4BA9A20DC98EE00D72E25 /* StackViewIconTextActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD4BA9920DC98EE00D72E25 /* StackViewIconTextActionView.swift */; };
 		2CD4BA9C20DCADE400D72E25 /* RowButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD4BA9B20DCADE400D72E25 /* RowButtonTableViewCell.swift */; };
 		2CD4BA9E20DDFBE000D72E25 /* InterestPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD4BA9D20DDFBE000D72E25 /* InterestPickerViewController.swift */; };
@@ -159,6 +160,8 @@
 		2C0AC76020D7E24000437FCC /* TemplateCardTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateCardTableViewCell.swift; sourceTree = "<group>"; };
 		2C0AC76220D8F75400437FCC /* SmallPillLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallPillLabel.swift; sourceTree = "<group>"; };
 		2C0AC76420DA296300437FCC /* ListViewButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewButtonTableViewCell.swift; sourceTree = "<group>"; };
+		2C2F0FD620FAB980001BBC17 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
+		2C2F0FD820FABCF4001BBC17 /* Notification.Name+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification.Name+Extensions.swift"; sourceTree = "<group>"; };
 		2C386BD320A94D4A00AC5F5D /* PackageAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageAnnotation.swift; sourceTree = "<group>"; };
 		2C386BD520A954C000AC5F5D /* utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = utils.swift; sourceTree = "<group>"; };
 		2C47AB4D20AAA85B0050DC0D /* MCCardFlag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCCardFlag.swift; sourceTree = "<group>"; };
@@ -245,7 +248,6 @@
 		2CCE46BA20D21EBB0090591C /* CreatePackageCategorySetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePackageCategorySetViewController.swift; sourceTree = "<group>"; };
 		2CCE46BC20D21FDE0090591C /* CategoryLabelsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryLabelsTableViewCell.swift; sourceTree = "<group>"; };
 		2CD4BA9520DC8F2900D72E25 /* ProfileFaceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileFaceTableViewCell.swift; sourceTree = "<group>"; };
-		2CD4BA9720DC981E00D72E25 /* ProfileActionsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileActionsTableViewCell.swift; sourceTree = "<group>"; };
 		2CD4BA9920DC98EE00D72E25 /* StackViewIconTextActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackViewIconTextActionView.swift; sourceTree = "<group>"; };
 		2CD4BA9B20DCADE400D72E25 /* RowButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowButtonTableViewCell.swift; sourceTree = "<group>"; };
 		2CD4BA9D20DDFBE000D72E25 /* InterestPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = InterestPickerViewController.swift; path = Auth/InterestPickerViewController.swift; sourceTree = "<group>"; };
@@ -346,7 +348,6 @@
 		2C47AB5120AAAA9B0050DC0D /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				2CE12D8B208F2B5900C4625A /* LocationManager.swift */,
 				2C90F02B20F0383F004966E4 /* mountain.gpx */,
 				2CB8596A20DBD86700067420 /* homewalk.gpx */,
 				2C386BD520A954C000AC5F5D /* utils.swift */,
@@ -360,6 +361,7 @@
 				2CF5BABB20CA7540006A6FAE /* UIButton+Extensions.swift */,
 				2CA1187E20EF1C7300EBA4A8 /* String+Extensions.swift */,
 				2CDE1EAF20B2A24400D45170 /* UILabel+Extensions.swift */,
+				2C2F0FD820FABCF4001BBC17 /* Notification.Name+Extensions.swift */,
 				2CDE1EA920B28F5E00D45170 /* Theme.swift */,
 				2C47AB5620AABDC40050DC0D /* Enums.swift */,
 			);
@@ -436,7 +438,6 @@
 				2CD4BA9F20DE04D400D72E25 /* TextFieldWithBorder.swift */,
 				2CD4BA9B20DCADE400D72E25 /* RowButtonTableViewCell.swift */,
 				2CD4BA9920DC98EE00D72E25 /* StackViewIconTextActionView.swift */,
-				2CD4BA9720DC981E00D72E25 /* ProfileActionsTableViewCell.swift */,
 				2CD4BA9520DC8F2900D72E25 /* ProfileFaceTableViewCell.swift */,
 				2C0AC76420DA296300437FCC /* ListViewButtonTableViewCell.swift */,
 				2C0AC76220D8F75400437FCC /* SmallPillLabel.swift */,
@@ -579,6 +580,8 @@
 		2CAA8BDC20A2B8F4007F625F /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				2CE12D8B208F2B5900C4625A /* LocationManager.swift */,
+				2C2F0FD620FAB980001BBC17 /* UserManager.swift */,
 				2CE12D802089923F00C4625A /* Package.swift */,
 				2CEFFAF420E65558002BE812 /* ActivityAnnotation.swift */,
 				2CE12D86208A294C00C4625A /* Comment.swift */,
@@ -978,6 +981,7 @@
 				2C6B407720C7596E001679D2 /* ProfileCoordinator.swift in Sources */,
 				2C9B2B08209B297A00BD66BB /* OnboardingViewController.swift in Sources */,
 				2CA1187D20EF189900EBA4A8 /* MapRouteViewController.swift in Sources */,
+				2C2F0FD920FABCF4001BBC17 /* Notification.Name+Extensions.swift in Sources */,
 				2CD4BA9A20DC98EE00D72E25 /* StackViewIconTextActionView.swift in Sources */,
 				2C996AF120B12EEC00DC6E48 /* PackageDetailViewController.swift in Sources */,
 				2C8809B220C81FF000DDC357 /* GenericArithmetic.swift in Sources */,
@@ -1025,7 +1029,6 @@
 				2C47AB5920AAC7700050DC0D /* MCCardHeadline.swift in Sources */,
 				2CA1187B20EB727800EBA4A8 /* CreateConversationLegislativeAreaViewController.swift in Sources */,
 				2CAA8BED20A40ADD007F625F /* ExploreViewController.swift in Sources */,
-				2CD4BA9820DC981E00D72E25 /* ProfileActionsTableViewCell.swift in Sources */,
 				2CDE1EAA20B28F5E00D45170 /* Theme.swift in Sources */,
 				2C4EACF420CFB8B800CD741A /* CreatePackageReviewViewController.swift in Sources */,
 				2CCE46B920D20E7A0090591C /* FloatingLabel.swift in Sources */,
@@ -1035,6 +1038,7 @@
 				2C4EACF020CFB76A00CD741A /* CreatePackageContentViewController.swift in Sources */,
 				2C8809AA20C7BCA400DDC357 /* ProgressPath.swift in Sources */,
 				2CAE906320EA8CEF00F23937 /* CommunityTableViewCell.swift in Sources */,
+				2C2F0FD720FAB980001BBC17 /* UserManager.swift in Sources */,
 				2CF5BAC620CB8612006A6FAE /* DropoffAnnotation.swift in Sources */,
 				2C7A735D20B7B493009748E6 /* PostsViewController.swift in Sources */,
 				2C4EACF220CFB78A00CD741A /* CreatePackageTemplatesViewController.swift in Sources */,
