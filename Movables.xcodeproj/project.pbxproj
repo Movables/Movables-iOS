@@ -40,7 +40,6 @@
 		2C8809AC20C7BE1300DDC357 /* ProgressPathRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C8809AB20C7BE1300DDC357 /* ProgressPathRenderer.swift */; };
 		2C8809B020C7CEAA00DDC357 /* MCCountdownKeyLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C8809AF20C7CEAA00DDC357 /* MCCountdownKeyLabelView.swift */; };
 		2C8809B220C81FF000DDC357 /* GenericArithmetic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C8809B120C81FF000DDC357 /* GenericArithmetic.swift */; };
-		2C96DFCB20F84E1A002A272D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2C96DFC920F84E1A002A272D /* GoogleService-Info.plist */; };
 		2C96DFCC20F84E1A002A272D /* credentials.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2C96DFCA20F84E1A002A272D /* credentials.plist */; };
 		2C996AF120B12EEC00DC6E48 /* PackageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C996AEF20B12EEC00DC6E48 /* PackageDetailViewController.swift */; };
 		2C996AF220B12EEC00DC6E48 /* PackageDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2C996AF020B12EEC00DC6E48 /* PackageDetailViewController.xib */; };
@@ -160,6 +159,7 @@
 		2C0AC76020D7E24000437FCC /* TemplateCardTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateCardTableViewCell.swift; sourceTree = "<group>"; };
 		2C0AC76220D8F75400437FCC /* SmallPillLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallPillLabel.swift; sourceTree = "<group>"; };
 		2C0AC76420DA296300437FCC /* ListViewButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewButtonTableViewCell.swift; sourceTree = "<group>"; };
+		2C15EFC120FB7B91009038DE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2C2F0FD620FAB980001BBC17 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		2C2F0FD820FABCF4001BBC17 /* Notification.Name+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification.Name+Extensions.swift"; sourceTree = "<group>"; };
 		2C386BD320A94D4A00AC5F5D /* PackageAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageAnnotation.swift; sourceTree = "<group>"; };
@@ -343,6 +343,31 @@
 				9AD895961502F523A9864C36 /* Pods_MovablesUITests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2C15EFBE20FB7B6C009038DE /* Firebase */ = {
+			isa = PBXGroup;
+			children = (
+				2C15EFC020FB7B7D009038DE /* Prod */,
+				2C15EFBF20FB7B77009038DE /* Dev */,
+			);
+			path = Firebase;
+			sourceTree = "<group>";
+		};
+		2C15EFBF20FB7B77009038DE /* Dev */ = {
+			isa = PBXGroup;
+			children = (
+				2C96DFC920F84E1A002A272D /* GoogleService-Info.plist */,
+			);
+			path = Dev;
+			sourceTree = "<group>";
+		};
+		2C15EFC020FB7B7D009038DE /* Prod */ = {
+			isa = PBXGroup;
+			children = (
+				2C15EFC120FB7B91009038DE /* GoogleService-Info.plist */,
+			);
+			path = Prod;
 			sourceTree = "<group>";
 		};
 		2C47AB5120AAAA9B0050DC0D /* Utils */ = {
@@ -532,6 +557,7 @@
 		2C9DA3D7206365EA0041098A /* Movables */ = {
 			isa = PBXGroup;
 			children = (
+				2C15EFBE20FB7B6C009038DE /* Firebase */,
 				2C9DA3D8206365EA0041098A /* AppDelegate.swift */,
 				2C9B2AFA209B212200BD66BB /* Coordinators */,
 				2C9B2B05209B293C00BD66BB /* CustomViews */,
@@ -542,7 +568,6 @@
 				2C9DA3E1206365EA0041098A /* LaunchScreen.storyboard */,
 				2C9DA3E4206365EA0041098A /* Info.plist */,
 				2C96DFCA20F84E1A002A272D /* credentials.plist */,
-				2C96DFC920F84E1A002A272D /* GoogleService-Info.plist */,
 				9971D8CD20F0A2F600A41081 /* Localizable.strings */,
 			);
 			path = Movables;
@@ -646,10 +671,11 @@
 				C56B9E83C636D2919AC92E7D /* [CP] Check Pods Manifest.lock */,
 				2C9DA3D1206365EA0041098A /* Sources */,
 				2C9DA3D2206365EA0041098A /* Frameworks */,
+				2C15EFC320FB7C45009038DE /* Setup Firebase Environment GoogleService-Info.plist */,
 				2C9DA3D3206365EA0041098A /* Resources */,
 				2F578F9558989F766B995200 /* [CP] Embed Pods Frameworks */,
 				4D1E7082193FA660A5302FB7 /* [CP] Copy Pods Resources */,
-				2C793767206F725100E7C863 /* ShellScript */,
+				2C793767206F725100E7C863 /* Setup Fabric */,
 			);
 			buildRules = (
 			);
@@ -758,7 +784,6 @@
 				2CAA8BE420A2CCC9007F625F /* LoginViewController.xib in Resources */,
 				9971D8CB20F0A2F600A41081 /* Localizable.strings in Resources */,
 				2C9B2B04209B293900BD66BB /* OnboardingViewController.xib in Resources */,
-				2C96DFCB20F84E1A002A272D /* GoogleService-Info.plist in Resources */,
 				2CEE36F420C1536A0097AC5F /* ProfileViewController.xib in Resources */,
 				2CAA8BEE20A40ADD007F625F /* ExploreViewController.xib in Resources */,
 				2CEE36F520C1536A0097AC5F /* MoveViewController.xib in Resources */,
@@ -785,13 +810,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		2C793767206F725100E7C863 /* ShellScript */ = {
+		2C15EFC320FB7C45009038DE /* Setup Firebase Environment GoogleService-Info.plist */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Setup Firebase Environment GoogleService-Info.plist";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Name of the resource we're selectively copying\nGOOGLESERVICE_INFO_PLIST=GoogleService-Info.plist\n\n# Get references to dev and prod versions of the GoogleService-Info.plist\n# NOTE: These should only live on the file system and should NOT be part of the target (since we'll be adding them to the target manually)\nGOOGLESERVICE_INFO_DEV=${PROJECT_DIR}/${TARGET_NAME}/Firebase/Dev/${GOOGLESERVICE_INFO_PLIST}\nGOOGLESERVICE_INFO_PROD=${PROJECT_DIR}/${TARGET_NAME}/Firebase/Prod/${GOOGLESERVICE_INFO_PLIST}\n\n# Make sure the dev version of GoogleService-Info.plist exists\necho \"Looking for ${GOOGLESERVICE_INFO_PLIST} in ${GOOGLESERVICE_INFO_DEV}\"\nif [ ! -f $GOOGLESERVICE_INFO_DEV ]\nthen\necho \"No Development GoogleService-Info.plist found. Please ensure it's in the proper directory.\"\nexit 1\nfi\n\n# Make sure the prod version of GoogleService-Info.plist exists\necho \"Looking for ${GOOGLESERVICE_INFO_PLIST} in ${GOOGLESERVICE_INFO_PROD}\"\nif [ ! -f $GOOGLESERVICE_INFO_PROD ]\nthen\necho \"No Production GoogleService-Info.plist found. Please ensure it's in the proper directory.\"\nexit 1\nfi\n\n# Get a reference to the destination location for the GoogleService-Info.plist\nPLIST_DESTINATION=${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app\necho \"Will copy ${GOOGLESERVICE_INFO_PLIST} to final destination: ${PLIST_DESTINATION}\"\n\n# Copy over the prod GoogleService-Info.plist for Release builds\nif [ \"${CONFIGURATION}\" == \"Release\" ]\nthen\necho \"Using ${GOOGLESERVICE_INFO_PROD}\"\ncp \"${GOOGLESERVICE_INFO_PROD}\" \"${PLIST_DESTINATION}\"\nelse\necho \"Using ${GOOGLESERVICE_INFO_DEV}\"\ncp \"${GOOGLESERVICE_INFO_DEV}\" \"${PLIST_DESTINATION}\"\nfi\n";
+		};
+		2C793767206F725100E7C863 /* Setup Fabric */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Setup Fabric";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
