@@ -159,7 +159,8 @@
 		2C0AC76020D7E24000437FCC /* TemplateCardTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateCardTableViewCell.swift; sourceTree = "<group>"; };
 		2C0AC76220D8F75400437FCC /* SmallPillLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallPillLabel.swift; sourceTree = "<group>"; };
 		2C0AC76420DA296300437FCC /* ListViewButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewButtonTableViewCell.swift; sourceTree = "<group>"; };
-		2C15EFC120FB7B91009038DE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		2C15EFC520FB801B009038DE /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		2C15EFC620FB8026009038DE /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2C2F0FD620FAB980001BBC17 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		2C2F0FD820FABCF4001BBC17 /* Notification.Name+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification.Name+Extensions.swift"; sourceTree = "<group>"; };
 		2C386BD320A94D4A00AC5F5D /* PackageAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageAnnotation.swift; sourceTree = "<group>"; };
@@ -191,7 +192,6 @@
 		2C8809AF20C7CEAA00DDC357 /* MCCountdownKeyLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCCountdownKeyLabelView.swift; sourceTree = "<group>"; };
 		2C8809B120C81FF000DDC357 /* GenericArithmetic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericArithmetic.swift; sourceTree = "<group>"; };
 		2C90F02B20F0383F004966E4 /* mountain.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = mountain.gpx; path = /Users/eddie/Documents/Developer/Movables/Movables/Utils/mountain.gpx; sourceTree = "<absolute>"; };
-		2C96DFC920F84E1A002A272D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2C96DFCA20F84E1A002A272D /* credentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = credentials.plist; sourceTree = "<group>"; };
 		2C996AEF20B12EEC00DC6E48 /* PackageDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageDetailViewController.swift; sourceTree = "<group>"; };
 		2C996AF020B12EEC00DC6E48 /* PackageDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PackageDetailViewController.xib; sourceTree = "<group>"; };
@@ -357,7 +357,7 @@
 		2C15EFBF20FB7B77009038DE /* Dev */ = {
 			isa = PBXGroup;
 			children = (
-				2C96DFC920F84E1A002A272D /* GoogleService-Info.plist */,
+				2C15EFC520FB801B009038DE /* GoogleService-Info.plist */,
 			);
 			path = Dev;
 			sourceTree = "<group>";
@@ -365,7 +365,7 @@
 		2C15EFC020FB7B7D009038DE /* Prod */ = {
 			isa = PBXGroup;
 			children = (
-				2C15EFC120FB7B91009038DE /* GoogleService-Info.plist */,
+				2C15EFC620FB8026009038DE /* GoogleService-Info.plist */,
 			);
 			path = Prod;
 			sourceTree = "<group>";
