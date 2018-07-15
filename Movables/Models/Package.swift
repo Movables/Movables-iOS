@@ -960,6 +960,8 @@ func unfollowPackageWithRef(packageReference: DocumentReference, userReference: 
 func pickupPackageWithRef(packageReference: DocumentReference, userReference: DocumentReference, completion: @escaping (Bool) -> ()) {
     
     // FOLLOW PACKAGE IF NOT ALREADY FOLLOWING
+    LocationManager.shared.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+    LocationManager.shared.requestLocation()
     
     Firestore.firestore().runTransaction({ (transaction, errorPointer) -> Any? in
         let userDocument: DocumentSnapshot
@@ -1194,6 +1196,10 @@ func pickupPackageWithRef(packageReference: DocumentReference, userReference: Do
 }
 
 func dropoffPackageWithRef(packageReference: DocumentReference, userReference: DocumentReference, completion: @escaping (Bool, [String: Any]?, UIAlertController?) -> ()) {
+    
+    LocationManager.shared.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+    LocationManager.shared.requestLocation()
+
     Firestore.firestore().runTransaction({ (transaction, errorPointer) -> Any? in
         let userDocument: DocumentSnapshot
         do {

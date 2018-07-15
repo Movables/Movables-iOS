@@ -44,7 +44,7 @@
 		2C96DFCC20F84E1A002A272D /* credentials.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2C96DFCA20F84E1A002A272D /* credentials.plist */; };
 		2C996AF120B12EEC00DC6E48 /* PackageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C996AEF20B12EEC00DC6E48 /* PackageDetailViewController.swift */; };
 		2C996AF220B12EEC00DC6E48 /* PackageDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2C996AF020B12EEC00DC6E48 /* PackageDetailViewController.xib */; };
-		2C9975FC20AC3F86008B2B3C /* MCDiscoveryCardCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9975FB20AC3F86008B2B3C /* MCDiscoveryCardCollectionViewCell.swift */; };
+		2C9975FC20AC3F86008B2B3C /* MCExploreCardCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9975FB20AC3F86008B2B3C /* MCExploreCardCollectionViewCell.swift */; };
 		2C99760020AC6898008B2B3C /* MCCardKeyValueLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9975FF20AC6898008B2B3C /* MCCardKeyValueLabel.swift */; };
 		2C99760220AC88E3008B2B3C /* MCProgressBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C99760120AC88E3008B2B3C /* MCProgressBarView.swift */; };
 		2C9ABE7520E25CB2003E2D63 /* EventActivityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9ABE7420E25CB2003E2D63 /* EventActivityTableViewCell.swift */; };
@@ -72,7 +72,7 @@
 		2CAA8BE020A2BFB9007F625F /* MainCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAA8BDF20A2BFB9007F625F /* MainCoordinator.swift */; };
 		2CAA8BE320A2CCC9007F625F /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAA8BE120A2CCC9007F625F /* LoginViewController.swift */; };
 		2CAA8BE420A2CCC9007F625F /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CAA8BE220A2CCC9007F625F /* LoginViewController.xib */; };
-		2CAA8BE620A40A3A007F625F /* DiscoverCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAA8BE520A40A39007F625F /* DiscoverCoordinator.swift */; };
+		2CAA8BE620A40A3A007F625F /* ExploreCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAA8BE520A40A39007F625F /* ExploreCoordinator.swift */; };
 		2CAA8BE820A40A65007F625F /* MoveCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAA8BE720A40A65007F625F /* MoveCoordinator.swift */; };
 		2CAA8BEA20A40A80007F625F /* ActivitiesCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAA8BE920A40A80007F625F /* ActivitiesCoordinator.swift */; };
 		2CAA8BED20A40ADD007F625F /* ExploreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAA8BEB20A40ADD007F625F /* ExploreViewController.swift */; };
@@ -195,7 +195,7 @@
 		2C96DFCA20F84E1A002A272D /* credentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = credentials.plist; sourceTree = "<group>"; };
 		2C996AEF20B12EEC00DC6E48 /* PackageDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageDetailViewController.swift; sourceTree = "<group>"; };
 		2C996AF020B12EEC00DC6E48 /* PackageDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PackageDetailViewController.xib; sourceTree = "<group>"; };
-		2C9975FB20AC3F86008B2B3C /* MCDiscoveryCardCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCDiscoveryCardCollectionViewCell.swift; sourceTree = "<group>"; };
+		2C9975FB20AC3F86008B2B3C /* MCExploreCardCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCExploreCardCollectionViewCell.swift; sourceTree = "<group>"; };
 		2C9975FF20AC6898008B2B3C /* MCCardKeyValueLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCCardKeyValueLabel.swift; sourceTree = "<group>"; };
 		2C99760120AC88E3008B2B3C /* MCProgressBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCProgressBarView.swift; sourceTree = "<group>"; };
 		2C9ABE7420E25CB2003E2D63 /* EventActivityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventActivityTableViewCell.swift; sourceTree = "<group>"; };
@@ -229,7 +229,7 @@
 		2CAA8BDF20A2BFB9007F625F /* MainCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCoordinator.swift; sourceTree = "<group>"; };
 		2CAA8BE120A2CCC9007F625F /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = Auth/LoginViewController.swift; sourceTree = "<group>"; };
 		2CAA8BE220A2CCC9007F625F /* LoginViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = LoginViewController.xib; path = Auth/LoginViewController.xib; sourceTree = "<group>"; };
-		2CAA8BE520A40A39007F625F /* DiscoverCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverCoordinator.swift; sourceTree = "<group>"; };
+		2CAA8BE520A40A39007F625F /* ExploreCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreCoordinator.swift; sourceTree = "<group>"; };
 		2CAA8BE720A40A65007F625F /* MoveCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveCoordinator.swift; sourceTree = "<group>"; };
 		2CAA8BE920A40A80007F625F /* ActivitiesCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitiesCoordinator.swift; sourceTree = "<group>"; };
 		2CAA8BEB20A40ADD007F625F /* ExploreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreViewController.swift; sourceTree = "<group>"; };
@@ -410,7 +410,7 @@
 				2CA1187620EB6B0C00EBA4A8 /* CreateConversationCoordinator.swift */,
 				2C6B407620C7596E001679D2 /* ProfileCoordinator.swift */,
 				2CAA8BDF20A2BFB9007F625F /* MainCoordinator.swift */,
-				2CAA8BE520A40A39007F625F /* DiscoverCoordinator.swift */,
+				2CAA8BE520A40A39007F625F /* ExploreCoordinator.swift */,
 				2CAA8BE720A40A65007F625F /* MoveCoordinator.swift */,
 				2CAA8BE920A40A80007F625F /* ActivitiesCoordinator.swift */,
 				2CAA8BDD20A2BD11007F625F /* AuthCoordinator.swift */,
@@ -471,7 +471,7 @@
 				2CDE1EA720B2737500D45170 /* ExpandableTextCollectionViewCell.swift */,
 				2CDE1EA120B13B0D00D45170 /* PackageDetailHeaderCollectionReusableView.swift */,
 				2C99760120AC88E3008B2B3C /* MCProgressBarView.swift */,
-				2C9975FB20AC3F86008B2B3C /* MCDiscoveryCardCollectionViewCell.swift */,
+				2C9975FB20AC3F86008B2B3C /* MCExploreCardCollectionViewCell.swift */,
 				2C62164120AA9B68002DBAC0 /* MCCard.swift */,
 				2C9975FF20AC6898008B2B3C /* MCCardKeyValueLabel.swift */,
 				2C47AB5A20AAD3080050DC0D /* MCCircleWithLabel.swift */,
@@ -991,7 +991,7 @@
 				2CA1186D20E5191700EBA4A8 /* ActivityTableViewCell.swift in Sources */,
 				2CDE1EBA20B2F44D00D45170 /* OriginAnnotation.swift in Sources */,
 				2CD4BAA420DE221E00D72E25 /* Structs.swift in Sources */,
-				2C9975FC20AC3F86008B2B3C /* MCDiscoveryCardCollectionViewCell.swift in Sources */,
+				2C9975FC20AC3F86008B2B3C /* MCExploreCardCollectionViewCell.swift in Sources */,
 				2CA1187920EB6B7D00EBA4A8 /* CreateConversationTypeSelectViewController.swift in Sources */,
 				2C386BD620A954C000AC5F5D /* utils.swift in Sources */,
 				2CA1187F20EF1C7300EBA4A8 /* String+Extensions.swift in Sources */,
@@ -1014,7 +1014,7 @@
 				2CD4BA9C20DCADE400D72E25 /* RowButtonTableViewCell.swift in Sources */,
 				2C6B407320C6A2BC001679D2 /* MCMoveCardView.swift in Sources */,
 				2CCE46B520D0D3EF0090591C /* LargeTitleWithSubtitleTableViewCell.swift in Sources */,
-				2CAA8BE620A40A3A007F625F /* DiscoverCoordinator.swift in Sources */,
+				2CAA8BE620A40A3A007F625F /* ExploreCoordinator.swift in Sources */,
 				2C8809AC20C7BE1300DDC357 /* ProgressPathRenderer.swift in Sources */,
 				2CDE1EA620B1B54E00D45170 /* KeyVallueCollectionViewCell.swift in Sources */,
 				2CA4476520E087FB00D8D897 /* ExternalActionEditorView.swift in Sources */,

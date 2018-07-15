@@ -69,17 +69,20 @@ class ExploreViewController: UIViewController {
     }
     var sortBy: SortBy = .distance
     var status: PackageStatus?
-    var initialFetchAttemptMade: Bool = false
     
     
     private var indexOfCellBeforeDragging = 0
     private var collectionViewFlowLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout.init()
+    
+    var initialFetchMade = false
+    var collectionViewHeightConstraint: NSLayoutConstraint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         navigationController?.setNavigationBarHidden(true, animated: false)
         
+        setupLocationManager()
         setupMapView()
         setupTopicsTrendingCollectionView()
         setupToggleCollectionView()
@@ -101,11 +104,12 @@ class ExploreViewController: UIViewController {
         let inset: CGFloat = calculateSectionInset()
         collectionViewFlowLayout.sectionInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
         
-        collectionViewFlowLayout.itemSize = CGSize(width: view.safeAreaLayoutGuide.layoutFrame.width - inset * 2, height: cardPeekCollectionView.frame.height)
+        collectionViewFlowLayout.itemSize = UICollectionViewFlowLayoutAutomaticSize
+        collectionViewFlowLayout.estimatedItemSize = CGSize(width: view.safeAreaLayoutGuide.layoutFrame.width - inset * 2, height: cardPeekCollectionView.frame.height)
     }
     
     private func indexOfMajorCell() -> Int {
-        let itemWidth = collectionViewFlowLayout.itemSize.width
+        let itemWidth = collectionViewFlowLayout.estimatedItemSize.width
         let proportionalOffset = collectionViewFlowLayout.collectionView!.contentOffset.x / itemWidth
         return Int(round(proportionalOffset))
     }
@@ -120,9 +124,16 @@ class ExploreViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    func setupMapView() {
-        LocationManager.shared.delegate = self
+    func setupLocationManager() {
+        let locationManager = LocationManager.shared
+        locationManager.requestWhenInUseAuthorization()
+        LocationManager.shared.desiredAccuracy = kCLLocationAccuracyHundredMeters
         LocationManager.shared.startUpdatingLocation()
+        locationManager.delegate = self
+    }
+    
+    func setupMapView() {
+        fetchNearbyPackagePreviews()
         mapView.tintColor = Theme().keyTint
         mapView.isRotateEnabled = false
         mapView.showsUserLocation = true
@@ -131,8 +142,8 @@ class ExploreViewController: UIViewController {
         mapView.delegate = self
         mapView.register(MKMarkerAnnotationView.self, forAnnotationViewWithReuseIdentifier: MKMapViewDefaultAnnotationViewReuseIdentifier)
         mapView.register(PackagesClusterView.self, forAnnotationViewWithReuseIdentifier: MKMapViewDefaultClusterAnnotationViewReuseIdentifier)
-        mapView.layoutMargins = UIEdgeInsets(top: view.safeAreaInsets.top + 94 + 50, left: 50, bottom: cardPeekCollectionView.frame.height + 66, right: 50)
-        
+        mapView.layoutMargins = UIEdgeInsets(top: view.safeAreaInsets.top + 94 + 20, left: 20, bottom: view.safeAreaInsets.bottom + cardPeekCollectionView.frame.height + 30 + 8, right: 20)
+
         searchButton = VisualEffectsFabButton(frame: .zero, dimension: 56)
         searchButton.isHidden = true
         searchButton.translatesAutoresizingMaskIntoConstraints = false
@@ -207,6 +218,8 @@ class ExploreViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        LocationManager.shared.stopUpdatingLocation()
     }
     
     private func setupCollectionView() {
@@ -220,60 +233,65 @@ class ExploreViewController: UIViewController {
         cardPeekCollectionView.showsHorizontalScrollIndicator = false
         cardPeekCollectionView.collectionViewLayout = collectionViewFlowLayout
         cardPeekCollectionView.alwaysBounceHorizontal = true
+        collectionViewHeightConstraint = cardPeekCollectionView.heightAnchor.constraint(greaterThanOrEqualToConstant: self.view.frame.height * 3 / 7 - 70)
+        collectionViewHeightConstraint.priority = .defaultHigh
+        NSLayoutConstraint.activate([
+            collectionViewHeightConstraint
+        ])
     }
     
     func fetchNearbyPackagePreviews() {
-        
-            if let location = LocationManager.shared.location {
+        LocationManager.shared.requestLocation()
+        if let location = LocationManager.shared.location {
+            initialFetchMade = true
+            let index:Index!
+            
+            let query = Query(query: "")
+            query.attributesToRetrieve = ["tagName", "headline", "recipientName", "moversCount", "destination", "origin", "_geoloc", "dueDate", "_tags", "status", "objectId"]
 
-                let index:Index!
-                
-                let query = Query(query: "")
-                query.attributesToRetrieve = ["tagName", "headline", "recipientName", "moversCount", "destination", "origin", "_geoloc", "dueDate", "_tags", "status", "objectId"]
-
-                if sortBy == .dueDate {
-                    index = apiClient.index(withName: "packagesDueDate")
-                } else if sortBy == .movers {
-                    index = apiClient.index(withName: "packagesMoversCount")
-                } else if sortBy == .followers {
-                    index = apiClient.index(withName: "packagesFollowersCount")
+            if sortBy == .dueDate {
+                index = apiClient.index(withName: "packagesDueDate")
+            } else if sortBy == .movers {
+                index = apiClient.index(withName: "packagesMoversCount")
+            } else if sortBy == .followers {
+                index = apiClient.index(withName: "packagesFollowersCount")
+            } else {
+                index = apiClient.index(withName: "packages")
+                // sort by distance by default
+                query.aroundLatLng = LatLng(lat: location.coordinate.latitude, lng: location.coordinate.longitude)
+                query.aroundRadius = .explicit(300000)
+            }
+            
+            var categoriesArray:[String] = []
+            for category in self.categories {
+                categoriesArray.append(getStringForCategory(category: category))
+            }
+            query.tagFilters = categoriesArray
+            
+            var filterString = ""
+            if let tagName = self.tagName {
+                filterString += "tagName:\(tagName)"
+                query.filters = filterString
+            }
+            if let status = self.status {
+                if self.tagName != nil && !self.tagName!.isEmpty {
+                    filterString += " AND status:\(getStringForStatusEnum(statusEnum: status))"
                 } else {
-                    index = apiClient.index(withName: "packages")
-                    // sort by distance by default
-                    query.aroundLatLng = LatLng(lat: location.coordinate.latitude, lng: location.coordinate.longitude)
-                    query.aroundRadius = .explicit(300000)
+                    filterString += "NOT status:\(getStringForStatusEnum(statusEnum: .delivered))"
                 }
-                
-                var categoriesArray:[String] = []
-                for category in self.categories {
-                    categoriesArray.append(getStringForCategory(category: category))
-                }
-                query.tagFilters = categoriesArray
-                
-                var filterString = ""
-                if let tagName = self.tagName {
-                    filterString += "tagName:\(tagName)"
-                    query.filters = filterString
-                }
-                if let status = self.status {
-                    if self.tagName != nil && !self.tagName!.isEmpty {
-                        filterString += " AND status:\(getStringForStatusEnum(statusEnum: status))"
-                    } else {
-                        filterString += "NOT status:\(getStringForStatusEnum(statusEnum: .delivered))"
+                query.filters = filterString
+            }
+            
+            index.search(query, completionHandler: { (content, error) -> Void in
+                if error == nil {
+                    var packagePreviews: [PackagePreview] = []
+                    self.mapView.removeAnnotations(self.annotations)
+                    self.annotations.removeAll()
+                    self.packagePreviews.removeAll()
+                    guard let hits = content!["hits"] as? [[String: AnyObject]] else {
+                        print("hits error")
+                        return
                     }
-                    query.filters = filterString
-                }
-                
-                index.search(query, completionHandler: { (content, error) -> Void in
-                    if error == nil {
-                        var packagePreviews: [PackagePreview] = []
-                        self.mapView.removeAnnotations(self.annotations)
-                        self.annotations.removeAll()
-                        self.packagePreviews.removeAll()
-                        guard let hits = content!["hits"] as? [[String: AnyObject]] else {
-                            print("hits error")
-                            return
-                        }
                         for hit in hits {
                             let packagePreview = PackagePreview(hit: hit)
                             packagePreviews.append(packagePreview)
@@ -284,42 +302,43 @@ class ExploreViewController: UIViewController {
                         self.packagePreviews.removeAll()
                         self.packagePreviews = packagePreviews
                         self.cardPeekCollectionView.reloadData()
-                        
+                        let height: CGFloat = self.cardPeekCollectionView.collectionViewLayout.collectionViewContentSize.height
+                        self.collectionViewHeightConstraint.constant = height
+                        self.view.layoutIfNeeded()
+
                         DispatchQueue.main.async {
                             if self.annotations.count > 0 {
                                 // construct new annotations
 
-                                
-
-                                let newAnnotations = self.annotationsByDistributingAnnotations(annotations: self.annotations) { (oldAnnotation:PackageAnnotation, newCoordinate:CLLocationCoordinate2D) in
-                                    return PackageAnnotation(with: oldAnnotation.title, coordinate: newCoordinate, packagePreview: oldAnnotation.packagePreview!)
-                                }
-                                
-                                var newPackagePreviews:[PackagePreview] = []
-                                for annotation in newAnnotations {
-                                    newPackagePreviews.append(annotation.packagePreview!)
-                                }
-                                self.packagePreviews = newPackagePreviews
-                                self.cardPeekCollectionView.reloadData()
-                                
-                                self.mapView.removeAnnotations(self.mapView.annotations)
-                                self.annotations = newAnnotations
-                                self.mapView.showAnnotations(self.annotations, animated: true)
-                                self.mapView.selectAnnotation(self.annotations.first!, animated: true)
-                                
+                            let newAnnotations = self.annotationsByDistributingAnnotations(annotations: self.annotations) { (oldAnnotation:PackageAnnotation, newCoordinate:CLLocationCoordinate2D) in
+                                return PackageAnnotation(with: oldAnnotation.title, coordinate: newCoordinate, packagePreview: oldAnnotation.packagePreview!)
                             }
-                            if self.cardPeekCollectionView.numberOfItems(inSection: 0) == 0 {
-                                self.cardPeekCollectionView.isUserInteractionEnabled = false
-                            } else {
-                                self.cardPeekCollectionView.isUserInteractionEnabled = true
+                            
+                            var newPackagePreviews:[PackagePreview] = []
+                            for annotation in newAnnotations {
+                                newPackagePreviews.append(annotation.packagePreview!)
                             }
+                            self.packagePreviews = newPackagePreviews
+                            self.cardPeekCollectionView.reloadData()
+                            
+                            self.mapView.removeAnnotations(self.mapView.annotations)
+                            self.annotations = newAnnotations
+                            self.mapView.showAnnotations(self.annotations, animated: true)
+                            self.mapView.selectAnnotation(self.annotations.first!, animated: true)
+                            
                         }
-                    } else {
-                        print(error!)
+                        if self.cardPeekCollectionView.numberOfItems(inSection: 0) == 0 {
+                            self.cardPeekCollectionView.isUserInteractionEnabled = false
+                        } else {
+                            self.cardPeekCollectionView.isUserInteractionEnabled = true
+                        }
                     }
-                })
-            } else {
-                print("location not ready")
+                } else {
+                    print(error!)
+                }
+            })
+        } else {
+            print("location not ready")
         }
         
     }
@@ -552,7 +571,7 @@ extension ExploreViewController: UICollectionViewDelegate {
             if didUseSwipeToSkipCell {
                 print("did use swipe to skip cell")
                 let snapToIndex = indexOfCellBeforeDragging + (hasEnoughVelocityToSlideToTheNextCell ? 1 : -1)
-                let toValue = collectionViewFlowLayout.itemSize.width * CGFloat(snapToIndex)
+                let toValue = collectionViewFlowLayout.estimatedItemSize.width * CGFloat(snapToIndex)
                 
                 // Damping equal 1 => no oscillations => decay animation:
                 UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: velocity.x, options: .allowUserInteraction, animations: {
@@ -665,6 +684,7 @@ extension ExploreViewController: UICollectionViewDataSource {
         if collectionView == cardPeekCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "exploreCard", for: indexPath) as! MCExploreCardCollectionViewCell
             cell.packagePreview = packagePreviews[indexPath.item]
+            cell.cellWidth = collectionViewFlowLayout.estimatedItemSize.width
             cell.layout()
             return cell
         } else if collectionView == togglesCollectionView {
@@ -696,10 +716,14 @@ extension ExploreViewController: UICollectionViewDataSource {
 
 extension ExploreViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if !initialFetchAttemptMade {
+        print("did update locations: \(locations)")
+        if !initialFetchMade {
             fetchNearbyPackagePreviews()
-            initialFetchAttemptMade = true
         }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("location manager fail with error: \(error)")
     }
 }
 

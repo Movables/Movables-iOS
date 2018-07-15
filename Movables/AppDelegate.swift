@@ -48,9 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, FBSDKL
         readCredentials()
         
         setupServices(app: application, launchOptions: launchOptions)
-                
-        setupLocationManager()
-        
+                        
         setupAppCoordinator()
         
         IQKeyboardManager.shared.enable = true
@@ -226,12 +224,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, FBSDKL
         FBSDKApplicationDelegate.sharedInstance().application(app, didFinishLaunchingWithOptions: launchOptions)
         
         Fabric.with([Crashlytics.self])
-    }
-
-    private func setupLocationManager() {
-        let locationManager = LocationManager.shared
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingLocation()
     }
 
     private func setupAppCoordinator() {

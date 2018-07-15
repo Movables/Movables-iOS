@@ -42,9 +42,9 @@ struct DestinationResultItem {
 
 class CreatePackageDestinationSearchViewController: UIViewController {
 
-    let CONTENT_INSET_TOP: CGFloat = UIApplication.shared.keyWindow!.safeAreaInsets.top + 39.5 + 12
-    let CONTENT_INSET_BOTTOM: CGFloat = UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 30 + (UIDevice.isIphoneX ? 10 : 28)
-    
+    let CONTENT_INSET_TOP: CGFloat = UIApplication.shared.keyWindow!.safeAreaInsets.top != 0 ? UIApplication.shared.keyWindow!.safeAreaInsets.top + 39.5 + 12 : 45.5 + 39.5 + 12
+    let CONTENT_INSET_BOTTOM: CGFloat = UIApplication.shared.keyWindow!.safeAreaInsets.bottom != 0 ? UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 30 + 10 : 34 + 30 + 28
+
     var createPackageCoordinator: CreatePackageCoordinator!
     var textField: UITextField!
     var textFieldContainer: MCCard!
@@ -247,6 +247,8 @@ class CreatePackageDestinationSearchViewController: UIViewController {
     
     func performSearch(with text:String) {
         print("begin search")
+        LocationManager.shared.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        LocationManager.shared.requestLocation()
         let request = MKLocalSearchRequest()
         request.naturalLanguageQuery = text
         request.region = MKCoordinateRegionMakeWithDistance(LocationManager.shared.location!.coordinate, 100000, 100000)

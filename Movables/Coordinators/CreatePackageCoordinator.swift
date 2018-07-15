@@ -28,6 +28,7 @@ import Foundation
 import Firebase
 import UIKit
 import SafariServices
+import CoreLocation
 
 class CreatePackageCoordinator: Coordinator {
     let rootViewController: UIViewController
@@ -53,6 +54,7 @@ class CreatePackageCoordinator: Coordinator {
         self.rootViewController = rootViewController
         self.tagSearchVC = CreatePackageTagSearchViewController()
         self.navigationController = UINavigationController(rootViewController: self.tagSearchVC)
+        LocationManager.shared.desiredAccuracy = kCLLocationAccuracyBestForNavigation
     }
     
     func start() {
@@ -121,6 +123,8 @@ class CreatePackageCoordinator: Coordinator {
     private func pushToReview(coverImageUrl: URL?) {
         let reviewVC = CreatePackageReviewViewController()
         
+        LocationManager.shared.requestLocation()
+        
         if coverImageUrl != nil {
             reviewVC.coverImageUrl = coverImageUrl!
         } else {
@@ -184,6 +188,7 @@ class CreatePackageCoordinator: Coordinator {
     func constructPackage(coverImageUrl: URL?, completion: @escaping (Bool, [String: Any]) -> ()) {
         var packageData: [String: Any] = [:]
         
+        LocationManager.shared.requestLocation()
         let location = LocationManager.shared.location
         packageData["_geoloc"] = GeoPoint(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
         
@@ -313,6 +318,9 @@ class CreatePackageCoordinator: Coordinator {
         let db = Firestore.firestore()
         var newPackageRef: DocumentReference?
         var topicTemplateRef: DocumentReference?
+        
+        LocationManager.shared.requestLocation()
+        
         db.runTransaction({ (transaction, errorPointer) -> Any? in
             let userReference: DocumentReference = db.collection("users").document(Auth.auth().currentUser!.uid)
             // -- save package with in_transit_by

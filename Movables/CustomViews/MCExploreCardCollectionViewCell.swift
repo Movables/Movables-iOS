@@ -37,6 +37,7 @@ class MCExploreCardCollectionViewCell: UICollectionViewCell {
     var fromLabelView: MCCardKeyValueLabel!
     var toGoLabel: UILabel!
     var progressBarView: MCProgressBarView!
+    var cellWidth: CGFloat!
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -63,11 +64,11 @@ class MCExploreCardCollectionViewCell: UICollectionViewCell {
         
         headlineLabel = MCCardHeadline(frame: .zero, rate: 50, fadeLength: 80, body: "")
         headlineLabel.translatesAutoresizingMaskIntoConstraints = false
-        cardView.addSubview(headlineLabel)
-        cardView.addConstraints([
-            NSLayoutConstraint(item: headlineLabel, attribute: .top, relatedBy: .equal, toItem: cardView, attribute: .top, multiplier: 1, constant: 26),
-            NSLayoutConstraint(item: headlineLabel, attribute: .left, relatedBy: .equal, toItem: cardView, attribute: .left, multiplier: 1, constant: 0),
-            NSLayoutConstraint(item: headlineLabel, attribute: .right, relatedBy: .equal, toItem: cardView, attribute: .right, multiplier: 1, constant: 0)
+        cardView.contentView.addSubview(headlineLabel)
+        cardView.contentView.addConstraints([
+            NSLayoutConstraint(item: headlineLabel, attribute: .top, relatedBy: .equal, toItem: cardView.contentView, attribute: .top, multiplier: 1, constant: 26),
+            NSLayoutConstraint(item: headlineLabel, attribute: .left, relatedBy: .equal, toItem: cardView.contentView, attribute: .left, multiplier: 1, constant: 0),
+            NSLayoutConstraint(item: headlineLabel, attribute: .right, relatedBy: .equal, toItem: cardView.contentView, attribute: .right, multiplier: 1, constant: 0)
             ])
 
         infoStackView = UIStackView(frame: .zero)
@@ -76,11 +77,11 @@ class MCExploreCardCollectionViewCell: UICollectionViewCell {
         infoStackView.axis = .vertical
         infoStackView.distribution = .fill
         infoStackView.spacing = 10
-        cardView.addSubview(infoStackView)
+        cardView.contentView.addSubview(infoStackView)
         
-        cardView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-22-[infoStackView]-10-|", options: .directionLeadingToTrailing, metrics: nil, views: ["infoStackView": infoStackView]))
+        cardView.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-22-[infoStackView]-10-|", options: .directionLeadingToTrailing, metrics: nil, views: ["infoStackView": infoStackView]))
         
-        cardView.addConstraint(NSLayoutConstraint(item: infoStackView, attribute: .top, relatedBy: .equal, toItem: headlineLabel, attribute: .bottom, multiplier: 1, constant: 8))
+        cardView.contentView.addConstraint(NSLayoutConstraint(item: infoStackView, attribute: .top, relatedBy: .equal, toItem: headlineLabel, attribute: .bottom, multiplier: 1, constant: 8))
         
         toLabelView = MCCardKeyValueLabel(frame: .zero)
         toLabelView.translatesAutoresizingMaskIntoConstraints = false
@@ -98,7 +99,7 @@ class MCExploreCardCollectionViewCell: UICollectionViewCell {
         cardView.contentView.addSubview(progressBarView)
         
         cardView.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[progressBarView]|", options: .directionLeadingToTrailing, metrics: nil, views: ["progressBarView": progressBarView]))
-        cardView.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[progressBarView(8)]|", options: .alignAllCenterX, metrics: nil, views: ["progressBarView": progressBarView]))
+        cardView.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[infoStackView]-8-[progressBarView(8)]|", options: [], metrics: nil, views: ["progressBarView": progressBarView, "infoStackView": infoStackView]))
         
     }
     
@@ -141,5 +142,9 @@ class MCExploreCardCollectionViewCell: UICollectionViewCell {
         progressBarView.percentage = packagePreview.packageStatus == .delivered ? 1 : min(CGFloat((packagePreview.distanceFrom > 0 ? packagePreview.distanceFrom : 0) / packagePreview.distanceTotal),  1)
         progressBarView.layoutIfNeeded()
         progressBarView.isHidden = true
+        
+        NSLayoutConstraint.activate([
+            contentView.widthAnchor.constraint(equalToConstant: cellWidth)
+        ])
     }
 }

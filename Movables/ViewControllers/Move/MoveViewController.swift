@@ -119,8 +119,6 @@ class MoveViewController: UIViewController {
         navigationItem.title = "Go"
         navigationController?.setNavigationBarHidden(true, animated: false)
         
-        LocationManager.shared.startUpdatingHeading()
-        LocationManager.shared.startUpdatingLocation()
         LocationManager.shared.delegate = self
         LocationManager.shared.activityType = .fitness
         
@@ -147,8 +145,8 @@ class MoveViewController: UIViewController {
         )
         NSLayoutConstraint.activate([
             emptyStateCardView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-            emptyStateCardView.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 3 / 7, constant: -8),
-            emptyStateCardView.descriptionLabel.bottomAnchor.constraint(equalTo: emptyStateCardView.centerYAnchor, constant: -20)
+            emptyStateCardView.heightAnchor.constraint(greaterThanOrEqualTo: self.view.heightAnchor, multiplier: 3 / 7, constant: -8),
+            emptyStateCardView.containerView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -44),
         ])
 
         
@@ -217,8 +215,13 @@ class MoveViewController: UIViewController {
         self.currentPackageListener = userDocument?.privateProfile.currentPackage?.addSnapshotListener({ (documentSnapshot, error) in
             guard let snapshot = documentSnapshot else {
                 print("error fetching document: \(error!)")
+                LocationManager.shared.stopUpdatingHeading()
+                LocationManager.shared.stopUpdatingLocation()
                 return
             }
+            LocationManager.shared.requestLocation()
+            LocationManager.shared.startUpdatingHeading()
+            LocationManager.shared.startUpdatingLocation()
             if self.currentPackage != nil {
                 let snapshotPackage = Package(snapshot: snapshot)
                 if snapshotPackage == self.currentPackage! {
@@ -355,7 +358,9 @@ extension MoveViewController: CLLocationManagerDelegate {
         return region
     }
     
-
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("did fail with error: \(error)")
+    }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if !locations.isEmpty {
