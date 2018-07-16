@@ -195,7 +195,7 @@ class CreatePackageReviewViewController: UIViewController {
     @objc private func didTapNavigateButton(sender: UIButton) {
         self.backButton.isEnabled = false
         sender.isEnabled = false
-        createPackageCoordinator.savePackageAndDismiss(coverImageUrl: self.coverImageUrl, completion: { (success) in
+        createPackageCoordinator.beginSavingPackage { (success) in
             if success {
                 self.dismiss(animated: true, completion: {
                     print("get ready to start movn'")
@@ -204,8 +204,8 @@ class CreatePackageReviewViewController: UIViewController {
                 sender.isEnabled = true
                 self.backButton.isEnabled = true
             }
-        })
-        print("navigate now")
+
+        }
     }
     
 }

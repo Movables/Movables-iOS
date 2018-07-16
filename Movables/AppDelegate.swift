@@ -180,7 +180,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, FBSDKL
                     "count": ["packages_following": 0, "packages_moved": 0],
                     "created_date": Date()
                 ],
-                "private_profile": ["time_bank_balance": 100.0],
+                "private_profile": ["bank_balance": 100.0],
             ]
         ) { (error) in
             if let error = error {

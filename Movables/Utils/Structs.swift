@@ -71,7 +71,7 @@ struct UserPrivateProfile {
     var interests: [PackageCategory]
     
     init(with dict: [String: Any]) {
-        self.timeBankBalance = dict["time_bank_balance"] as! CGFloat
+        self.timeBankBalance = dict["bank_balance"] as! CGFloat
         self.currentPackage = dict["current_package"] as? DocumentReference
         self.interests = []
         if let interestDict = dict["interests"] as? [String: Bool] {
@@ -332,6 +332,27 @@ func getStringForStatusEnum(statusEnum: PackageStatus) -> String {
         return "unknown"
     }
 }
+
+enum RecipientType {
+    case politician
+    case politicalParty
+    case corporation
+    case individual
+}
+
+func getStringForRecipientTypeEnum(recipientTypeEnum: RecipientType) -> String {
+    switch recipientTypeEnum {
+    case .politician:
+        return "politician"
+    case .politicalParty:
+        return "political_party"
+    case .corporation:
+        return "corporation"
+    case .individual:
+        return "individual"
+    }
+}
+
 
 
 func getEnumForStatusReadable(readableString: String) -> PackageStatus {

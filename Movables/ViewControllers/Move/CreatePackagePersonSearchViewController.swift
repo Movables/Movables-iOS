@@ -32,11 +32,13 @@ struct RecipientResultItem {
     var name: String
     var picUrl: String?
     var position: String?
+    var documentID: String
     
-    init(name: String, picUrl: String?, position: String?) {
+    init(name: String, picUrl: String?, position: String?, documentID: String) {
         self.name = name
         self.picUrl = picUrl
         self.position = position
+        self.documentID = documentID
     }
 }
 
@@ -305,7 +307,7 @@ extension CreatePackagePersonSearchViewController: UITableViewDataSource {
             self.results.removeAll()
             print(hits.count)
             for hit in hits {
-                self.results.append(RecipientResultItem(name: hit["name"] as! String, picUrl: hit["picUrl"] as? String, position: hit["position"] as? String))
+                self.results.append(RecipientResultItem(name: hit["name"] as! String, picUrl: hit["picUrl"] as? String, position: hit["position"] as? String, documentID: hit["documentID"] as! String))
             }
             DispatchQueue.main.async {
                 self.tableView.separatorStyle = .singleLine

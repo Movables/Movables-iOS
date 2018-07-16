@@ -27,16 +27,19 @@
 import UIKit
 import AlgoliaSearch
 import NVActivityIndicatorView
+import class Firebase.Firestore
 
 struct PackageTagResultItem {
     var tag: String
     var templatesCount: Int?
     var packagesCount: Int?
+    var documentID: String
     
-    init(tag: String, templatesCount: Int?, packagesCount: Int?) {
+    init(tag: String, templatesCount: Int?, packagesCount: Int?, documentID: String) {
         self.tag = tag
         self.templatesCount = templatesCount
         self.packagesCount = packagesCount
+        self.documentID = documentID
     }
 }
 
@@ -315,7 +318,7 @@ extension CreatePackageTagSearchViewController: UITableViewDataSource {
             self.results.removeAll()
             print(hits.count)
             for hit in hits {
-                self.results.append(PackageTagResultItem(tag: hit["tag"] as! String, templatesCount: hit["templatesCount"] as? Int, packagesCount: hit["packagesCount"] as? Int))
+                self.results.append(PackageTagResultItem(tag: hit["tag"] as! String, templatesCount: hit["templatesCount"] as? Int, packagesCount: hit["packagesCount"] as? Int, documentID: hit["reference"] as! String))
             }
             DispatchQueue.main.async {
                 self.tableView.separatorStyle = .singleLine
@@ -341,7 +344,7 @@ extension CreatePackageTagSearchViewController: UITableViewDelegate {
         } else {
             // create new tag w/ text in textfield
             let tag = textField.text
-            createPackageCoordinator.tagResultItem = PackageTagResultItem(tag: tag!, templatesCount: nil, packagesCount: nil)
+            createPackageCoordinator.tagResultItem = PackageTagResultItem(tag: tag!, templatesCount: nil, packagesCount: nil, documentID: Firestore.firestore().collection("topics").document().documentID)
             createPackageCoordinator.pushToCategory()
         }
     }

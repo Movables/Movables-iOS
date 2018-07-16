@@ -196,7 +196,7 @@ extension CreatePackageTemplatesViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: "templateCard") as! TemplateCardTableViewCell
             let template = self.templates[indexPath.row]
             cell.headlineLabel.text = template.headline
-            cell.authorLabel.text = String(format: NSLocalizedString("label.templateBy", comment: "label text for template by"), template.templateBy!.displayName)
+            cell.authorLabel.text = String(format: NSLocalizedString("label.templateBy", comment: "label text for template by"), template.author!.displayName)
             cell.descriptionLabel.text = template.description
             cell.recipientImageView.sd_setImage(with: URL(string: template.recipient.photoUrl!)) { (image, error, cacheType, url) in
                 print("loaded image")
@@ -253,7 +253,7 @@ extension CreatePackageTemplatesViewController: UITableViewDelegate {
                     externalActionsTemp.append(ExternalAction(dict: docSnapshot.data()))
                 })
                 self.createPackageCoordinator.externalActions = externalActionsTemp
-                self.createPackageCoordinator.recipientResultItem = RecipientResultItem(name: template.recipient.displayName, picUrl: template.recipient.photoUrl, position: template.destination.name)
+                self.createPackageCoordinator.recipientResultItem = RecipientResultItem(name: template.recipient.displayName, picUrl: template.recipient.photoUrl, position: template.destination.name, documentID: template.recipient.reference!.documentID)
                 self.createPackageCoordinator.destinationResultItem = DestinationResultItem(name: template.destination.name, placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: template.destination.geoPoint.latitude, longitude: template.destination.geoPoint.longitude)))
                 self.createPackageCoordinator.category = template.categories.first
                 self.createPackageCoordinator.packageCoverPhotoImage = nil
@@ -263,6 +263,7 @@ extension CreatePackageTemplatesViewController: UITableViewDelegate {
                 self.createPackageCoordinator.usingTemplate = true
                 self.createPackageCoordinator.template = template
                 self.createPackageCoordinator.dropoffMessage = template.dropoffMessage
+                self.createPackageCoordinator.coverImageUrl = template.coverImageUrl!
                 self.createPackageCoordinator.setContentAndPushToReview(promptTemplate: false, coverImageUrl: URL(string: template.coverImageUrl!))
             }
         }

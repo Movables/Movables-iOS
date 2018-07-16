@@ -43,12 +43,13 @@ class CreatePackageCoordinator: Coordinator {
     var packageDueDate: Date?
     var packageHeadline: String?
     var packageDescription: String?
-    var userDoc: UserDocument?
+    var userDocument: UserDocument?
     var shouldSaveAsTemplate: Bool?
     var usingTemplate: Bool = false
     var template: PackageTemplate?
     var externalActions: [ExternalAction]?
     var dropoffMessage: String?
+    var coverImageUrl: String?
     
     init(rootViewController: UIViewController) {
         self.rootViewController = rootViewController
@@ -143,34 +144,13 @@ class CreatePackageCoordinator: Coordinator {
         self.navigationController.pushViewController(reviewVC, animated: true)
     }
     
-    func savePackageAndDismiss(coverImageUrl: URL?, completion: @escaping (Bool) -> ()) {
+    func beginSavingPackage(completion: @escaping (Bool) -> ()) {
         if UserManager.shared.userDocument != nil {
             let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.packageCreation", comment: "alert title for package creation")), message: String(format: NSLocalizedString("copy.alert.packageCreationDesc", comment: "alert body for packageCreation"), Int(UserManager.shared.userDocument!.privateProfile.timeBankBalance - 100)), preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.ok", comment: "button title for ok")), style: .default, handler: { (action) in
                 print("confirmed creation")
-                self.constructPackage(coverImageUrl: coverImageUrl, completion: { (success, packageData) in
-                    if success {
-                        self.preparePackage(with: packageData, completion: { (success, packageData) in
-                            if success {
-                                self.savePackageWithTransaction(with: coverImageUrl, packageData: packageData, makeTemplate: self.shouldSaveAsTemplate!, completion: { (success) in
-                                    if success {
-                                        print("package saved everything saved")
-                                        completion(true)
-                                    } else {
-                                        // something went wrong saving package data
-                                        completion(false)
-                                        print("something wrong and something didn't get saved :(")
-                                    }
-                                })
-                            } else {
-                                // something wrong with tag processing
-                                completion(false)
-                            }
-                        })
-                    } else {
-                        // something went wrong constructing data
-                        completion(false)
-                    }
+                self.savePackage(packageContent: self.createPackageContent(), packageLogistics: self.createPackageLogistics(), packageRelations: self.createPackageRelations(), completion: { success in
+                    completion(success)
                 })
             }))
             alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.cancel", comment: "button title for cancel")), style: .cancel, handler: { (action) in
@@ -185,125 +165,288 @@ class CreatePackageCoordinator: Coordinator {
         }
     }
     
-    func constructPackage(coverImageUrl: URL?, completion: @escaping (Bool, [String: Any]) -> ()) {
-        var packageData: [String: Any] = [:]
+    func createPackageContent() -> [String: Any] {
+        var packageContent: [String: Any] = [:]
         
-        LocationManager.shared.requestLocation()
-        let location = LocationManager.shared.location
-        packageData["_geoloc"] = GeoPoint(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
+        packageContent["contegory"] = getStringForCategory(category: category!)
         
-        packageData["author"] = [
-            "name": userDoc!.publicProfile.displayName,
-            "pic_url": userDoc!.publicProfile.picUrl ?? "",
-            "reference": userDoc!.reference
-        ]
-    
-        let categoriesArray:[PackageCategory] = [category!]
-        var categories: [String: Bool] = [:]
-        for category in categoriesArray {
-            categories.updateValue(true, forKey: getStringForCategory(category: category))
-        }
-        packageData["categories"] = categories
+        packageContent["description"] = packageDescription!
         
-        packageData["count"] = [
-            "followers": 0,
-            "movers": 0
-        ]
-        
-        packageData["created_date"] = Date()
-        
-        packageData["description"] = packageDescription!
-        
-        packageData["destination"] = [
-            "address": destinationResultItem!.placemark.postalAddress != nil && !destinationResultItem!.placemark.postalAddress!.street.isEmpty && !destinationResultItem!.placemark.postalAddress!.subAdministrativeArea.isEmpty ? "\(destinationResultItem!.placemark.postalAddress!.street), \(destinationResultItem!.placemark.postalAddress!.subAdministrativeArea)" : "\(destinationResultItem!.placemark.location!.coordinate.longitude), \(destinationResultItem!.placemark.location!.coordinate.latitude)",
-            "geo_point": GeoPoint(latitude: destinationResultItem!.placemark.coordinate.latitude, longitude: destinationResultItem!.placemark.coordinate.longitude),
+        packageContent["destination"] = [
+            "address": destinationResultItem!.placemark.postalAddress != nil &&
+                !destinationResultItem!.placemark.postalAddress!.street.isEmpty &&
+                !destinationResultItem!.placemark.postalAddress!.subAdministrativeArea.isEmpty ?
+                    "\(destinationResultItem!.placemark.postalAddress!.street), \(destinationResultItem!.placemark.postalAddress!.subAdministrativeArea)" :
+                    "\(destinationResultItem!.placemark.location!.coordinate.longitude), \(destinationResultItem!.placemark.location!.coordinate.latitude)",
+            "geo_point": GeoPoint(
+                latitude: destinationResultItem!.placemark.coordinate.latitude,
+                longitude: destinationResultItem!.placemark.coordinate.longitude),
             "name": destinationResultItem!.name ?? ""
         ]
         
-        packageData["due_date"] = [
-            "start": packageDueDate!,
-            "end": packageDueDate!,
-        ]
+        packageContent["dropoff_message"] = dropoffMessage
         
-        packageData["headline"] = packageHeadline!
+        packageContent["due_date"] = packageDueDate!
         
-        packageData["in_transit_by"] = [
-            "name": userDoc!.publicProfile.displayName,
-            "pic_url": userDoc!.publicProfile.picUrl ?? "",
-            "reference": userDoc!.reference
-        ]
+        var externalActions:[[String: Any]] = []
+        if self.externalActions != nil {
+            for action in self.externalActions! {
+                let actionData = [
+                    "description": action.description!,
+                    "web_link": action.webLink!,
+                    "type": getStringForExternalAction(type: action.type!)
+                ]
+                externalActions.append(actionData)
+            }
+        }
+        packageContent["external_actions"] = externalActions
+
+        packageContent["headline"] = packageHeadline!
         
-        packageData["origin"] = [
-            "address": "",
-            "geo_point": GeoPoint(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude),
-            "name": "",
-        ]
-        
-        packageData["recipient"] = [
+        packageContent["recipient"] = [
             "name": recipientResultItem!.name,
             "phone": nil,
             "pic_url": recipientResultItem!.picUrl ?? "",
-            "twitter_handle": nil,
+            "twitter": nil,
+            "facebook": nil,
+            "reference": Firestore.firestore().collection("recipient").document(recipientResultItem!.documentID),
+            "type": getStringForRecipientTypeEnum(recipientTypeEnum: .politician)
         ]
         
-        packageData["dropoff_message"] = dropoffMessage
+        packageContent["status"] = getStringForStatusEnum(statusEnum: .transit)
         
-        packageData["status"] = "transit"
+        packageContent["topic"] = [
+            "name": tagResultItem!.tag,
+            "reference": Firestore.firestore().collection("topics").document(tagResultItem!.documentID),
+        ]
         
-        if coverImageUrl != nil {
-            packageData["cover_pic_url"] = coverImageUrl?.absoluteString
-        }
+        return packageContent
+    }
+    
+    func createPackageLogistics() -> [String: Any] {
+        var packageLogistics: [String: Any] = [:]
+        
+        LocationManager.shared.requestLocation()
+        let currentLocation = LocationManager.shared.location
+        let currentGeoPoint = GeoPoint(latitude: currentLocation!.coordinate.latitude, longitude: currentLocation!.coordinate.longitude)
+        packageLogistics["current_location"] = currentGeoPoint
+        
+        packageLogistics["created_date"] = Date()
+        
+        packageLogistics["in_transit_by"] = [
+            "name": userDocument!.publicProfile.displayName,
+            "pic_url": userDocument!.publicProfile.picUrl ?? "",
+            "reference": userDocument!.reference
+        ]
+        
+        packageLogistics["origin"] = [
+            "address": "",
+            "geo_point": currentGeoPoint,
+            "name": "",
+        ]
+        
+        packageLogistics["author"] = [
+            "name": userDocument!.publicProfile.displayName,
+            "pic_url": userDocument!.publicProfile.picUrl ?? "",
+            "reference": userDocument!.reference
+        ]
         
         if usingTemplate {
-            packageData["template_by"] = [
-                "name": userDoc!.publicProfile.displayName,
-                "pic_url": userDoc!.publicProfile.picUrl ?? "",
-                "reference": userDoc!.reference
+            packageLogistics["content_template_by"] = [
+                "name": self.template!.author?.displayName ?? "",
+                "pic_url": self.template!.author?.photoUrl ?? "",
+                "reference": self.template!.author?.reference as Any
             ]
         }
         
-        completion(true, packageData)
+        return packageLogistics
     }
     
-    private func preparePackage(with packageData: [String: Any], completion: @escaping (Bool, [String: Any]) -> ()) {
-        // locate tag
-        var packageData = packageData
-        let db = Firestore.firestore()
-        db.collection("topics").whereField("tag", isEqualTo: self.tagResultItem!.tag).getDocuments { (snapshot, error) in
-            if error != nil {
-                print(error!)
-            } else {
-                if snapshot != nil {
-                    if (snapshot!.documents.count > 0) {
-                        // tag already exists
-                        packageData["tag"] = [
-                            "name": self.tagResultItem!.tag,
-                            "reference": snapshot!.documents.first!.reference,
+    func createPackageRelations() -> [String: Any] {
+        var packageRelations: [String: Any] = [:]
+        
+        packageRelations["count"] = ["followers": 0, "movers": 0]
+        packageRelations["followers"] = [ userDocument!.reference.documentID: Date().timeIntervalSince1970 ]
+        
+        return packageRelations
+    }
+    
+    func savePackage(packageContent: [String: Any], packageLogistics: [String: Any], packageRelations: [String: Any], completion: @escaping (Bool) -> ()) {
+        
+        let packageReference = Firestore.firestore().collection("packages").document()
+        
+        var topic: [String: Any]?
+        var topicReference: DocumentReference?
+        
+        if tagResultItem!.packagesCount == nil {
+            // create new topic
+            topicReference = (packageContent["topic"] as! [String: Any])["reference"] as? DocumentReference
+            topic = [
+                "name": tagResultItem!.tag,
+                "description": "",
+                "count": [
+                    "templates": shouldSaveAsTemplate! ? 1 : 0,
+                    "packages": 1,
+                ],
+            ]
+        }
+        
+        var topicTemplateRef: DocumentReference?
+        var topicTemplate: [String: Any]?
+        if shouldSaveAsTemplate! {
+            topicTemplateRef = ((packageContent["topic"] as! [String : Any])["reference"] as! DocumentReference).collection("templates").document()
+            topicTemplate = packageContent
+            topicTemplate!["author"] = packageLogistics["author"]
+            
+            // save topic Template at topicTemplateRef with transaction
+        }
+        
+        var content = packageContent
+        if coverImageUrl != nil {
+            content["cover_pic_url"] = coverImageUrl
+        } else {
+            let image = self.packageCoverPhotoImage!
+            let metaData = StorageMetadata()
+            metaData.contentType = "image/jpeg"
+            let coverPicImageReference = Storage.storage().reference().child("images/packages/\(packageReference.documentID)/cover_pic.jpeg")
+            coverPicImageReference.putData(UIImageJPEGRepresentation(image, 0.5)!, metadata: metaData, completion: { (meta, error) in
+                if let error = error {
+                    print("error: \(error)")
+                    completion(false)
+                } else {
+                    coverPicImageReference.downloadURL(completion: { (url, error) in
+                        guard let downloadURL = url else {
+                            // Uh-oh, an error occurred!
+                            print(error!)
+                            completion(false)
+                            return
+                        }
+                        content["cover_pic_url"] = downloadURL.absoluteString
+                        let package = [
+                            "content": content,
+                            "logistics": packageLogistics,
+                            "relations": packageRelations,
                         ]
-                        print(packageData)
-                        completion(true, packageData)
-                    } else {
-                        var ref: DocumentReference? = nil
-                        ref = db.collection("topics").addDocument(data: ["tag": self.tagResultItem!.tag, "count": ["templates": 0, "packages": 0]], completion: { (error) in
-                            if error != nil {
-                                print(error!)
+                        self.runPackageSaveTransaction(with: package, packageReference: packageReference, topic: topic, topicReference: topicReference, topicTemplate: topicTemplate, topicTemplateReference: topicTemplateRef, completion: { (success) in
+                            if success {
+                                print("save success")
+                                completion(true)
                             } else {
-                                packageData["tag"] = [
-                                    "name": self.tagResultItem!.tag,
-                                    "reference": ref!,
-                                ]
-                                print(packageData)
-                                completion(true, packageData)
+                                print("save failure")
+                                completion(false)
                             }
                         })
-                    }
+                    })
                 }
+            })
+
+        }
+        
+    }
+    
+    func runPackageSaveTransaction(with package: [String: Any], packageReference: DocumentReference, topic: [String: Any]?, topicReference: DocumentReference?, topicTemplate: [String: Any]?, topicTemplateReference: DocumentReference?, completion: @escaping (Bool) -> ()) {
+        
+        let db = Firestore.firestore()
+        db.runTransaction({ (transaction, errorPointer) -> Any? in
+            let authorReference = self.userDocument!.reference
+            let authorDocument: DocumentSnapshot?
+            do {
+                try authorDocument = transaction.getDocument(authorReference)
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+            let oldAuthorBalance = (authorDocument!.data()!["private_profile"] as! [String: Any])["bank_balance"] as! Int
+
+            if self.usingTemplate {
+                // if the author is using a template
+                let templateAuthorReference = ((package["logistics"] as! [String: Any])["content_template_by"] as! [String: Any])["reference"] as! DocumentReference
+                let templateAuthorDocument: DocumentSnapshot?
+                do {
+                    try templateAuthorDocument = transaction.getDocument(templateAuthorReference)
+                } catch let fetchError as NSError {
+                    errorPointer?.pointee = fetchError
+                    return nil
+                }
+                let oldTemplateAuthorBalance = (templateAuthorDocument!.data()!["private_profile"] as! [String: Any])["bank_balance"] as! Int
+                
+                // credit template author's balance with 10 credits
+                transaction.updateData(["private_profile.bank_balance": oldTemplateAuthorBalance + 10], forDocument: templateAuthorReference)
+                
+                // record a template usage account activity for template author
+                let templateUsageTransaction: [String: Any] = [
+                    "date": Date(),
+                    "object_reference": topicTemplateReference!,
+                    "object_type": getStringForObjectTypeEnum(type: .template),
+                    "object_name": topicTemplate!["headline"]! as! String,
+                    "type": getStringForActivityTypeEnum(type: .templateUsage),
+                    "actor_name": self.userDocument!.publicProfile.displayName,
+                    "actor_pic": self.userDocument!.publicProfile.picUrl ?? "",
+                    "actor_reference": self.userDocument!.reference,
+                    "amount": 10
+                ]
+                transaction.setData(templateUsageTransaction, forDocument: templateAuthorReference.collection("account_activities").document())
+
+                let topicDocument: DocumentSnapshot?
+                
+                // increment packages count on the template
+                do {
+                    try topicDocument = transaction.getDocument((topicTemplate!["topic"] as! [String: Any])["reference"] as! DocumentReference)
+                } catch let fetchError as NSError {
+                    errorPointer?.pointee = fetchError
+                    return nil
+                }
+                let oldTopicPackagesCount = (topicDocument!.data()!["count"] as! [String: Any])["packages"] as! Int
+                transaction.updateData(["count.packages": oldTopicPackagesCount + 1], forDocument: topicDocument!.reference)
+            }
+            
+            if topic != nil {
+                // if the author is creating a new topic
+                // save topic
+                transaction.setData(topic!, forDocument: topicReference!)
+            }
+            
+            if topicTemplate != nil {
+                // if the author is creating a template
+                
+                // credit author's balance with 10 credits
+                transaction.updateData(["private_profile.bank_balance": oldAuthorBalance + 10], forDocument: authorReference)
+                
+                // record a template creation account activity for author
+                let templateCreationAccountActivity: [String: Any] = [
+                    "date": Date(),
+                    "object_reference": topicTemplateReference!,
+                    "object_type": getStringForObjectTypeEnum(type: .topic),
+                    "object_name": (topicTemplate!["topic"] as! [String : Any])["name"] as! String,
+                    "type": getStringForActivityTypeEnum(type: .templateCreation),
+                    "actor_name": self.userDocument!.publicProfile.displayName,
+                    "actor_pic": self.userDocument!.publicProfile.picUrl ?? "",
+                    "actor_reference": authorReference,
+                    "amount": 10
+                ]
+                transaction.setData(templateCreationAccountActivity, forDocument: authorReference.collection("account_activities").document())
+
+                // save topic template
+                transaction.setData(topicTemplate!, forDocument: topicTemplateReference!)
+            }
+            
+            // save package
+            transaction.setData(package, forDocument: packageReference)
+            
+            // update current_package in private_profile of the author
+            transaction.updateData(["private_profile.current_package": packageReference], forDocument: authorReference)
+            
+            return nil
+        }) { (object, error) in
+            if let error = error {
+                print("Error saving transaction package with error: \(error)")
+                completion(false)
+            } else {
+                completion(true)
             }
         }
     }
-
-
-
+    
     func cancelPacakgeCreation() {
         self.navigationController.dismiss(animated: true) {
             print("dismissed create package")
@@ -312,265 +455,6 @@ class CreatePackageCoordinator: Coordinator {
     
     func unwind() {
         self.navigationController.popViewController(animated: true)
-    }
-    
-    private func savePackageWithTransaction(with coverImageUrl: URL?, packageData: [String: Any], makeTemplate: Bool, completion: @escaping (Bool) -> ()) {
-        let db = Firestore.firestore()
-        var newPackageRef: DocumentReference?
-        var topicTemplateRef: DocumentReference?
-        
-        LocationManager.shared.requestLocation()
-        
-        db.runTransaction({ (transaction, errorPointer) -> Any? in
-            let userReference: DocumentReference = db.collection("users").document(Auth.auth().currentUser!.uid)
-            // -- save package with in_transit_by
-            // -- update private_profile.current_package in user document
-            
-            let userDocument: DocumentSnapshot
-            do {
-                try userDocument = transaction.getDocument(userReference)
-            } catch let fetchError as NSError {
-                errorPointer?.pointee = fetchError
-                return nil
-            }
-            let oldBalance = (userDocument.data()!["private_profile"] as! [String: Any])["time_bank_balance"] as! Int
-            let newBalance = oldBalance + 10
-
-            newPackageRef = db.collection("packages").document()
-            
-            let topicReference = (packageData["tag"] as! [String : Any])["reference"] as! DocumentReference
-            let topicDocument: DocumentSnapshot
-            do {
-                try topicDocument = transaction.getDocument(topicReference)
-            } catch let fetchError as NSError {
-                errorPointer?.pointee = fetchError
-                return nil
-            }
-            
-            guard let oldCountPackages = ((topicDocument.data()! as [String: Any])["count"] as! [String: Int])["packages"] else {
-                let error = NSError(
-                    domain: "AppErrorDomain",
-                    code: -1,
-                    userInfo: [
-                        NSLocalizedDescriptionKey: "Unable to retrieve templates count from snapshot \(topicDocument)"
-                    ]
-                )
-                errorPointer?.pointee = error
-                return nil
-            }
-            
-            let newCountPackages = oldCountPackages + 1
-            
-            guard let oldCountTemplates = ((topicDocument.data()! as [String: Any])["count"] as! [String: Int])["templates"] else {
-                let error = NSError(
-                    domain: "AppErrorDomain",
-                    code: -1,
-                    userInfo: [
-                        NSLocalizedDescriptionKey: "Unable to retrieve templates count from snapshot \(topicDocument)"
-                    ]
-                )
-                errorPointer?.pointee = error
-                return nil
-            }
-            
-            var newCountTemplates: Int?
-            var newCountPackagesUsedTemplate: Int?
-
-            if makeTemplate {
-                newCountTemplates = oldCountTemplates + 1
-                topicTemplateRef = ((packageData["tag"] as! [String : Any])["reference"] as! DocumentReference).collection("templates").document()
-                var packageDataToSave = packageData
-                packageDataToSave["count"] = ["packages": 1]
-                packageDataToSave["template_by"] = packageData["author"]
-                transaction.setData(packageDataToSave, forDocument: topicTemplateRef!)
-                if self.externalActions != nil {
-                    for action in self.externalActions! {
-                        let actionData = [
-                            "description": action.description!,
-                            "web_link": action.webLink!,
-                            "type": getStringForExternalAction(type: action.type!)
-                        ]
-                        transaction.setData(actionData, forDocument: topicTemplateRef!.collection("external_actions").document())
-                    }
-                }
-                let templateCreationTransaction: [String: Any] = [
-                    "date": Date(),
-                    "object_reference": topicTemplateRef!,
-                    "object_type": getStringForObjectTypeEnum(type: .topic),
-                    "object_name": (packageData["tag"] as! [String : Any])["name"] as! String,
-                    "type": getStringForActivityTypeEnum(type: .templateCreation),
-                    "actor_name": Auth.auth().currentUser!.displayName!,
-                    "actor_pic": Auth.auth().currentUser!.photoURL?.absoluteString ?? "",
-                    "actor_reference": userReference,
-                    "amount": 10
-                ]
-                transaction.setData(templateCreationTransaction, forDocument: userReference.collection("account_activities").document())
-                transaction.updateData(["private_profile.time_bank_balance": newBalance], forDocument: userReference)
-            } else {
-                newCountTemplates = oldCountTemplates
-                var templateDocumentRef: DocumentReference?
-                if self.usingTemplate {
-                    templateDocumentRef = self.template!.reference
-                    let templateDocument: DocumentSnapshot
-                    do {
-                        try templateDocument = transaction.getDocument(templateDocumentRef!)
-                    } catch let fetchError as NSError {
-                        errorPointer?.pointee = fetchError
-                        return nil
-                    }
-                    
-                    guard let oldCountPackages = ((templateDocument.data()! as [String: Any])["count"] as! [String: Int])["packages"] else {
-                        let error = NSError(
-                            domain: "AppErrorDomain",
-                            code: -1,
-                            userInfo: [
-                                NSLocalizedDescriptionKey: "Unable to retrieve packages count from snapshot of template \(templateDocument)"
-                            ]
-                        )
-                        errorPointer?.pointee = error
-                        return nil
-                    }
-                    newCountPackagesUsedTemplate = oldCountPackages + 1
-                    transaction.updateData(["count.packages": newCountPackagesUsedTemplate!], forDocument: templateDocumentRef!)
-                    // transaction update template owner's activity
-                    let templateUsageTransaction: [String: Any] = [
-                        "date": Date(),
-                        "object_reference": templateDocumentRef!,
-                        "object_type": getStringForObjectTypeEnum(type: .template),
-                        "object_name": packageData["headline"]! as! String,
-                        "type": getStringForActivityTypeEnum(type: .templateUsage),
-                        "actor_name": Auth.auth().currentUser!.displayName!,
-                        "actor_pic": Auth.auth().currentUser!.photoURL?.absoluteString ?? "",
-                        "actor_reference": userReference,
-                        "amount": 10
-                    ]
-                    transaction.setData(templateUsageTransaction, forDocument: ((packageData["template_by"] as! [String: Any])["reference"] as! DocumentReference).collection("account_activities").document())
-                    transaction.updateData(["private_profile.time_bank_balance": newBalance], forDocument: userReference)
-                }
-
-            }
-            let packageCreationTransaction: [String: Any] = [
-                "date": Date(),
-                "object_reference": newPackageRef!,
-                "object_type": getStringForObjectTypeEnum(type: .package),
-                "object_name": packageData["headline"]! as! String,
-                "type": getStringForActivityTypeEnum(type: .packageCreation),
-                "actor_name": Auth.auth().currentUser!.displayName!,
-                "actor_pic": Auth.auth().currentUser!.photoURL?.absoluteString ?? "",
-                "actor_reference": userReference,
-                "amount": -100
-            ]
-            transaction.setData(packageCreationTransaction, forDocument: userReference.collection("account_activities").document())
-
-            if self.externalActions != nil {
-                for action in self.externalActions! {
-                    let actionData = [
-                        "description": action.description!,
-                        "web_link": action.webLink!,
-                        "type": getStringForExternalAction(type: action.type!)
-                    ]
-                     transaction.setData(actionData, forDocument: newPackageRef!.collection("external_actions").document())
-                }
-            }
-            transaction.setData(packageData, forDocument: newPackageRef!)
-            transaction.updateData(["private_profile.current_package": newPackageRef!, "private_profile.time_bank_balance": UserManager.shared.userDocument!.privateProfile.timeBankBalance - 100], forDocument: userReference)
-            transaction.setData(
-                [
-                    "author_reference": userReference,
-                    "pickup": [
-                        "geo_point": GeoPoint(latitude: LocationManager.shared.location!.coordinate.latitude, longitude: LocationManager.shared.location!.coordinate.longitude),
-                        "date": Date()
-                    ],
-                    ],
-                forDocument: newPackageRef!.collection("transit_records").document(userReference.documentID)
-            )
-            
-            transaction.updateData(
-                [
-                    "count.packages": newCountPackages,
-                    "count.templates": newCountTemplates!,
-
-                ],
-                forDocument: topicReference
-            )
-            return nil
-        }) { (object, error) in
-            if let error = error {
-                print("Error saving transaction package with error: \(error)")
-                completion(false)
-            } else {
-                if coverImageUrl != nil {
-                    print("package add succeeded")
-                    followPackageWithRef(packageReference: newPackageRef!, userReference: db.collection("users").document(Auth.auth().currentUser!.uid), completion: { (success) in
-                        if success {
-                            // follow success
-                            completion(true)
-                        } else {
-                            // follow failure
-                            completion(false)
-                            print("follow failure")
-                        }
-                    })
-                } else {
-                    let image = self.packageCoverPhotoImage!
-                    let metaData = StorageMetadata()
-                    metaData.contentType = "image/jpeg"
-                    let coverPicImageReference = Storage.storage().reference().child("images/packages/\(newPackageRef!.documentID)/cover_pic.jpeg")
-                    coverPicImageReference.putData(UIImageJPEGRepresentation(image, 0.5)!, metadata: metaData, completion: { (meta, error) in
-                        if let error = error {
-                            print("error: \(error)")
-                        } else {
-                            coverPicImageReference.downloadURL(completion: { (url, error) in
-                                guard let downloadURL = url else {
-                                    // Uh-oh, an error occurred!
-                                    print(error!)
-                                    completion(false)
-                                    return
-                                }
-                                newPackageRef!.updateData(["cover_pic_url": downloadURL.absoluteString], completion: { (error) in
-                                    if let error = error {
-                                        print(error)
-                                        completion(false)
-                                    } else {
-                                        if makeTemplate {
-                                            topicTemplateRef!.updateData(["cover_pic_url": downloadURL.absoluteString], completion: { (error) in
-                                                if let error = error {
-                                                    print(error)
-                                                    completion(false)
-                                                } else {
-                                                    print("package add succeeded")
-                                                    followPackageWithRef(packageReference: newPackageRef!, userReference: db.collection("users").document(Auth.auth().currentUser!.uid), completion: { (success) in
-                                                        if success {
-                                                            // follow success
-                                                            completion(true)
-                                                        } else {
-                                                            // follow failure
-                                                            completion(false)
-                                                            print("follow failure")
-                                                        }
-                                                    })
-                                                }
-                                        })} else {
-                                            print("package add succeeded")
-                                            followPackageWithRef(packageReference: newPackageRef!, userReference: db.collection("users").document(Auth.auth().currentUser!.uid), completion: { (success) in
-                                                if success {
-                                                    // follow success
-                                                    completion(true)
-                                                } else {
-                                                    // follow failure
-                                                    completion(false)
-                                                    print("follow failure")
-                                                }
-                                            })
-                                        }
-                                    }
-                                })
-                            })
-                        }
-                    })
-                }
-            }
-        }
     }
 
 }

@@ -174,7 +174,7 @@ struct PackageTemplate {
     var recipient: Person
     var status: PackageStatus
     var tag: PackageTag
-    var templateBy: Person?
+    var author: Person?
     var reference: DocumentReference
     var dueDate: PackageDueDate?
     var dropoffMessage: String?
@@ -209,10 +209,10 @@ struct PackageTemplate {
         
         self.tag = PackageTag(dict: dictionary["tag"] as! [String: Any])
         
-        if let templateByDict = dictionary["template_by"] as? [String: Any] {
-            self.templateBy = Person(dict: templateByDict)
+        if let authorDict = dictionary["author"] as? [String: Any] {
+            self.author = Person(dict: authorDict)
         } else {
-            self.templateBy = nil
+            self.author = nil
         }
         
         self.reference = snapshot.reference
@@ -1321,14 +1321,14 @@ func dropoffPackageWithRef(packageReference: DocumentReference, userReference: D
             creditsEarned = (timeElapsed / 60 / 2 + min((distanceMoved / 1000 * speedFactor), 60)).rounded()
 
             
-            let oldBalance = ((userDocument.data()!)["private_profile"] as! [String: Any])["time_bank_balance"] as! Double
+            let oldBalance = ((userDocument.data()!)["private_profile"] as! [String: Any])["bank_balance"] as! Double
             newBalance = oldBalance + deliveryBonus + creditsEarned!
             // USER_DOCUMENT
             // add private_profile.current_package
             
             transaction.updateData([
                 "private_profile.current_package": FieldValue.delete(),
-                "private_profile.time_bank_balance": newBalance!
+                "private_profile.bank_balance": newBalance!
                 ],
                                    forDocument: userReference
             )
