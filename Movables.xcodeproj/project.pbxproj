@@ -1238,6 +1238,7 @@
 				FBCFBundleURLSchemes = fb486581298446475;
 				FacebookAppID = 486581298446475;
 				FacebookDisplayName = "Movables Development";
+				GOOGCFBundleURLSchemes = "com.googleusercontent.apps.821676050997-sba0i1rda1lsntl283ka78377vs2jsck";
 				INFOPLIST_FILE = Movables/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1261,6 +1262,7 @@
 				FBCFBundleURLSchemes = fb209161136365034;
 				FacebookAppID = 209161136365034;
 				FacebookDisplayName = Movables;
+				GOOGCFBundleURLSchemes = "com.googleusercontent.apps.7977622923-5gfbd1l8lv4njbsgnrq881alo1hctjh0";
 				INFOPLIST_FILE = Movables/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
