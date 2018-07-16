@@ -71,7 +71,6 @@ class DropoffSummaryViewController: UIViewController {
         collectionView.scrollIndicatorInsets.bottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 50 + (UIDevice.isIphoneX ? 10 : 28)
         collectionView.register(HeaderLabelCollectionViewCell.self, forCellWithReuseIdentifier: "headerLabelCell")
         collectionView.register(MCRouteSummaryCollectionViewCell.self, forCellWithReuseIdentifier: "routeSummaryCell")
-        collectionView.register(MCHeroStatusCollectionViewCell.self, forCellWithReuseIdentifier: "heroStatusCell")
         collectionView.register(MCParagraphActionsCollectionViewCell.self, forCellWithReuseIdentifier: "paragraphActionsCell")
         view.addSubview(collectionView)
         

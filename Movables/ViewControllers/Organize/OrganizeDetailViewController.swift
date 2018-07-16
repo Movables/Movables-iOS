@@ -221,9 +221,7 @@ class OrganizeDetailViewController: UIViewController {
         tableView.estimatedSectionHeaderHeight = 40
         tableView.contentInset.bottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom
         tableView.register(OrganizeDetailTableHeaderViewCell.self, forCellReuseIdentifier: "organizeDetailHeader")
-        tableView.register(UnderlineTableViewHeaderView.self, forHeaderFooterViewReuseIdentifier: "underlineHeader")
         tableView.register(SectionHeaderTableViewHeaderView.self, forHeaderFooterViewReuseIdentifier: "sectionHeader")
-        tableView.register(ParagraphTableViewCell.self, forCellReuseIdentifier: "paragraphCell")
         tableView.register(CommunityTableViewCell.self, forCellReuseIdentifier: "communityCell")
         tableView.backgroundColor = .white
         view.addSubview(tableView)

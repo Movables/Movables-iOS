@@ -100,7 +100,6 @@ class CreatePackageReviewViewController: UIViewController {
         collectionView.register(HeaderLabelCollectionViewCell.self, forCellWithReuseIdentifier: "headerLabelCell")
         
         collectionView.register(DeliveryLogisticsCollectionViewCell.self, forCellWithReuseIdentifier: "deliveryLogisticsCell")
-        collectionView.register(ActivityIndicatorCollectionViewCell.self, forCellWithReuseIdentifier: "activityViewCell")
         collectionView.register(MCParagraphActionsCollectionViewCell.self, forCellWithReuseIdentifier: "paragraphActionsCell")
         
         collectionView.dataSource = self

@@ -36,7 +36,6 @@ class ExploreViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var cardPeekCollectionView: UICollectionView!
-    var searchButton: VisualEffectsFabButton!
     
     var togglesCollectionView: UICollectionView!
     var topicsTrendingCollectionView: UICollectionView!
@@ -143,17 +142,6 @@ class ExploreViewController: UIViewController {
         mapView.register(MKMarkerAnnotationView.self, forAnnotationViewWithReuseIdentifier: MKMapViewDefaultAnnotationViewReuseIdentifier)
         mapView.register(PackagesClusterView.self, forAnnotationViewWithReuseIdentifier: MKMapViewDefaultClusterAnnotationViewReuseIdentifier)
         mapView.layoutMargins = UIEdgeInsets(top: view.safeAreaInsets.top + 94 + 20, left: 20, bottom: view.safeAreaInsets.bottom + cardPeekCollectionView.frame.height + 30 + 8, right: 20)
-
-        searchButton = VisualEffectsFabButton(frame: .zero, dimension: 56)
-        searchButton.isHidden = true
-        searchButton.translatesAutoresizingMaskIntoConstraints = false
-        searchButton.button.setImage(UIImage(named: "search_black_56pt"), for: .normal)
-        view.addSubview(searchButton)
-        
-        NSLayoutConstraint.activate([
-            searchButton.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor, constant: 0),
-            searchButton.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 8)
-            ])
     }
     
     private func setupTopicsTrendingCollectionView() {

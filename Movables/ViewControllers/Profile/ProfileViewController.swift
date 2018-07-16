@@ -112,7 +112,6 @@ class ProfileViewController: UIViewController {
         tableView.estimatedRowHeight = 250
         tableView.separatorStyle = .none
         tableView.register(ProfileFaceTableViewCell.self, forCellReuseIdentifier: "profileFace")
-        tableView.register(RowButtonTableViewCell.self, forCellReuseIdentifier: "buttonRow")
         tableView.register(EventActivityTableViewCell.self, forCellReuseIdentifier: "eventActivity")
         tableView.dataSource = self
         view.addSubview(tableView)
