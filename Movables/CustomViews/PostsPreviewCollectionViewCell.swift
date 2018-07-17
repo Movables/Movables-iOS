@@ -49,7 +49,8 @@ struct Post {
             displayName: authorDict["name"] as! String,
             photoUrl: authorDict["pic_url"] as? String,
             reference: authorDict["reference"] as? DocumentReference,
-            twitter_handle: nil,
+            twitter: nil,
+            facebook: nil,
             phone: nil
         )
         self.content = PostContent(

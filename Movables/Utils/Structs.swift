@@ -66,12 +66,12 @@ struct UserPublicCount {
 }
 
 struct UserPrivateProfile {
-    var timeBankBalance: CGFloat
+    var pointsBalance: CGFloat
     var currentPackage: DocumentReference?
     var interests: [PackageCategory]
     
     init(with dict: [String: Any]) {
-        self.timeBankBalance = dict["bank_balance"] as! CGFloat
+        self.pointsBalance = dict["points_balance"] as! CGFloat
         self.currentPackage = dict["current_package"] as? DocumentReference
         self.interests = []
         if let interestDict = dict["interests"] as? [String: Bool] {

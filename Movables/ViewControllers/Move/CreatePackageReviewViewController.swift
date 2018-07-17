@@ -334,8 +334,8 @@ extension CreatePackageReviewViewController: UICollectionViewDataSource {
         var rows:[LogisticsRow] = []
         // recipient
         var recipientActions:[Action] = []
-        if recipient.twitter_handle != nil {
-            recipientActions.append(Action(type: .Tweet, dictionary: ["handle": recipient.twitter_handle!]))
+        if recipient.twitter != nil {
+            recipientActions.append(Action(type: .Tweet, dictionary: ["handle": recipient.twitter!]))
         }
         if recipient.phone != nil {
             recipientActions.append(Action(type: .Call, dictionary: ["phone": recipient.phone!]))

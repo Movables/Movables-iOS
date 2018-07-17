@@ -131,8 +131,8 @@ class CreatePackageCoordinator: Coordinator {
         } else {
             reviewVC.coverImage = packageCoverPhotoImage
         }
-        reviewVC.sender = Person(displayName: Auth.auth().currentUser!.displayName ?? "", photoUrl: Auth.auth().currentUser!.photoURL?.absoluteString ?? "", reference: Firestore.firestore().collection("users").document(Auth.auth().currentUser!.uid), twitter_handle: nil, phone: nil)
-        reviewVC.recipient = Person(displayName: recipientResultItem?.name ?? "", photoUrl: recipientResultItem?.picUrl ?? "", reference: Firestore.firestore().collection("recipients").document(), twitter_handle: nil, phone: nil)
+        reviewVC.sender = Person(displayName: Auth.auth().currentUser!.displayName ?? "", photoUrl: Auth.auth().currentUser!.photoURL?.absoluteString ?? "", reference: Firestore.firestore().collection("users").document(Auth.auth().currentUser!.uid), twitter: nil, facebook: nil, phone: nil)
+        reviewVC.recipient = Person(displayName: recipientResultItem?.name ?? "", photoUrl: recipientResultItem?.picUrl ?? "", reference: Firestore.firestore().collection("recipients").document(), twitter: nil, facebook: nil, phone: nil)
         reviewVC.packageHeadline = packageHeadline
         reviewVC.packageTagName = tagResultItem?.tag ?? ""
         reviewVC.packageDescription = packageDescription ?? ""
@@ -146,7 +146,7 @@ class CreatePackageCoordinator: Coordinator {
     
     func beginSavingPackage(completion: @escaping (Bool) -> ()) {
         if UserManager.shared.userDocument != nil {
-            let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.packageCreation", comment: "alert title for package creation")), message: String(format: NSLocalizedString("copy.alert.packageCreationDesc", comment: "alert body for packageCreation"), Int(UserManager.shared.userDocument!.privateProfile.timeBankBalance - 100)), preferredStyle: .alert)
+            let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.packageCreation", comment: "alert title for package creation")), message: String(format: NSLocalizedString("copy.alert.packageCreationDesc", comment: "alert body for packageCreation"), Int(UserManager.shared.userDocument!.privateProfile.pointsBalance - 100)), preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.ok", comment: "button title for ok")), style: .default, handler: { (action) in
                 print("confirmed creation")
                 self.savePackage(packageContent: self.createPackageContent(), packageLogistics: self.createPackageLogistics(), packageRelations: self.createPackageRelations(), completion: { success in
@@ -356,7 +356,7 @@ class CreatePackageCoordinator: Coordinator {
                 errorPointer?.pointee = fetchError
                 return nil
             }
-            let oldAuthorBalance = (authorDocument!.data()!["private_profile"] as! [String: Any])["bank_balance"] as! Int
+            let oldAuthorBalance = (authorDocument!.data()!["private_profile"] as! [String: Any])["points_balance"] as! Int
 
             if self.usingTemplate {
                 // if the author is using a template
@@ -368,10 +368,10 @@ class CreatePackageCoordinator: Coordinator {
                     errorPointer?.pointee = fetchError
                     return nil
                 }
-                let oldTemplateAuthorBalance = (templateAuthorDocument!.data()!["private_profile"] as! [String: Any])["bank_balance"] as! Int
+                let oldTemplateAuthorBalance = (templateAuthorDocument!.data()!["private_profile"] as! [String: Any])["points_balance"] as! Int
                 
                 // credit template author's balance with 10 credits
-                transaction.updateData(["private_profile.bank_balance": oldTemplateAuthorBalance + 10], forDocument: templateAuthorReference)
+                transaction.updateData(["private_profile.points_balance": oldTemplateAuthorBalance + 10], forDocument: templateAuthorReference)
                 
                 // record a template usage account activity for template author
                 let templateUsageTransaction: [String: Any] = [
@@ -410,7 +410,7 @@ class CreatePackageCoordinator: Coordinator {
                 // if the author is creating a template
                 
                 // credit author's balance with 10 credits
-                transaction.updateData(["private_profile.bank_balance": oldAuthorBalance + 10], forDocument: authorReference)
+                transaction.updateData(["private_profile.points_balance": oldAuthorBalance + 10], forDocument: authorReference)
                 
                 // record a template creation account activity for author
                 let templateCreationAccountActivity: [String: Any] = [

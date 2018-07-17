@@ -64,8 +64,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, FBSDKL
         }
         if let dict = myDict {
         // Use your dict here
-            algoliaClientId = dict["algoliaClientId"] as? String
-            algoliaAPIKey = dict["algoliaAPIKey"] as? String
+            #if DEBUG
+            self.algoliaClientId = dict["DevAlgoliaClientId"] as? String
+            self.algoliaAPIKey = dict["DevAlgoliaAPIKey"] as? String
+            #elseif RELEASE
+            self.algoliaClientId = dict["ProdAlgoliaClientId"] as? String
+            self.algoliaAPIKey = dict["ProdAlgoliaAPIKey"] as? String
+            #endif
         }
     }
     
@@ -180,7 +185,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, FBSDKL
                     "count": ["packages_following": 0, "packages_moved": 0],
                     "created_date": Date()
                 ],
-                "private_profile": ["bank_balance": 100.0],
+                "private_profile": ["points_balance": 100.0],
             ]
         ) { (error) in
             if let error = error {

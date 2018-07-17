@@ -403,14 +403,16 @@ struct Person: Equatable {
     var displayName: String
     var photoUrl: String?
     var reference: DocumentReference?
-    var twitter_handle: String?
+    var twitter: String?
+    var facebook: String?
     var phone: String?
     
-    init(displayName: String, photoUrl: String?, reference: DocumentReference?, twitter_handle: String?, phone: String?) {
+    init(displayName: String, photoUrl: String?, reference: DocumentReference?, twitter: String?, facebook: String?, phone: String?) {
         self.displayName = displayName
         self.photoUrl = photoUrl
         self.reference = reference
-        self.twitter_handle = twitter_handle
+        self.twitter = twitter
+        self.facebook = facebook
         self.phone = phone
     }
     
@@ -418,7 +420,8 @@ struct Person: Equatable {
         self.displayName = dict["name"] as! String
         self.photoUrl = dict["pic_url"] as? String
         self.reference = dict["reference"] as? DocumentReference
-        self.twitter_handle = dict["twitter_handle"] as? String
+        self.twitter = dict["twitter"] as? String
+        self.facebook = dict["facebook"] as? String
         self.phone = dict["phone"] as? String
     }
     
@@ -427,7 +430,8 @@ struct Person: Equatable {
             lhs.displayName == rhs.displayName &&
             lhs.photoUrl == rhs.photoUrl &&
             lhs.reference == rhs.reference &&
-            lhs.twitter_handle == rhs.twitter_handle &&
+            lhs.twitter == rhs.twitter &&
+            lhs.facebook == rhs.facebook &&
             lhs.phone == rhs.phone
         )
     }
@@ -1321,14 +1325,14 @@ func dropoffPackageWithRef(packageReference: DocumentReference, userReference: D
             creditsEarned = (timeElapsed / 60 / 2 + min((distanceMoved / 1000 * speedFactor), 60)).rounded()
 
             
-            let oldBalance = ((userDocument.data()!)["private_profile"] as! [String: Any])["bank_balance"] as! Double
+            let oldBalance = ((userDocument.data()!)["private_profile"] as! [String: Any])["points_balance"] as! Double
             newBalance = oldBalance + deliveryBonus + creditsEarned!
             // USER_DOCUMENT
             // add private_profile.current_package
             
             transaction.updateData([
                 "private_profile.current_package": FieldValue.delete(),
-                "private_profile.bank_balance": newBalance!
+                "private_profile.points_balance": newBalance!
                 ],
                                    forDocument: userReference
             )

@@ -643,8 +643,8 @@ extension PackageDetailViewController: UICollectionViewDataSource {
         var rows:[LogisticsRow] = []
         // recipient
         var recipientActions:[Action] = []
-        if package.recipient.twitter_handle != nil {
-            recipientActions.append(Action(type: .Tweet, dictionary: ["handle": package.recipient.twitter_handle!]))
+        if package.recipient.twitter != nil {
+            recipientActions.append(Action(type: .Tweet, dictionary: ["handle": package.recipient.twitter!]))
         }
         if package.recipient.phone != nil {
             recipientActions.append(Action(type: .Call, dictionary: ["phone": package.recipient.phone!]))
@@ -772,7 +772,7 @@ extension PackageDetailViewController: UICollectionViewDelegate {
     
     @objc private func didTapTweetButton(sender: UIButton) {
         print("tweet")
-        let twitterHandle = self.package!.recipient.twitter_handle!
+        let twitterHandle = self.package!.recipient.twitter!
         let twUrl = URL(string: "twitter://user?screen_name=\(twitterHandle)")!
         let twUrlWeb = URL(string: "https://www.twitter.com/\(twitterHandle)")!
         if UIApplication.shared.canOpenURL(twUrl){
