@@ -236,49 +236,43 @@ class ExploreViewController: UIViewController {
     }
     
     func fetchNearbyPackagePreviews() {
+        print("fetch nearby")
         LocationManager.shared.requestLocation()
         if let location = LocationManager.shared.location {
             initialFetchMade = true
             let index:Index!
             
             let query = Query(query: "")
-            query.attributesToRetrieve = ["topicName", "headline", "recipientName", "moversCount", "destination", "origin", "_geoloc", "dueDate", "_tags", "status", "objectId"]
+            query.attributesToRetrieve = ["_geoloc", "content", "logistics", "relations", "objectID"]
 
-            if sortBy == .dueDate {
-                index = apiClient.index(withName: "packagesDueDate")
-            } else if sortBy == .movers {
-                index = apiClient.index(withName: "packagesMoversCount")
-            } else if sortBy == .followers {
-                index = apiClient.index(withName: "packagesFollowersCount")
-            } else {
-                index = apiClient.index(withName: "packages")
-                // sort by distance by default
-                query.aroundLatLng = LatLng(lat: location.coordinate.latitude, lng: location.coordinate.longitude)
-                query.aroundRadius = .explicit(300000)
-            }
+            index = apiClient.index(withName: "packages")
+            // sort by distance by default
+//            query.aroundLatLng = LatLng(lat: location.coordinate.latitude, lng: location.coordinate.longitude)
+//            query.aroundRadius = .explicit(300000)
             
-            var categoriesArray:[String] = []
-            for category in self.categories {
-                categoriesArray.append(getStringForCategory(category: category))
-            }
-            query.tagFilters = categoriesArray
-            
-            var filterString = ""
-            if let topicName = self.topicName {
-                filterString += "topicName:\(topicName)"
-                query.filters = filterString
-            }
-            if let status = self.status {
-                if self.topicName != nil && !self.topicName!.isEmpty {
-                    filterString += " AND status:\(getStringForStatusEnum(statusEnum: status))"
-                } else {
-                    filterString += "NOT status:\(getStringForStatusEnum(statusEnum: .delivered))"
-                }
-                query.filters = filterString
-            }
+//            var categoriesArray:[String] = []
+//            for category in self.categories {
+//                categoriesArray.append(getStringForCategory(category: category))
+//            }
+//            query.tagFilters = categoriesArray
+//
+//            var filterString = ""
+//            if let topicName = self.topicName {
+//                filterString += "topicName:\(topicName)"
+//                query.filters = filterString
+//            }
+//            if let status = self.status {
+//                if self.topicName != nil && !self.topicName!.isEmpty {
+//                    filterString += " AND status:\(getStringForStatusEnum(statusEnum: status))"
+//                } else {
+//                    filterString += "NOT status:\(getStringForStatusEnum(statusEnum: .delivered))"
+//                }
+//                query.filters = filterString
+//            }
             
             index.search(query, completionHandler: { (content, error) -> Void in
                 if error == nil {
+                    print(content)
                     var packagePreviews: [PackagePreview] = []
                     self.mapView.removeAnnotations(self.annotations)
                     self.annotations.removeAll()
@@ -287,40 +281,41 @@ class ExploreViewController: UIViewController {
                         print("hits error")
                         return
                     }
-                        for hit in hits {
-                            let packagePreview = PackagePreview(hit: hit)
-                            packagePreviews.append(packagePreview)
-                            
-                            let packageAnnotation = PackageAnnotation(with: packagePreview)
-                            self.annotations.append(packageAnnotation)
+                    print(hits)
+                    for hit in hits {
+                        let packagePreview = PackagePreview(hit: hit)
+                        packagePreviews.append(packagePreview)
+                        
+                        let packageAnnotation = PackageAnnotation(with: packagePreview)
+                        self.annotations.append(packageAnnotation)
+                    }
+                    self.packagePreviews.removeAll()
+                    self.packagePreviews = packagePreviews
+                    self.cardPeekCollectionView.reloadData()
+                    let height: CGFloat = self.cardPeekCollectionView.collectionViewLayout.collectionViewContentSize.height
+                    self.collectionViewHeightConstraint.constant = height
+                    self.view.layoutIfNeeded()
+
+                    DispatchQueue.main.async {
+                        if self.annotations.count > 0 {
+                            // construct new annotations
+
+                        let newAnnotations = self.annotationsByDistributingAnnotations(annotations: self.annotations) { (oldAnnotation:PackageAnnotation, newCoordinate:CLLocationCoordinate2D) in
+                            return PackageAnnotation(with: oldAnnotation.title, coordinate: newCoordinate, packagePreview: oldAnnotation.packagePreview!)
                         }
-                        self.packagePreviews.removeAll()
-                        self.packagePreviews = packagePreviews
+                        
+                        var newPackagePreviews:[PackagePreview] = []
+                        for annotation in newAnnotations {
+                            newPackagePreviews.append(annotation.packagePreview!)
+                        }
+                        self.packagePreviews = newPackagePreviews
                         self.cardPeekCollectionView.reloadData()
-                        let height: CGFloat = self.cardPeekCollectionView.collectionViewLayout.collectionViewContentSize.height
-                        self.collectionViewHeightConstraint.constant = height
-                        self.view.layoutIfNeeded()
-
-                        DispatchQueue.main.async {
-                            if self.annotations.count > 0 {
-                                // construct new annotations
-
-                            let newAnnotations = self.annotationsByDistributingAnnotations(annotations: self.annotations) { (oldAnnotation:PackageAnnotation, newCoordinate:CLLocationCoordinate2D) in
-                                return PackageAnnotation(with: oldAnnotation.title, coordinate: newCoordinate, packagePreview: oldAnnotation.packagePreview!)
-                            }
-                            
-                            var newPackagePreviews:[PackagePreview] = []
-                            for annotation in newAnnotations {
-                                newPackagePreviews.append(annotation.packagePreview!)
-                            }
-                            self.packagePreviews = newPackagePreviews
-                            self.cardPeekCollectionView.reloadData()
-                            
-                            self.mapView.removeAnnotations(self.mapView.annotations)
-                            self.annotations = newAnnotations
-                            self.mapView.showAnnotations(self.annotations, animated: true)
-                            self.mapView.selectAnnotation(self.annotations.first!, animated: true)
-                            
+                        
+                        self.mapView.removeAnnotations(self.mapView.annotations)
+                        self.annotations = newAnnotations
+                        self.mapView.showAnnotations(self.annotations, animated: true)
+                        self.mapView.selectAnnotation(self.annotations.first!, animated: true)
+                        
                         }
                         if self.cardPeekCollectionView.numberOfItems(inSection: 0) == 0 {
                             self.cardPeekCollectionView.isUserInteractionEnabled = false
@@ -711,6 +706,7 @@ extension ExploreViewController: UICollectionViewDataSource {
 
 extension ExploreViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        print("did update locations: \(locations)")
         if !initialFetchMade {
             fetchNearbyPackagePreviews()
         }
