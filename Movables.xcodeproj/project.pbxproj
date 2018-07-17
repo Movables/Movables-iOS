@@ -1240,6 +1240,7 @@
 				FBCFBundleURLSchemes = fb486581298446475;
 				FacebookAppID = 486581298446475;
 				FacebookDisplayName = "Movables Development";
+				GCC_OPTIMIZATION_LEVEL = s;
 				GOOGCFBundleURLSchemes = "com.googleusercontent.apps.821676050997-sba0i1rda1lsntl283ka78377vs2jsck";
 				INFOPLIST_FILE = Movables/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -1267,7 +1268,7 @@
 				FBCFBundleURLSchemes = fb209161136365034;
 				FacebookAppID = 209161136365034;
 				FacebookDisplayName = Movables;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = s;
 				GOOGCFBundleURLSchemes = "com.googleusercontent.apps.7977622923-5gfbd1l8lv4njbsgnrq881alo1hctjh0";
 				INFOPLIST_FILE = Movables/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -1276,6 +1277,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = co.movables.Movables;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

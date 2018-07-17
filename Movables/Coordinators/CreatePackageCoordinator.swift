@@ -355,7 +355,7 @@ class CreatePackageCoordinator: Coordinator {
                 errorPointer?.pointee = fetchError
                 return nil
             }
-            let oldAuthorBalance = (authorDocument!.data()!["private_profile"] as! [String: Any])["points_balance"] as! Int
+            var oldAuthorBalance = (authorDocument!.data()!["private_profile"] as! [String: Any])["points_balance"] as! Int
 
             if self.usingTemplate {
                 // if the author is using a template
@@ -409,7 +409,7 @@ class CreatePackageCoordinator: Coordinator {
                 // if the author is creating a template
                 
                 // credit author's balance with 10 credits
-                transaction.updateData(["private_profile.points_balance": oldAuthorBalance + 10], forDocument: authorReference)
+                oldAuthorBalance = oldAuthorBalance + 10
                 
                 // record a template creation account activity for author
                 let templateCreationAccountActivity: [String: Any] = [
@@ -429,6 +429,20 @@ class CreatePackageCoordinator: Coordinator {
                 transaction.setData(topicTemplate!, forDocument: topicTemplateReference!)
             }
             
+            // record packageCreation account activity
+            let packageCreationTransaction: [String: Any] = [
+                "date": Date(),
+                "object_reference": packageReference,
+                "object_type": getStringForObjectTypeEnum(type: .package),
+                "object_name": (package["content"] as! [String: Any])["headline"]! as! String,
+                "type": getStringForActivityTypeEnum(type: .packageCreation),
+                "actor_name": UserManager.shared.userDocument!.publicProfile.displayName,
+                "actor_pic": UserManager.shared.userDocument!.publicProfile.picUrl ?? "",
+                "actor_reference": authorReference,
+                "amount": -100
+            ]
+            transaction.setData(packageCreationTransaction, forDocument: authorReference.collection("account_activities").document())
+            
             transaction.setData(
                 [
                     "author_reference": authorReference,
@@ -444,7 +458,7 @@ class CreatePackageCoordinator: Coordinator {
             transaction.setData(package, forDocument: packageReference)
             
             // update current_package in private_profile of the author
-            transaction.updateData(["private_profile.current_package": packageReference], forDocument: authorReference)
+            transaction.updateData(["private_profile.current_package": packageReference, "private_profile.points_balance": oldAuthorBalance - 100], forDocument: authorReference)
             
             return nil
         }) { (object, error) in

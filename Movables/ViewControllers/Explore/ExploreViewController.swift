@@ -177,11 +177,8 @@ class ExploreViewController: UIViewController {
     private func setupToggleCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.itemSize = UICollectionViewFlowLayoutAutomaticSize
-        layout.estimatedItemSize = CGSize(width: 60, height: 60)
+        layout.itemSize = CGSize(width: 60, height: 60)
         layout.minimumLineSpacing = 12
-        layout.sectionInset.left = 18
-        layout.sectionInset.right = 48
         layout.minimumInteritemSpacing = 0
         togglesCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         togglesCollectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -191,6 +188,8 @@ class ExploreViewController: UIViewController {
         togglesCollectionView.clipsToBounds = false
         togglesCollectionView.allowsSelection = true
         togglesCollectionView.allowsMultipleSelection = true
+        togglesCollectionView.contentInset.left = 18
+        togglesCollectionView.contentInset.right = 18
         togglesCollectionView.register(CircularToggleCollectionViewCell.self, forCellWithReuseIdentifier: "circularToggle")
         togglesCollectionView.dataSource = self
         togglesCollectionView.delegate = self
@@ -343,7 +342,7 @@ class ExploreViewController: UIViewController {
         let index:Index = apiClient.index(withName: "topics")
         
         let query = Query(query: "")
-        query.attributesToRetrieve = ["tag", "objectID"]
+        query.attributesToRetrieve = ["name", "objectID"]
 
         index.search(query, completionHandler: { (content, error) -> Void in
             if error == nil {

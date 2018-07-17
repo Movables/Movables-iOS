@@ -41,7 +41,19 @@ let packageCategoriesStringArray = [
     "religion"
 ]
 
-let packageCategoriesEnumArray:[PackageCategory] = [.animals, .arts_culture_humanities, .community_development, .education, .environment, .health, .human_and_civil_rights, .human_services, .international, .research_and_public_policy, .religion]
+let packageCategoriesEnumArray:[PackageCategory] = [
+    .animals,
+    .arts_culture_humanities,
+    .community_development,
+    .education,
+    .environment,
+    .health,
+    .human_and_civil_rights,
+    .human_services,
+    .international,
+    .research_and_public_policy,
+    .religion
+]
 
 func getEmojiForCategory(category: PackageCategory) -> String{
     switch category {
