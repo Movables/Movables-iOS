@@ -173,10 +173,10 @@ struct PackageTemplate {
     var headline: String
     var recipient: Person
     var status: PackageStatus
-    var tag: PackageTag
+    var topic: PackageTopic
     var author: Person?
     var reference: DocumentReference
-    var dueDate: PackageDueDate?
+    var dueDate: Date
     var dropoffMessage: String?
     var externalActions: [ExternalAction]?
     
@@ -207,7 +207,7 @@ struct PackageTemplate {
         
         self.status = getStatusEnum(with: dictionary["status"] as! String)
         
-        self.tag = PackageTag(dict: dictionary["tag"] as! [String: Any])
+        self.topic = PackageTopic(dict: dictionary["topic"] as! [String: Any])
         
         if let authorDict = dictionary["author"] as? [String: Any] {
             self.author = Person(dict: authorDict)
@@ -217,7 +217,7 @@ struct PackageTemplate {
         
         self.reference = snapshot.reference
         
-        self.dueDate = PackageDueDate(dict: dictionary["due_date"] as! [String : Timestamp?])
+        self.dueDate = (dictionary["due_date"] as! Timestamp).dateValue()
         
         self.dropoffMessage = dictionary["dropoff_message"] as? String
     }
@@ -225,7 +225,7 @@ struct PackageTemplate {
 
 struct Package: Equatable {
     var sender: Person
-    var categories: [PackageCategory]
+    var category: PackageCategory
     var count: PackageCount?
     var coverImageUrl: String?
     var description: String
@@ -235,19 +235,19 @@ struct Package: Equatable {
     var origin: Location
     var recipient: Person
     var status: PackageStatus
-    var tag: PackageTag
+    var topic: PackageTopic
     var templateBy: Person?
     var transitRecords: [TransitRecord]?
     var externalActions: [ExternalAction]?
     var reference: DocumentReference
     var currentLocation: CLLocation
-    var dueDate: PackageDueDate?
+    var dueDate: Date
     var dropoffMessage: String?
-    var followers: [String: Double]?
+    var followers: [String: Date]?
     
-    init(sender: Person, categories: [PackageCategory], count: PackageCount?, coverImageUrl: String?, description: String, destination: Location, headline: String, inTransitBy: Person?, origin: Location, recipient: Person, status: PackageStatus, tag: PackageTag, templateBy: Person?, transitRecords: [TransitRecord]?, reference: DocumentReference, currentLocation: CLLocation, dueDate: PackageDueDate) {
+    init(sender: Person, category: PackageCategory, count: PackageCount?, coverImageUrl: String?, description: String, destination: Location, headline: String, inTransitBy: Person?, origin: Location, recipient: Person, status: PackageStatus, topic: PackageTopic, templateBy: Person?, transitRecords: [TransitRecord]?, reference: DocumentReference, currentLocation: CLLocation, dueDate: Date) {
         self.sender = sender
-        self.categories = categories
+        self.category = category
         self.count = count
         self.coverImageUrl = coverImageUrl
         self.description = description
@@ -257,7 +257,7 @@ struct Package: Equatable {
         self.origin = origin
         self.recipient = recipient
         self.status = status
-        self.tag = tag
+        self.topic = topic
         self.templateBy = templateBy
         self.transitRecords = transitRecords
         self.reference = reference
@@ -267,41 +267,40 @@ struct Package: Equatable {
     
     init(snapshot: DocumentSnapshot) {
         let dictionary = snapshot.data()!
-        self.sender = Person(dict: dictionary["author"] as! [String: Any])
+        let content = dictionary["content"] as! [String: Any]
+        let logistics = dictionary["logistics"] as! [String: Any]
+        let relations = dictionary["relations"] as! [String: Any]
         
-        var categoriesArray:[PackageCategory] = []
-        for (category, _) in dictionary["categories"] as! [String: Bool] {
-            categoriesArray.append(getCategoryEnum(with: category))
-        }
-        self.categories = categoriesArray
+        self.sender = Person(dict: logistics["author"] as! [String: Any])
+        self.category = getCategoryEnum(with: content["category"] as! String)
         
-        if let countDict = dictionary["count"] as? [String: Int] {
+        if let countDict = relations["count"] as? [String: Int] {
             self.count = PackageCount(dict: countDict)
         } else {
             self.count = nil
         }
         
-        self.coverImageUrl = dictionary["cover_pic_url"] as? String
+        self.coverImageUrl = content["cover_pic_url"] as? String
         
-        self.description = dictionary["description"] as! String
+        self.description = content["description"] as! String
         
-        self.destination = Location(dict: dictionary["destination"] as! [String: Any])
+        self.destination = Location(dict: content["destination"] as! [String: Any])
         
-        self.headline = dictionary["headline"] as! String
+        self.headline = content["headline"] as! String
         
-        if let inTransitByDict = dictionary["in_transit_by"] as? [String: Any] {
+        if let inTransitByDict = logistics["in_transit_by"] as? [String: Any] {
             self.inTransitBy = Person(dict: inTransitByDict)
         } else {
             self.inTransitBy = nil
         }
         
-        self.origin = Location(dict: dictionary["origin"] as! [String: Any])
+        self.origin = Location(dict: logistics["origin"] as! [String: Any])
         
-        self.recipient = Person(dict: dictionary["recipient"] as! [String: Any])
+        self.recipient = Person(dict: content["recipient"] as! [String: Any])
         
-        self.status = getStatusEnum(with: dictionary["status"] as! String)
+        self.status = getStatusEnum(with: logistics["status"] as! String)
         
-        self.tag = PackageTag(dict: dictionary["tag"] as! [String: Any])
+        self.topic = PackageTopic(dict: content["topic"] as! [String: Any])
         
         if let templateByDict = dictionary["template_by"] as? [String: Any] {
             self.templateBy = Person(dict: templateByDict)
@@ -313,16 +312,16 @@ struct Package: Equatable {
         
         self.reference = snapshot.reference
         
-        let currentLocation = dictionary["_geoloc"] as! GeoPoint
+        let currentLocation = logistics["current_location"] as! GeoPoint
         self.currentLocation = CLLocation(
             latitude: currentLocation.latitude,
             longitude: currentLocation.longitude
         )
         
-        self.dueDate = PackageDueDate(dict: dictionary["due_date"] as! [String : Timestamp?])
-        self.dropoffMessage = dictionary["dropoff_message"] as? String
+        self.dueDate = (content["due_date"] as! Timestamp).dateValue()
+        self.dropoffMessage = content["dropoff_message"] as? String
         self.externalActions = nil
-        self.followers = dictionary["followers"] as? [String: Double]
+        self.followers = relations["followers"] as? [String: Date]
     }
     
     static func == (lhs: Package, rhs: Package) -> Bool {
@@ -354,18 +353,9 @@ struct Package: Equatable {
             templateByEqual = lhs.templateBy! == rhs.templateBy!
         }
         
-        var dueDateEqual: Bool?
-        if lhs.dueDate == nil && rhs.dueDate == nil {
-            dueDateEqual = true
-        } else if lhs.dueDate == nil || rhs.dueDate == nil {
-            dueDateEqual = false
-        } else {
-            dueDateEqual = lhs.dueDate! == rhs.dueDate!
-        }
-
         return (
             lhs.sender == rhs.sender &&
-            lhs.categories == rhs.categories &&
+            lhs.category == rhs.category &&
             coverImageUrlEqual! &&
             lhs.description == rhs.description &&
             lhs.destination == rhs.destination &&
@@ -374,28 +364,14 @@ struct Package: Equatable {
             lhs.origin == rhs.origin &&
             lhs.recipient == rhs.recipient &&
             lhs.status == rhs.status &&
-            lhs.tag == rhs.tag &&
+            lhs.topic == rhs.topic &&
             templateByEqual! &&
             lhs.transitRecords == rhs.transitRecords &&
             lhs.reference == rhs.reference &&
             lhs.currentLocation.coordinate.latitude == rhs.currentLocation.coordinate.latitude &&
             lhs.currentLocation.coordinate.longitude == rhs.currentLocation.coordinate.longitude &&
-            dueDateEqual!
+            lhs.dueDate == rhs.dueDate
         )
-    }
-}
-
-struct PackageDueDate {
-    var start: Date?
-    var end: Date?
-    
-    init(dict: [String: Timestamp?]) {
-        self.start = (dict["start"] as? Timestamp)?.dateValue()
-        self.end = (dict["end"] as? Timestamp)?.dateValue()
-    }
-    
-    static func ==(lhs: PackageDueDate, rhs: PackageDueDate) -> Bool {
-        return lhs.start == rhs.start && lhs.end == rhs.end
     }
 }
 
@@ -508,7 +484,7 @@ struct Location: Equatable{
     }
 }
 
-struct PackageTag: Equatable {
+struct PackageTopic: Equatable {
     var name: String
     var reference: DocumentReference
     
@@ -522,7 +498,7 @@ struct PackageTag: Equatable {
         self.reference = dict["reference"] as! DocumentReference
     }
     
-    static func ==(lhs: PackageTag, rhs: PackageTag) -> Bool{
+    static func ==(lhs: PackageTopic, rhs: PackageTopic) -> Bool{
         return lhs.name == rhs.name && lhs.reference == rhs.reference
     }
 }
@@ -600,7 +576,7 @@ struct PackageFollowing {
     var followedDate: Date
     var headline: String
     var reference: DocumentReference
-    var tag: PackageTag
+    var topic: PackageTopic
     var coverImageUrl: String?
     var packageStatus: PackageStatus
     var coordinate: CLLocationCoordinate2D
@@ -611,7 +587,7 @@ struct PackageFollowing {
         self.followedDate = (dict["followed_date"] as! Timestamp).dateValue()
         self.headline = dict["headline"] as! String
         self.reference = dict["package_reference"] as! DocumentReference
-        self.tag = PackageTag(dict: dict["tag"] as! [String: Any])
+        self.topic = PackageTopic(dict: dict["topic"] as! [String: Any])
         self.coverImageUrl = dict["cover_pic_url"] as? String
         self.packageStatus = getStatusEnum(with: dict["status"] as! String)
         let geoPoint = dict["_geoloc"] as! GeoPoint
@@ -623,7 +599,7 @@ struct PackageMoved {
     var movedDate: Date
     var headline: String
     var reference: DocumentReference
-    var tag: PackageTag
+    var topic: PackageTopic
     var coverImageUrl: String?
     var packageStatus: PackageStatus
     var packageMovedCount: PackageMovedCount
@@ -639,7 +615,7 @@ struct PackageMoved {
         self.movedDate = (dict["moved_date"] as! Timestamp).dateValue()
         self.headline = dict["headline"] as! String
         self.reference = dict["package_reference"] as! DocumentReference
-        self.tag = PackageTag(dict: dict["tag"] as! [String: Any])
+        self.topic = PackageTopic(dict: dict["topic"] as! [String: Any])
         self.coverImageUrl = dict["cover_pic_url"] as? String
         self.packageStatus = getStatusEnum(with: dict["status"] as! String)
     }
@@ -655,7 +631,7 @@ struct PackageMovedCount {
 
 
 struct PackagePreview {
-    var tagName: String
+    var topicName: String
     var headline: String
     var recipientName: String
     var moversCount: Int
@@ -678,7 +654,7 @@ struct PackagePreview {
         
         let origin = CLLocation(latitude: package.origin.geoPoint.latitude, longitude: package.origin.geoPoint.longitude)
         
-        self.tagName = package.tag.name
+        self.topicName = package.topic.name
         self.headline = package.headline
         self.recipientName = package.recipient.displayName
         self.moversCount = package.count!.movers!
@@ -686,17 +662,14 @@ struct PackagePreview {
         self.distanceLeft = destination.distance(from: currentLocation)
         self.distanceFrom =  distanceTotal - distanceLeft
         
-        if let dueDate = package.dueDate?.end {
-            self.timeLeft = dueDate.timeIntervalSinceReferenceDate - Date.timeIntervalSinceReferenceDate
-        } else {
-            self.timeLeft = 0
-        }
+        self.timeLeft = package.dueDate.timeIntervalSinceReferenceDate - Date.timeIntervalSinceReferenceDate
+        
         self.packageStatus = package.status
         self.packageDocumentId = package.reference.documentID
         self.coordinate = package.currentLocation.coordinate
         self.destinationCoordinate = destination.coordinate
         self.originCoordinate = origin.coordinate
-        self.categories = package.categories
+        self.categories = [package.category]
         self.destination = package.destination
     }
     
@@ -722,7 +695,7 @@ struct PackagePreview {
         
         let categories = hit["_tags"] as! [String]
         
-        self.tagName = hit["tagName"] as! String
+        self.topicName = hit["topicName"] as! String
         self.headline = hit["headline"] as! String
         self.recipientName = hit["recipientName"] as! String
         self.moversCount = hit["moversCount"] as! Int
@@ -795,12 +768,12 @@ func followPackageWithRef(packageReference: DocumentReference, userReference: Do
         let newCountPackagesFollowing = oldCountPackagesFollowing + 1
         transaction.updateData(["public_profile.count.packages_following": newCountPackagesFollowing], forDocument: userReference)
         
-        guard let tag = packageDocument.data()?["tag"] as? [String: Any] else {
+        guard let topic = packageDocument.data()?["topic"] as? [String: Any] else {
             let error = NSError(
                 domain: "AppErrorDomain",
                 code: -1,
                 userInfo: [
-                    NSLocalizedDescriptionKey: "Unable to retrieve tag from snapshot \(packageDocument)"
+                    NSLocalizedDescriptionKey: "Unable to retrieve topic from snapshot \(packageDocument)"
                 ]
             )
             errorPointer?.pointee = error
@@ -870,7 +843,7 @@ func followPackageWithRef(packageReference: DocumentReference, userReference: Do
         transaction.setData(
             [
                 "package_reference": packageReference,
-                "tag": tag,
+                "topic": topic,
                 "headline": headline,
                 "cover_pic_url": coverPicUrl,
                 "followed_date": Timestamp(date: Date()),
@@ -1237,19 +1210,24 @@ func dropoffPackageWithRef(packageReference: DocumentReference, userReference: D
         // update package status to pending or delivered
         // update package _geoloc/current location
         
+        let packageContent = (packageDocument.data()!)["content"] as! [String: Any]
+        let packageLogistics = (packageDocument.data()!)["logistics"] as! [String: Any]
+        
         let destinationCL = CLLocation(
-            latitude: (((packageDocument.data()!)["destination"] as! [String: Any])["geo_point"] as! GeoPoint).latitude,
-            longitude: (((packageDocument.data()!)["destination"] as! [String: Any])["geo_point"] as! GeoPoint).longitude)
+            latitude: ((packageContent["destination"] as! [String: Any])["geo_point"] as! GeoPoint).latitude,
+            longitude: ((packageContent["destination"] as! [String: Any])["geo_point"] as! GeoPoint).longitude
+        )
         
         let originCL = CLLocation(
-            latitude: (((packageDocument.data()!)["origin"] as! [String: Any])["geo_point"] as! GeoPoint).latitude,
-            longitude: (((packageDocument.data()!)["origin"] as! [String: Any])["geo_point"] as! GeoPoint).longitude)
-
+            latitude: ((packageLogistics["origin"] as! [String: Any])["geo_point"] as! GeoPoint).latitude,
+            longitude: ((packageLogistics["origin"] as! [String: Any])["geo_point"] as! GeoPoint).longitude
+        )
         
         let pickupLocationCL = CLLocation(
-            latitude: ((packageDocument.data()!)["_geoloc"] as! GeoPoint).latitude,
-            longitude: ((packageDocument.data()!)["_geoloc"] as! GeoPoint).longitude)
-        
+            latitude: (packageLogistics["current_location"] as! GeoPoint).latitude,
+            longitude: (packageLogistics["current_location"] as! GeoPoint).longitude
+        )
+
         let delivered = locationCL.distance(from: destinationCL) < ACTIONABLE_DISTANCE
         let deliveryBonus: Double = delivered ? 10 : 0
 //        let delivered = true
@@ -1293,7 +1271,7 @@ func dropoffPackageWithRef(packageReference: DocumentReference, userReference: D
             transaction.setData(
                 [
                     "package_reference": packageReference,
-                    "tag": (packageDocument.data()?["tag"] as! [String : Any]),
+                    "topic": (packageDocument.data()?["topic"] as! [String : Any]),
                     "categories": (packageDocument.data()?["categories"] as! [String : Any]),
                     "headline": packageDocument.data()?["headline"] as! String,
                     "cover_pic_url": packageDocument.data()?["cover_pic_url"] as! String,
@@ -1491,12 +1469,12 @@ func internalFollow(with transaction: Transaction, packageDocument: DocumentSnap
     let newCountPackagesFollowing = oldCountPackagesFollowing + 1
     transaction.updateData(["public_profile.count.packages_following": newCountPackagesFollowing], forDocument: userReference)
     
-    guard let tag = packageDocument.data()?["tag"] as? [String: Any] else {
+    guard let topic = packageDocument.data()?["topic"] as? [String: Any] else {
         let error = NSError(
             domain: "AppErrorDomain",
             code: -1,
             userInfo: [
-                NSLocalizedDescriptionKey: "Unable to retrieve tag from snapshot \(packageDocument)"
+                NSLocalizedDescriptionKey: "Unable to retrieve topic from snapshot \(packageDocument)"
             ]
         )
         errorPointer?.pointee = error
@@ -1572,7 +1550,7 @@ func internalFollow(with transaction: Transaction, packageDocument: DocumentSnap
     transaction.setData(
         [
             "package_reference": packageReference,
-            "tag": tag,
+            "topic": topic,
             "headline": headline,
             "cover_pic_url": coverPicUrl,
             "followed_date": Timestamp(date: Date()),

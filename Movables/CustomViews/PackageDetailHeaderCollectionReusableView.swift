@@ -31,7 +31,7 @@ class PackageDetailHeaderCollectionReusableView: UICollectionReusableView {
     
     var imageView: UIImageView!
     var titleLabel: MarqueeLabel!
-    var tagPill: MCPill!
+    var topicPill: MCPill!
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -67,12 +67,12 @@ class PackageDetailHeaderCollectionReusableView: UICollectionReusableView {
         titleLabel.text = "Headline"
         addSubview(titleLabel)
         
-        tagPill = MCPill(frame: .zero, character: "#", image: nil, body: "tag", color: Theme().keyTint)
-        tagPill.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(tagPill)
+        topicPill = MCPill(frame: .zero, character: "#", image: nil, body: "tag", color: Theme().keyTint)
+        topicPill.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(topicPill)
         
         
-        let viewsDictionary: [String: UIView] = ["imageView": imageView, "titleLabel": titleLabel, "tagPill": tagPill]
+        let viewsDictionary: [String: UIView] = ["imageView": imageView, "titleLabel": titleLabel, "topicPill": topicPill]
         
         let hConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[imageView]|", options: .directionLeadingToTrailing, metrics: nil, views: viewsDictionary)
         
@@ -80,13 +80,13 @@ class PackageDetailHeaderCollectionReusableView: UICollectionReusableView {
         
         addConstraints(hConstraints + vConstraints)
         
-        let hLabelsConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|-14-[tagPill]->=18-|", options: .directionLeadingToTrailing, metrics: nil, views: ["tagPill": tagPill])
+        let hLabelsConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|-14-[topicPill]->=18-|", options: .directionLeadingToTrailing, metrics: nil, views: ["topicPill": topicPill])
         
         let hTitleLabelsConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[titleLabel]|", options: .directionLeadingToTrailing, metrics: nil, views: ["titleLabel": titleLabel])
         
         NSLayoutConstraint.activate([
-            tagPill.heightAnchor.constraint(equalToConstant: 28),
-            titleLabel.topAnchor.constraint(equalTo: tagPill.bottomAnchor, constant: 8),
+            topicPill.heightAnchor.constraint(equalToConstant: 28),
+            titleLabel.topAnchor.constraint(equalTo: topicPill.bottomAnchor, constant: 8),
             titleLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -24),
         ])
         

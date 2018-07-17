@@ -29,13 +29,13 @@ import Firebase
 import NVActivityIndicatorView
 
 struct OrganizeTopic {
-    var tag: String
+    var name: String
     var packagesMoved: [PackageMoved]
     var unreadTotal: Int
     var lastActivity: Date
     
-    init(tag: String, packagesMoved: [PackageMoved], unreadTotal: Int, lastActivity: Date) {
-        self.tag = tag
+    init(name: String, packagesMoved: [PackageMoved], unreadTotal: Int, lastActivity: Date) {
+        self.name = name
         self.packagesMoved = packagesMoved
         self.unreadTotal = unreadTotal
         self.lastActivity = lastActivity
@@ -170,18 +170,18 @@ class OrganizeViewController: UIViewController {
     
     private func processPackagesMoved() {
         guard let packagesMoved = self.packagesMoved else { return }
-        // sort into dict by tag name first
+        // sort into dict by topic name first
         var packagesByTagTemp:[String: [PackageMoved]] = [:]
         for package in packagesMoved {
-            if let packages = packagesByTagTemp[package.tag.name] {
+            if let packages = packagesByTagTemp[package.topic.name] {
                 // key already exists
                 var newPackages: [PackageMoved] = []
                 newPackages.append(contentsOf: packages)
                 newPackages.append(package)
-                packagesByTagTemp[package.tag.name] = newPackages
+                packagesByTagTemp[package.topic.name] = newPackages
             } else {
                 // key doesn't exist
-                packagesByTagTemp.updateValue([package], forKey: package.tag.name)
+                packagesByTagTemp.updateValue([package], forKey: package.topic.name)
             }
         }
         var organizeTopicsTemp:[OrganizeTopic] = []
@@ -194,7 +194,7 @@ class OrganizeViewController: UIViewController {
                     lastActivity = packageMoved.movedDate
                 }
             }
-            organizeTopicsTemp.append(OrganizeTopic(tag: taggedPackages.key, packagesMoved: taggedPackages.value, unreadTotal: unreadTotal, lastActivity: lastActivity))
+            organizeTopicsTemp.append(OrganizeTopic(name: taggedPackages.key, packagesMoved: taggedPackages.value, unreadTotal: unreadTotal, lastActivity: lastActivity))
         }
         self.organizeTopics = organizeTopicsTemp.sorted(by: { $0.unreadTotal > $1.unreadTotal })
     }
@@ -209,7 +209,7 @@ extension OrganizeViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "packageMoved") as! OrganizePackageMovedTableViewCell
         let organizeTopic = self.organizeTopics![indexPath.row]
         
-        cell.topicLabel.text = "#\(organizeTopic.tag)"
+        cell.topicLabel.text = "#\(organizeTopic.name)"
         cell.packageCountLabel.text = String(format: NSLocalizedString(organizeTopic.packagesMoved.count == 1 ? "label.packageMoved" : "label.packagesMovedPlural", comment: "label text for packages moved"), organizeTopic.packagesMoved.count)
         cell.supplementLabel.text = "\(organizeTopic.unreadTotal)"
         cell.supplementLabelContainerView.backgroundColor = Theme().mapStampTint

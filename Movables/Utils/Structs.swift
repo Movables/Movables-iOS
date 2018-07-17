@@ -85,23 +85,23 @@ struct UserPrivateProfile {
 }
 
 struct TopicResultItem {
-    var tag: String
+    var name: String
     var objectID: String
     init(with dict:[String: Any]) {
-        self.tag = dict["tag"] as! String
+        self.name = dict["name"] as! String
         self.objectID = dict["objectID"] as! String
     }
 }
 
 struct Topic {
     var count: TopicCount
-    var tag: String
+    var name: String
     var description: String?
     var reference: DocumentReference
     
     init(with dict: [String: Any], reference: DocumentReference) {
         self.count = TopicCount(with: dict["count"] as! [String: Int])
-        self.tag = dict["tag"] as! String
+        self.name = dict["name"] as! String
         self.description = dict["description"] as? String
         self.reference = reference
     }

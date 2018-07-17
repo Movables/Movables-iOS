@@ -44,7 +44,7 @@ extension ExploreCoordinator: ExploreViewControllerDelegate {
     func showPackageDetail(with packagePreview: PackagePreview) {
         packageDetailVC = PackageDetailViewController()
         packageDetailVC?.headline = packagePreview.headline
-        packageDetailVC?.tagName = packagePreview.tagName
+        packageDetailVC?.topicName = packagePreview.topicName
         packageDetailVC?.packageDocumentId = packagePreview.packageDocumentId
         packageDetailVC?.delegate = self
         let packageDetailNC = UINavigationController(rootViewController: packageDetailVC!)

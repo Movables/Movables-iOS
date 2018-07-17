@@ -84,7 +84,7 @@
 "label.sinceDate" = "始於 %@";
 "label.selectConversationType" = "選擇對話模式";
 "label.tagYourPackage" = "標記議題包";
-"label.searchTags" = "搜尋標籤";
+"label.searchTopics" = "搜尋標籤";
 "label.noTemplates" = "無範本。 ";
 "label.templateCount" = "%d個範本。 ";
 "label.templatesCount" = "%d個範本。 ";

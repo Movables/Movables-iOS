@@ -1267,6 +1267,7 @@
 				FBCFBundleURLSchemes = fb209161136365034;
 				FacebookAppID = 209161136365034;
 				FacebookDisplayName = Movables;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GOOGCFBundleURLSchemes = "com.googleusercontent.apps.7977622923-5gfbd1l8lv4njbsgnrq881alo1hctjh0";
 				INFOPLIST_FILE = Movables/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;

@@ -43,7 +43,7 @@ extension ProfileCoordinator: ProfileViewControllerDelegate {
     func showPackageDetail(with packageId: String, and headline: String) {
         packageDetailVC = PackageDetailViewController()
         packageDetailVC?.headline = headline
-        packageDetailVC?.tagName = ""
+        packageDetailVC?.topicName = ""
         packageDetailVC?.packageDocumentId = packageId
         packageDetailVC?.delegate = self
         let packageDetailNC = UINavigationController(rootViewController: packageDetailVC!)

@@ -79,7 +79,7 @@ class CreatePackageTemplatesViewController: UIViewController {
         tableView.register(ListViewButtonTableViewCell.self, forCellReuseIdentifier: "buttonCell")
         view.addSubview(tableView)
 
-        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.childViewControllers.count)", image: nil, body: "#\(createPackageCoordinator.tagResultItem!.tag)", color: .white)
+        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.childViewControllers.count)", image: nil, body: "#\(createPackageCoordinator.topicResultItem!.name)", color: .white)
         instructionLabel.bodyLabel.textColor = Theme().textColor
         instructionLabel.circleMask.backgroundColor = Theme().textColor
         instructionLabel.characterLabel.textColor = .white
@@ -149,9 +149,9 @@ class CreatePackageTemplatesViewController: UIViewController {
     }
     
     private func fetchTemplates() {
-        let tag = createPackageCoordinator.tagResultItem!.tag
+        let topic = createPackageCoordinator.topicResultItem!.name
         
-        Firestore.firestore().collection("topics").whereField("tag", isEqualTo: tag).limit(to: 1).getDocuments { (querySnapshot, error) in
+        Firestore.firestore().collection("topics").whereField("name", isEqualTo: topic).limit(to: 1).getDocuments { (querySnapshot, error) in
             if let error = error {
                 print(error)
             } else {
@@ -253,11 +253,11 @@ extension CreatePackageTemplatesViewController: UITableViewDelegate {
                     externalActionsTemp.append(ExternalAction(dict: docSnapshot.data()))
                 })
                 self.createPackageCoordinator.externalActions = externalActionsTemp
-                self.createPackageCoordinator.recipientResultItem = RecipientResultItem(name: template.recipient.displayName, picUrl: template.recipient.photoUrl, position: template.destination.name, documentID: template.recipient.reference!.documentID)
+                self.createPackageCoordinator.recipientResultItem = RecipientResultItem(name: template.recipient.displayName, picUrl: template.recipient.photoUrl, position: template.destination.name, twitter:template.recipient.twitter, facebook: template.recipient.facebook, phone: template.recipient.phone, documentID: template.recipient.reference!.documentID)
                 self.createPackageCoordinator.destinationResultItem = DestinationResultItem(name: template.destination.name, placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: template.destination.geoPoint.latitude, longitude: template.destination.geoPoint.longitude)))
                 self.createPackageCoordinator.category = template.categories.first
                 self.createPackageCoordinator.packageCoverPhotoImage = nil
-                self.createPackageCoordinator.packageDueDate = template.dueDate!.end!
+                self.createPackageCoordinator.packageDueDate = template.dueDate
                 self.createPackageCoordinator.packageHeadline = template.headline
                 self.createPackageCoordinator.packageDescription = template.description
                 self.createPackageCoordinator.usingTemplate = true

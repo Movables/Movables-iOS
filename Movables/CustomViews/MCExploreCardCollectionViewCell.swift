@@ -30,7 +30,7 @@ class MCExploreCardCollectionViewCell: UICollectionViewCell {
     
     var packagePreview: PackagePreview!
     var cardView: MCCard!
-    var tagPillView: MCPill!
+    var topicPillView: MCPill!
     var headlineLabel: MCCardHeadline!
     var infoStackView: UIStackView!
     var toLabelView: MCCardKeyValueLabel!
@@ -53,13 +53,13 @@ class MCExploreCardCollectionViewCell: UICollectionViewCell {
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-14-[cardView]|", options: .directionLeadingToTrailing, metrics: nil, views: ["cardView": cardView]))
         
         
-        tagPillView = MCPill(frame: .zero, character: "#", image: nil, body: "", color: .white)
-        tagPillView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(tagPillView)
+        topicPillView = MCPill(frame: .zero, character: "#", image: nil, body: "", color: .white)
+        topicPillView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(topicPillView)
         contentView.addConstraints([
-            NSLayoutConstraint(item: tagPillView, attribute: .top, relatedBy: .equal, toItem: cardView, attribute: .top, multiplier: 1, constant: -14),
-            NSLayoutConstraint(item: tagPillView, attribute: .left, relatedBy: .equal, toItem: cardView, attribute: .left, multiplier: 1, constant: -16),
-            NSLayoutConstraint(item: tagPillView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 28)
+            NSLayoutConstraint(item: topicPillView, attribute: .top, relatedBy: .equal, toItem: cardView, attribute: .top, multiplier: 1, constant: -14),
+            NSLayoutConstraint(item: topicPillView, attribute: .left, relatedBy: .equal, toItem: cardView, attribute: .left, multiplier: 1, constant: -16),
+            NSLayoutConstraint(item: topicPillView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 28)
         ])
         
         headlineLabel = MCCardHeadline(frame: .zero, rate: 50, fadeLength: 80, body: "")
@@ -123,9 +123,9 @@ class MCExploreCardCollectionViewCell: UICollectionViewCell {
         let distance = Measurement(value: packagePreview.distanceLeft, unit: UnitLength.meters)
         let distanceLeftString = distanceLeftformatter.string(from: distance)
         
-        tagPillView.bodyLabel.text = packagePreview.tagName
-        tagPillView.pillContainerView.backgroundColor = getTintForCategory(category: packagePreview.categories.first!)
-        tagPillView.characterLabel.text = getEmojiForCategory(category: packagePreview.categories.first!)
+        topicPillView.bodyLabel.text = packagePreview.topicName
+        topicPillView.pillContainerView.backgroundColor = getTintForCategory(category: packagePreview.categories.first!)
+        topicPillView.characterLabel.text = getEmojiForCategory(category: packagePreview.categories.first!)
         headlineLabel.text = packagePreview.headline
         headlineLabel.restartLabel()
         toLabelView.keyLabel.text = String(NSLocalizedString("label.recipient", comment: "label title for recipient label"))

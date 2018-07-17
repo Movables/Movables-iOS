@@ -32,18 +32,17 @@ import CoreLocation
 
 class CreatePackageCoordinator: Coordinator {
     let rootViewController: UIViewController
-    let tagSearchVC: CreatePackageTagSearchViewController
+    let topicSearchVC: CreatePackageTopicSearchViewController
     let navigationController: UINavigationController
     var packageDraft: Package?
     var category: PackageCategory?
-    var tagResultItem: PackageTagResultItem?
+    var topicResultItem: PackageTopicResultItem?
     var recipientResultItem: RecipientResultItem?
     var destinationResultItem: DestinationResultItem?
     var packageCoverPhotoImage: UIImage?
     var packageDueDate: Date?
     var packageHeadline: String?
     var packageDescription: String?
-    var userDocument: UserDocument?
     var shouldSaveAsTemplate: Bool?
     var usingTemplate: Bool = false
     var template: PackageTemplate?
@@ -53,15 +52,15 @@ class CreatePackageCoordinator: Coordinator {
     
     init(rootViewController: UIViewController) {
         self.rootViewController = rootViewController
-        self.tagSearchVC = CreatePackageTagSearchViewController()
-        self.navigationController = UINavigationController(rootViewController: self.tagSearchVC)
+        self.topicSearchVC = CreatePackageTopicSearchViewController()
+        self.navigationController = UINavigationController(rootViewController: self.topicSearchVC)
         LocationManager.shared.desiredAccuracy = kCLLocationAccuracyBestForNavigation
     }
     
     func start() {
-        self.tagSearchVC.createPackageCoordinator = self
+        self.topicSearchVC.createPackageCoordinator = self
         rootViewController.present(self.navigationController, animated: true) {
-            print("presented tagSearchVC")
+            print("presented topicSearchVC")
         }
     }
     
@@ -102,7 +101,7 @@ class CreatePackageCoordinator: Coordinator {
     
     func setContentAndPushToReview(promptTemplate: Bool, coverImageUrl: URL?) {
         if promptTemplate {
-            let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.packageTemplates", comment: "alert title for package templates")), message: String(format: NSLocalizedString("copy.alert.packageTemplateDesc", comment: "alert body label for package templates"), self.tagResultItem!.tag), preferredStyle: .actionSheet)
+            let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.packageTemplates", comment: "alert title for package templates")), message: String(format: NSLocalizedString("copy.alert.packageTemplateDesc", comment: "alert body label for package templates"), self.topicResultItem!.name), preferredStyle: .actionSheet)
             alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.createTemplate", comment: "button title for create template")), style: .default, handler: { (action) in
                 self.shouldSaveAsTemplate = true
                 self.pushToReview(coverImageUrl: coverImageUrl)
@@ -132,9 +131,9 @@ class CreatePackageCoordinator: Coordinator {
             reviewVC.coverImage = packageCoverPhotoImage
         }
         reviewVC.sender = Person(displayName: Auth.auth().currentUser!.displayName ?? "", photoUrl: Auth.auth().currentUser!.photoURL?.absoluteString ?? "", reference: Firestore.firestore().collection("users").document(Auth.auth().currentUser!.uid), twitter: nil, facebook: nil, phone: nil)
-        reviewVC.recipient = Person(displayName: recipientResultItem?.name ?? "", photoUrl: recipientResultItem?.picUrl ?? "", reference: Firestore.firestore().collection("recipients").document(), twitter: nil, facebook: nil, phone: nil)
+        reviewVC.recipient = Person(displayName: recipientResultItem!.name, photoUrl: recipientResultItem!.picUrl ?? "", reference: Firestore.firestore().collection("recipients").document(recipientResultItem!.documentID), twitter: recipientResultItem!.twitter, facebook: recipientResultItem!.facebook, phone: recipientResultItem!.phone)
         reviewVC.packageHeadline = packageHeadline
-        reviewVC.packageTagName = tagResultItem?.tag ?? ""
+        reviewVC.packageTopicName = topicResultItem?.name ?? ""
         reviewVC.packageDescription = packageDescription ?? ""
         reviewVC.originCoordinate = LocationManager.shared.location?.coordinate
         reviewVC.destinationCoordinate = destinationResultItem?.placemark.coordinate
@@ -168,7 +167,7 @@ class CreatePackageCoordinator: Coordinator {
     func createPackageContent() -> [String: Any] {
         var packageContent: [String: Any] = [:]
         
-        packageContent["contegory"] = getStringForCategory(category: category!)
+        packageContent["category"] = getStringForCategory(category: category!)
         
         packageContent["description"] = packageDescription!
         
@@ -205,19 +204,17 @@ class CreatePackageCoordinator: Coordinator {
         
         packageContent["recipient"] = [
             "name": recipientResultItem!.name,
-            "phone": nil,
+            "phone": recipientResultItem!.phone as Any,
             "pic_url": recipientResultItem!.picUrl ?? "",
-            "twitter": nil,
-            "facebook": nil,
+            "twitter": recipientResultItem!.twitter as Any,
+            "facebook": recipientResultItem!.facebook as Any,
             "reference": Firestore.firestore().collection("recipient").document(recipientResultItem!.documentID),
             "type": getStringForRecipientTypeEnum(recipientTypeEnum: .politician)
         ]
         
-        packageContent["status"] = getStringForStatusEnum(statusEnum: .transit)
-        
         packageContent["topic"] = [
-            "name": tagResultItem!.tag,
-            "reference": Firestore.firestore().collection("topics").document(tagResultItem!.documentID),
+            "name": topicResultItem!.name,
+            "reference": Firestore.firestore().collection("topics").document(topicResultItem!.documentID),
         ]
         
         return packageContent
@@ -234,10 +231,12 @@ class CreatePackageCoordinator: Coordinator {
         packageLogistics["created_date"] = Date()
         
         packageLogistics["in_transit_by"] = [
-            "name": userDocument!.publicProfile.displayName,
-            "pic_url": userDocument!.publicProfile.picUrl ?? "",
-            "reference": userDocument!.reference
+            "name": UserManager.shared.userDocument!.publicProfile.displayName,
+            "pic_url": UserManager.shared.userDocument!.publicProfile.picUrl ?? "",
+            "reference": UserManager.shared.userDocument!.reference
         ]
+        
+        packageLogistics["status"] = getStringForStatusEnum(statusEnum: .transit)
         
         packageLogistics["origin"] = [
             "address": "",
@@ -246,9 +245,9 @@ class CreatePackageCoordinator: Coordinator {
         ]
         
         packageLogistics["author"] = [
-            "name": userDocument!.publicProfile.displayName,
-            "pic_url": userDocument!.publicProfile.picUrl ?? "",
-            "reference": userDocument!.reference
+            "name": UserManager.shared.userDocument!.publicProfile.displayName,
+            "pic_url": UserManager.shared.userDocument!.publicProfile.picUrl ?? "",
+            "reference": UserManager.shared.userDocument!.reference
         ]
         
         if usingTemplate {
@@ -266,7 +265,7 @@ class CreatePackageCoordinator: Coordinator {
         var packageRelations: [String: Any] = [:]
         
         packageRelations["count"] = ["followers": 0, "movers": 0]
-        packageRelations["followers"] = [ userDocument!.reference.documentID: Date().timeIntervalSince1970 ]
+        packageRelations["followers"] = [ UserManager.shared.userDocument!.reference.documentID: Date().timeIntervalSince1970 ]
         
         return packageRelations
     }
@@ -278,11 +277,11 @@ class CreatePackageCoordinator: Coordinator {
         var topic: [String: Any]?
         var topicReference: DocumentReference?
         
-        if tagResultItem!.packagesCount == nil {
+        if topicResultItem!.packagesCount == nil {
             // create new topic
             topicReference = (packageContent["topic"] as! [String: Any])["reference"] as? DocumentReference
             topic = [
-                "name": tagResultItem!.tag,
+                "name": topicResultItem!.name,
                 "description": "",
                 "count": [
                     "templates": shouldSaveAsTemplate! ? 1 : 0,
@@ -348,7 +347,7 @@ class CreatePackageCoordinator: Coordinator {
         
         let db = Firestore.firestore()
         db.runTransaction({ (transaction, errorPointer) -> Any? in
-            let authorReference = self.userDocument!.reference
+            let authorReference = UserManager.shared.userDocument!.reference
             let authorDocument: DocumentSnapshot?
             do {
                 try authorDocument = transaction.getDocument(authorReference)
@@ -380,9 +379,9 @@ class CreatePackageCoordinator: Coordinator {
                     "object_type": getStringForObjectTypeEnum(type: .template),
                     "object_name": topicTemplate!["headline"]! as! String,
                     "type": getStringForActivityTypeEnum(type: .templateUsage),
-                    "actor_name": self.userDocument!.publicProfile.displayName,
-                    "actor_pic": self.userDocument!.publicProfile.picUrl ?? "",
-                    "actor_reference": self.userDocument!.reference,
+                    "actor_name": UserManager.shared.userDocument!.publicProfile.displayName,
+                    "actor_pic": UserManager.shared.userDocument!.publicProfile.picUrl ?? "",
+                    "actor_reference": UserManager.shared.userDocument!.reference,
                     "amount": 10
                 ]
                 transaction.setData(templateUsageTransaction, forDocument: templateAuthorReference.collection("account_activities").document())
@@ -419,8 +418,8 @@ class CreatePackageCoordinator: Coordinator {
                     "object_type": getStringForObjectTypeEnum(type: .topic),
                     "object_name": (topicTemplate!["topic"] as! [String : Any])["name"] as! String,
                     "type": getStringForActivityTypeEnum(type: .templateCreation),
-                    "actor_name": self.userDocument!.publicProfile.displayName,
-                    "actor_pic": self.userDocument!.publicProfile.picUrl ?? "",
+                    "actor_name": UserManager.shared.userDocument!.publicProfile.displayName,
+                    "actor_pic": UserManager.shared.userDocument!.publicProfile.picUrl ?? "",
                     "actor_reference": authorReference,
                     "amount": 10
                 ]
@@ -429,6 +428,17 @@ class CreatePackageCoordinator: Coordinator {
                 // save topic template
                 transaction.setData(topicTemplate!, forDocument: topicTemplateReference!)
             }
+            
+            transaction.setData(
+                [
+                    "author_reference": authorReference,
+                    "pickup": [
+                        "geo_point": GeoPoint(latitude: LocationManager.shared.location!.coordinate.latitude, longitude: LocationManager.shared.location!.coordinate.longitude),
+                        "date": Date()
+                    ],
+                ],
+                forDocument: packageReference.collection("transit_records").document(authorReference.documentID)
+            )
             
             // save package
             transaction.setData(package, forDocument: packageReference)

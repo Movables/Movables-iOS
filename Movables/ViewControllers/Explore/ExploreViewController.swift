@@ -53,13 +53,13 @@ class ExploreViewController: UIViewController {
     
     var delegate: ExploreViewControllerDelegate?
     
-    var tagName: String? {
+    var topicName: String? {
         didSet {
             fetchNearbyPackagePreviews()
         }
     }
     
-    var selectedTagIndex: IndexPath?
+    var selectedTopicIndex: IndexPath?
     
     var categories: [PackageCategory] = [] {
         didSet{
@@ -243,7 +243,7 @@ class ExploreViewController: UIViewController {
             let index:Index!
             
             let query = Query(query: "")
-            query.attributesToRetrieve = ["tagName", "headline", "recipientName", "moversCount", "destination", "origin", "_geoloc", "dueDate", "_tags", "status", "objectId"]
+            query.attributesToRetrieve = ["topicName", "headline", "recipientName", "moversCount", "destination", "origin", "_geoloc", "dueDate", "_tags", "status", "objectId"]
 
             if sortBy == .dueDate {
                 index = apiClient.index(withName: "packagesDueDate")
@@ -265,12 +265,12 @@ class ExploreViewController: UIViewController {
             query.tagFilters = categoriesArray
             
             var filterString = ""
-            if let tagName = self.tagName {
-                filterString += "tagName:\(tagName)"
+            if let topicName = self.topicName {
+                filterString += "topicName:\(topicName)"
                 query.filters = filterString
             }
             if let status = self.status {
-                if self.tagName != nil && !self.tagName!.isEmpty {
+                if self.topicName != nil && !self.topicName!.isEmpty {
                     filterString += " AND status:\(getStringForStatusEnum(statusEnum: status))"
                 } else {
                     filterString += "NOT status:\(getStringForStatusEnum(statusEnum: .delivered))"
@@ -631,18 +631,18 @@ extension ExploreViewController: UICollectionViewDelegate {
         }
         if collectionView == topicsTrendingCollectionView {
             let topic = self.topics[indexPath.item]
-            if selectedTagIndex == indexPath {
+            if selectedTopicIndex == indexPath {
                 // deselect
-                self.tagName = nil
-                collectionView.deselectItem(at: selectedTagIndex!, animated: false)
+                self.topicName = nil
+                collectionView.deselectItem(at: selectedTopicIndex!, animated: false)
 
             } else {
                 // select
-                self.tagName = topic.tag
+                self.topicName = topic.name
                 collectionView.selectItem(at: indexPath, animated: false, scrollPosition: UICollectionViewScrollPosition(rawValue: 0))
             }
             collectionView.reloadData()
-            self.selectedTagIndex = indexPath
+            self.selectedTopicIndex = indexPath
         }
     }
     
@@ -656,8 +656,8 @@ extension ExploreViewController: UICollectionViewDelegate {
         }
         if collectionView == topicsTrendingCollectionView {
             collectionView.deselectItem(at: indexPath, animated: false)
-            self.tagName = nil
-            self.selectedTagIndex = nil
+            self.topicName = nil
+            self.selectedTopicIndex = nil
             collectionView.reloadData()
         }
     }
@@ -696,8 +696,8 @@ extension ExploreViewController: UICollectionViewDataSource {
         } else {
             let topic = self.topics[indexPath.item]
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "topicTrending", for: indexPath) as! TopicTrendingCollectionViewCell
-            cell.label.text = "#\(topic.tag)"
-            if self.tagName != nil && self.tagName == topic.tag {
+            cell.label.text = "#\(topic.name)"
+            if self.topicName != nil && self.topicName == topic.name {
                 cell.containerView.backgroundColor = Theme().textColor
                 cell.label.textColor = .white
             } else {

@@ -47,7 +47,7 @@ class CreateConversationCoordinator: Coordinator {
     func start() {
         self.typeSelectVC.createConversationCoordinator = self
         rootViewController.present(self.navigationController, animated: true) {
-            print("presented tagSearchVC")
+            print("presented topicSearchVC")
         }
     }
 

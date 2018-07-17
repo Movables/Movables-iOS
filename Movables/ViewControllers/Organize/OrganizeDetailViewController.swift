@@ -113,7 +113,7 @@ class OrganizeDetailViewController: UIViewController {
     
     private func fetchTopicDetail() {
         let db = Firestore.firestore()
-        db.collection("topics").whereField("tag", isEqualTo: organizeTopic.tag).limit(to: 1).getDocuments { (querySnapshot, error) in
+        db.collection("topics").whereField("name", isEqualTo: organizeTopic.name).limit(to: 1).getDocuments { (querySnapshot, error) in
             guard let snapshot = querySnapshot else { return }
             snapshot.documents.forEach({ (docSnapshot) in
                 self.topic = Topic(with: docSnapshot.data(), reference: docSnapshot.reference)
@@ -260,7 +260,7 @@ class OrganizeDetailViewController: UIViewController {
         self.navBarIsTransparent = !self.navBarIsTransparent
         self.navigationController?.navigationBar.setBackgroundImage(withTransparency ? UIImage() : nil, for: .default)
         self.navigationController?.navigationBar.shadowImage = withTransparency ? UIImage() : nil
-        self.navigationItem.title = withTransparency ? "" : "#\(organizeTopic.tag)"
+        self.navigationItem.title = withTransparency ? "" : "#\(organizeTopic.name)"
         self.navigationController?.navigationBar.tintColor = withTransparency ? Theme().textColor : Theme().textColor
     }
 }
@@ -320,7 +320,7 @@ extension OrganizeDetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "organizeDetailHeader") as! OrganizeDetailTableHeaderViewCell
-            cell.tagLabel.text = "#\(organizeTopic.tag)"
+            cell.topicLabel.text = "#\(organizeTopic.name)"
             cell.descriptionLabel.text = self.topic?.description ?? ""
             return cell
         } else {

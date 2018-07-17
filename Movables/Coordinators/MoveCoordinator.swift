@@ -48,7 +48,7 @@ extension MoveCoordinator: MoveViewControllerDelegate {
     func showPackageDetail(with package: Package) {
         packageDetailVC = PackageDetailViewController()
         packageDetailVC?.headline = package.headline
-        packageDetailVC?.tagName = package.tag.name
+        packageDetailVC?.topicName = package.topic.name
         packageDetailVC?.packageDocumentId = package.reference.documentID
         packageDetailVC?.delegate = self
         let packageDetailNC = UINavigationController(rootViewController: packageDetailVC!)

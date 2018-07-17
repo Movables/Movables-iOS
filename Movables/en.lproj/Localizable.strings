@@ -102,7 +102,7 @@
 "label.sinceDate" = "Since %@";
 "label.selectConversationType" = "Select Conversation Type";
 "label.tagYourPackage" = "Tag Your Package";
-"label.searchTags" = "Search tags";
+"label.searchTopics" = "Search tags";
 "label.noTemplates" = "No templates. ";
 "label.templateCount" = "%d template. ";
 "label.templatesCount" = "%d templates. ";
@@ -130,7 +130,7 @@
 "label.act" = "Take Action";
 "label.learn" = "Learn";
 "copy.alert.packageTemplates" = "Package Templates";
-"copy.alert.packageTemplateDesc" = "By saving the contents of your package as a template, others will be able to reuse your cover photo, headline, description, due date, and dropoff actions when they create packages with the #%@ tag.";
+"copy.alert.packageTemplateDesc" = "By saving the contents of your package as a template, others will be able to reuse your cover photo, headline, description, due date, and dropoff actions when they create packages for #%@.";
 "copy.alert.packageCreation" = "Confirm Package Creation";
 "copy.alert.packageCreationDesc" = "100 credits will be deducted from your account to create this package. After the deduction, you will have %d credits in your account.";
 "copy.makeItHappen" = "Make it happen.";

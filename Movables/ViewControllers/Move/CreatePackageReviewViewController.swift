@@ -47,7 +47,7 @@ class CreatePackageReviewViewController: UIViewController {
     var sender: Person!
     var recipient: Person!
     var packageHeadline: String!
-    var packageTagName: String!
+    var packageTopicName: String!
     var packageDescription: String!
     var originCoordinate: CLLocationCoordinate2D!
     var destinationCoordinate: CLLocationCoordinate2D!
@@ -324,9 +324,9 @@ extension CreatePackageReviewViewController: UICollectionViewDataSource {
             }
         }
         view.titleLabel.text = packageHeadline
-        view.tagPill.bodyLabel.text = packageTagName
-        view.tagPill.characterLabel.text = getEmojiForCategory(category: category)
-        view.tagPill.pillContainerView.backgroundColor = getTintForCategory(category: category)
+        view.topicPill.bodyLabel.text = packageTopicName
+        view.topicPill.characterLabel.text = getEmojiForCategory(category: category)
+        view.topicPill.pillContainerView.backgroundColor = getTintForCategory(category: category)
         return view
     }
     
@@ -420,10 +420,19 @@ extension CreatePackageReviewViewController: UICollectionViewDataSource {
     
     @objc private func didTapCallButton(sender: UIButton) {
         print("call")
+        self.recipient.phone!.makeAColl()
     }
     
     @objc private func didTapTweetButton(sender: UIButton) {
         print("tweet")
+        let twitterHandle = self.recipient.twitter!
+        let twUrl = URL(string: "twitter://user?screen_name=\(twitterHandle)")!
+        let twUrlWeb = URL(string: "https://www.twitter.com/\(twitterHandle)")!
+        if UIApplication.shared.canOpenURL(twUrl){
+            UIApplication.shared.open(twUrl, options: [:],completionHandler: nil)
+        }else{
+            UIApplication.shared.open(twUrlWeb, options: [:], completionHandler: nil)
+        }
     }
     
     @objc private func didTapMoreButton(sender: UIButton) {

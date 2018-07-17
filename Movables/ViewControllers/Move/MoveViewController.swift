@@ -91,7 +91,7 @@ class MoveViewController: UIViewController {
             if currentTransitRecord != nil {
                 self.moveCardView.isHidden = false
                 if self.currentPackage != nil {
-                    self.moveCardView.pillView.pillContainerView.backgroundColor = getTintForCategory(category: self.currentPackage!.categories.first!)
+                    self.moveCardView.pillView.pillContainerView.backgroundColor = getTintForCategory(category: self.currentPackage!.category)
                 }
                 self.emptyStateCardView.isHidden = true
                 self.mapView.removeOverlays(self.mapView.overlays)
@@ -239,8 +239,8 @@ class MoveViewController: UIViewController {
     private func updateGoCard() {
         if self.currentPackage != nil {
             self.moveCardView.headlineLabel.text = self.currentPackage?.headline
-            self.moveCardView.pillView.bodyLabel.text = self.currentPackage?.tag.name
-            self.moveCardView.pillView.characterLabel.text = getEmojiForCategory(category: self.currentPackage!.categories.first!)
+            self.moveCardView.pillView.bodyLabel.text = self.currentPackage?.topic.name
+            self.moveCardView.pillView.characterLabel.text = getEmojiForCategory(category: self.currentPackage!.category)
             self.moveCardView.countdownLabelView.keyLabel.text = String(NSLocalizedString("label.timeRemaining", comment: "label text for time remaining"))
             self.moveCardView.countdownLabelView.valueLabel.setCountDownDate(targetDate: self.currentTransitRecord!.pickupDate!.add(1.hours) as NSDate)
             self.moveCardView.countdownLabelView.valueLabel.start()

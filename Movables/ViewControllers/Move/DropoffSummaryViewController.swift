@@ -100,8 +100,8 @@ class DropoffSummaryViewController: UIViewController {
         doneButton.setTitle("Done", for: .normal)
         doneButton.setTitleColor(.white, for: .normal)
         doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        doneButton.setBackgroundColor(color: getTintForCategory(category: self.package.categories.first!), forUIControlState: .normal)
-        doneButton.setBackgroundColor(color: getTintForCategory(category: self.package.categories.first!).withAlphaComponent(0.85), forUIControlState: .highlighted)
+        doneButton.setBackgroundColor(color: getTintForCategory(category: self.package.category), forUIControlState: .normal)
+        doneButton.setBackgroundColor(color: getTintForCategory(category: self.package.category).withAlphaComponent(0.85), forUIControlState: .highlighted)
         doneButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         doneButton.layer.cornerRadius = 25
         doneButton.clipsToBounds = true
@@ -169,8 +169,8 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
                         button = subview as! UIButton
                     }
                 }
-                button.setBackgroundColor(color: getTintForCategory(category: self.package.categories.first!), forUIControlState: .normal)
-                button.setBackgroundColor(color: getTintForCategory(category: self.package.categories.first!).withAlphaComponent(0.85), forUIControlState: .highlighted)
+                button.setBackgroundColor(color: getTintForCategory(category: self.package.category), forUIControlState: .normal)
+                button.setBackgroundColor(color: getTintForCategory(category: self.package.category).withAlphaComponent(0.85), forUIControlState: .highlighted)
                 button.addTarget(self, action: #selector(didTapOnExternalLinkButton(sender:)), for: .touchUpInside)
             }
             return cell
@@ -237,7 +237,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
         let distanceMovedMeters = Measurement(value: distanceMoved, unit: UnitLength.meters)
         let distanceMovedString = distanceMovedformatter.string(from: distanceMovedMeters)
 
-        let distanceMovedRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: distanceMovedString, subtitleText: "Distance Moved".uppercased(), tint: getTintForCategory(category: self.package.categories.first!), actions: nil, type: .Directions)
+        let distanceMovedRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: distanceMovedString, subtitleText: "Distance Moved".uppercased(), tint: getTintForCategory(category: self.package.category), actions: nil, type: .Directions)
         
         rows.append(distanceMovedRow)
         
@@ -258,7 +258,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
             circleSubscript: nil,
             titleText: "\(timeLeftString)",
             subtitleText: String(NSLocalizedString("label.timeElapsed", comment: "label text for time elapsed")),
-            tint: getTintForCategory(category: self.package.categories.first!),
+            tint: getTintForCategory(category: self.package.category),
             actions: nil,
             type: .Time
         )
@@ -269,7 +269,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
             circleSubscript: nil,
             titleText: "\(response["credits_earned"] as! Double)",
             subtitleText: String(NSLocalizedString("label.creditsEarned", comment: "label text for credits earned")),
-            tint: getTintForCategory(category: self.package.categories.first!),
+            tint: getTintForCategory(category: self.package.category),
             actions: nil,
             type: .Award
         )
@@ -283,7 +283,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
                 circleSubscript: nil,
                 titleText: "\(response["delivery_bonus"] as! Double)",
                 subtitleText: String(NSLocalizedString("label.deliveryBonus", comment: "label text for delivery bonus")),
-                tint: getTintForCategory(category: self.package.categories.first!),
+                tint: getTintForCategory(category: self.package.category),
                 actions: nil,
                 type: .Award
             )
@@ -297,7 +297,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
             circleSubscript: nil,
             titleText: "\(response["new_balance"] as! Double)",
             subtitleText: String(NSLocalizedString("creditsTotal", comment: "label text for credits total")),
-            tint: getTintForCategory(category: self.package.categories.first!),
+            tint: getTintForCategory(category: self.package.category),
             actions: nil,
             type: .Balance
         )

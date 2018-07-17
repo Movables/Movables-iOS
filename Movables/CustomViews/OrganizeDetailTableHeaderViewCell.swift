@@ -29,7 +29,7 @@ import MarqueeLabel
 
 class OrganizeDetailTableHeaderViewCell: UITableViewCell {
 
-    var tagLabel: UILabel!
+    var topicLabel: UILabel!
     var descriptionLabel: UILabel!
     
     required init?(coder aDecoder: NSCoder) {
@@ -51,13 +51,13 @@ class OrganizeDetailTableHeaderViewCell: UITableViewCell {
         layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         clipsToBounds = true
         
-        tagLabel = UILabel(frame: .zero)
-        tagLabel.translatesAutoresizingMaskIntoConstraints = false
-        tagLabel.numberOfLines = 0
-        tagLabel.font = UIFont.systemFont(ofSize: 30, weight: .bold)
-        tagLabel.textColor = Theme().textColor
-        tagLabel.text = "#Tag"
-        contentView.addSubview(tagLabel)
+        topicLabel = UILabel(frame: .zero)
+        topicLabel.translatesAutoresizingMaskIntoConstraints = false
+        topicLabel.numberOfLines = 0
+        topicLabel.font = UIFont.systemFont(ofSize: 30, weight: .bold)
+        topicLabel.textColor = Theme().textColor
+        topicLabel.text = "#Tag"
+        contentView.addSubview(topicLabel)
         
         descriptionLabel = UILabel(frame: .zero)
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -67,13 +67,13 @@ class OrganizeDetailTableHeaderViewCell: UITableViewCell {
         contentView.addSubview(descriptionLabel)
         
         
-        let hTagLabelConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|-18-[tagLabel]-18-|", options: .directionLeadingToTrailing, metrics: nil, views: ["tagLabel": tagLabel])
+        let hTagLabelConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|-18-[topicLabel]-18-|", options: .directionLeadingToTrailing, metrics: nil, views: ["topicLabel": topicLabel])
         
         NSLayoutConstraint.activate([
-            tagLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 18),
-            tagLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -18),
-            tagLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 50 + 50 + UIApplication.shared.keyWindow!.safeAreaInsets.top),
-            descriptionLabel.topAnchor.constraint(equalTo: tagLabel.bottomAnchor, constant: 12),
+            topicLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 18),
+            topicLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -18),
+            topicLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 50 + 50 + UIApplication.shared.keyWindow!.safeAreaInsets.top),
+            descriptionLabel.topAnchor.constraint(equalTo: topicLabel.bottomAnchor, constant: 12),
             descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 18),
             descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 18),
             descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -36),

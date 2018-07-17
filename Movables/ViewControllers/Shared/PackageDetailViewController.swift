@@ -43,7 +43,7 @@ class PackageDetailViewController: UIViewController {
     
     var packagePreview:PackagePreview!
     var headline: String!
-    var tagName: String!
+    var topicName: String!
     var packageDocumentId: String!
     
     var package: Package? {
@@ -109,7 +109,7 @@ class PackageDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.titleView = TitleView(frame: .zero, title: self.headline, subtitle: "#\(self.tagName!)")
+        navigationItem.titleView = TitleView(frame: .zero, title: self.headline, subtitle: "#\(self.topicName!)")
         navigationItem.titleView?.isHidden = true
         
         buttonDistanceLeftformatter.unitStyle = .short
@@ -363,7 +363,7 @@ class PackageDetailViewController: UIViewController {
     
     @objc private func didTapShareButton(sender: UIBarButtonItem) {
         // text to share
-        let text = "I'm tracking a package for #\(self.package!.tag.name): \(self.package!.headline). Join me on Movables at movables.co."
+        let text = "I'm tracking a package for #\(self.package!.topic.name): \(self.package!.headline). Join me on Movables at movables.co."
         
         // set up activity view controller
         let textToShare = [ text ]
@@ -565,12 +565,12 @@ extension PackageDetailViewController: UICollectionViewDataSource {
         }
             view.titleLabel.text = self.headline!
         if self.packagePreview != nil {
-            view.tagPill.characterLabel.text = getEmojiForCategory(category: self.packagePreview.categories.first!)
-            view.tagPill.pillContainerView.backgroundColor = getTintForCategory(category: self.packagePreview.categories.first!)
-            view.tagPill.bodyLabel.text = self.package!.tag.name
-            view.tagPill.isHidden = false
+            view.topicPill.characterLabel.text = getEmojiForCategory(category: self.packagePreview.categories.first!)
+            view.topicPill.pillContainerView.backgroundColor = getTintForCategory(category: self.packagePreview.categories.first!)
+            view.topicPill.bodyLabel.text = self.package!.topic.name
+            view.topicPill.isHidden = false
         } else {
-            view.tagPill.isHidden = true
+            view.topicPill.isHidden = true
         }
             return view
     }
@@ -591,10 +591,10 @@ extension PackageDetailViewController: UICollectionViewDataSource {
             if self.package == nil || (self.package != nil && self.package != snapshotPackage) {
                 self.package = snapshotPackage
                 self.packagePreview = PackagePreview(package: self.package!)
-                self.categoryTint = getTintForCategory(category: self.package!.categories.first!)
+                self.categoryTint = getTintForCategory(category: self.package!.category)
                 self.packageActionButton.setBackgroundColor(color: self.categoryTint!, forUIControlState: .normal)
                 self.packageActionButton.setBackgroundColor(color: self.categoryTint!.withAlphaComponent(0.85), forUIControlState: .highlighted)
-                (self.navigationItem.titleView as! TitleView).subtitleLabel.text = "#\(self.package!.tag.name)"
+                (self.navigationItem.titleView as! TitleView).subtitleLabel.text = "#\(self.package!.topic.name)"
 
             }
             print("finished attacing package listener")
@@ -655,7 +655,7 @@ extension PackageDetailViewController: UICollectionViewDataSource {
             circleSubscript: nil,
             titleText: package.recipient.displayName,
             subtitleText: String(NSLocalizedString("label.recipient", comment: "label title for recipient")),
-            tint: getTintForCategory(category: package.categories.first!),
+            tint: getTintForCategory(category: package.category),
             actions: recipientActions,
             type: .Person
         )
@@ -678,7 +678,7 @@ extension PackageDetailViewController: UICollectionViewDataSource {
             circleSubscript: nil,
             titleText: "\(timeLeftString)",
             subtitleText: String(NSLocalizedString("label.time", comment: "label title for time")),
-            tint: getTintForCategory(category: package.categories.first!),
+            tint: getTintForCategory(category: package.category),
             actions: nil,
             type: .Time
         )
@@ -707,7 +707,7 @@ extension PackageDetailViewController: UICollectionViewDataSource {
             circleSubscript: nil,
             titleText: packagePreview.packageStatus != .delivered ? "\(distanceLeftString) / \(totalDistanceLeftString)" : String(NSLocalizedString("label.delivered", comment: "label text for delivered")),
             subtitleText: String(NSLocalizedString("label.distance", comment: "label title for distance")),
-            tint: getTintForCategory(category: package.categories.first!),
+            tint: getTintForCategory(category: package.category),
             actions: nil,
             type: .Directions
         )
@@ -720,7 +720,7 @@ extension PackageDetailViewController: UICollectionViewDataSource {
             circleSubscript: nil,
             titleText: package.sender.displayName,
             subtitleText: String(NSLocalizedString("label.sender", comment: "label title for sender")),
-            tint: getTintForCategory(category: package.categories.first!),
+            tint: getTintForCategory(category: package.category),
             actions: nil,
             type: .Person
         )
