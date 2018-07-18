@@ -631,39 +631,39 @@ struct TransitMovement: Equatable {
     }
 }
 
-struct PackageMoved {
-    var movedDate: Date
-    var headline: String
-    var reference: DocumentReference
-    var topic: PackageTopic
-    var coverImageUrl: String?
-    var packageStatus: PackageStatus
-    var packageMovedCount: PackageMovedCount
-    var categories: [PackageCategory]?
-    
-    init(dict: [String: Any]) {
-        var categoriesArray:[PackageCategory] = []
-        for (category, _) in dict["categories"] as! [String: Bool] {
-            categoriesArray.append(getCategoryEnum(with: category))
-        }
-        self.categories = categoriesArray
-        self.packageMovedCount = PackageMovedCount(dict: dict["count"] as! [String: Int])
-        self.movedDate = (dict["moved_date"] as! Timestamp).dateValue()
-        self.headline = dict["headline"] as! String
-        self.reference = dict["package_reference"] as! DocumentReference
-        self.topic = PackageTopic(dict: dict["topic"] as! [String: Any])
-        self.coverImageUrl = dict["cover_pic_url"] as? String
-        self.packageStatus = getStatusEnum(with: dict["status"] as! String)
-    }
-}
+//struct PackageMoved {
+//    var movedDate: Date
+//    var headline: String
+//    var reference: DocumentReference
+//    var topic: PackageTopic
+//    var coverImageUrl: String?
+//    var packageStatus: PackageStatus
+//    var packageMovedCount: PackageMovedCount
+//    var categories: [PackageCategory]?
+//
+//    init(dict: [String: Any]) {
+//        var categoriesArray:[PackageCategory] = []
+//        for (category, _) in dict["categories"] as! [String: Bool] {
+//            categoriesArray.append(getCategoryEnum(with: category))
+//        }
+//        self.categories = categoriesArray
+//        self.packageMovedCount = PackageMovedCount(dict: dict["count"] as! [String: Int])
+//        self.movedDate = (dict["moved_date"] as! Timestamp).dateValue()
+//        self.headline = dict["headline"] as! String
+//        self.reference = dict["package_reference"] as! DocumentReference
+//        self.topic = PackageTopic(dict: dict["topic"] as! [String: Any])
+//        self.coverImageUrl = dict["cover_pic_url"] as? String
+//        self.packageStatus = getStatusEnum(with: dict["status"] as! String)
+//    }
+//}
 
-struct PackageMovedCount {
-    var unreadTotal: Int
-    
-    init(dict:[String: Any]) {
-        self.unreadTotal = dict["unread_total"] as! Int
-    }
-}
+//struct PackageMovedCount {
+//    var unreadTotal: Int
+//    
+//    init(dict:[String: Any]) {
+//        self.unreadTotal = dict["unread_total"] as! Int
+//    }
+//}
 
 
 struct PackagePreview {
