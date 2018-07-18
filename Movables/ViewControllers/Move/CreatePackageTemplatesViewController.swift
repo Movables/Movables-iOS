@@ -253,7 +253,7 @@ extension CreatePackageTemplatesViewController: UITableViewDelegate {
                     externalActionsTemp.append(ExternalAction(dict: docSnapshot.data()))
                 })
                 self.createPackageCoordinator.externalActions = externalActionsTemp
-                self.createPackageCoordinator.recipientResultItem = RecipientResultItem(name: template.recipient.displayName, picUrl: template.recipient.photoUrl, position: template.destination.name, twitter:template.recipient.twitter, facebook: template.recipient.facebook, phone: template.recipient.phone, documentID: template.recipient.reference!.documentID)
+                self.createPackageCoordinator.recipientResultItem = RecipientResultItem(name: template.recipient.displayName, picUrl: template.recipient.photoUrl, position: template.destination.name, twitter:template.recipient.twitter, facebook: template.recipient.facebook, phone: template.recipient.phone, documentID: template.recipient.reference!.documentID, type: template.recipient.recipientType)
                 self.createPackageCoordinator.destinationResultItem = DestinationResultItem(name: template.destination.name, placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: template.destination.geoPoint.latitude, longitude: template.destination.geoPoint.longitude)))
                 self.createPackageCoordinator.category = template.categories.first
                 self.createPackageCoordinator.packageCoverPhotoImage = nil

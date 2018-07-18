@@ -146,10 +146,9 @@
 /* Begin PBXFileReference section */
 		2C0AC76020D7E24000437FCC /* TemplateCardTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateCardTableViewCell.swift; sourceTree = "<group>"; };
 		2C0AC76420DA296300437FCC /* ListViewButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewButtonTableViewCell.swift; sourceTree = "<group>"; };
-		2C15EFC520FB801B009038DE /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		2C15EFC620FB8026009038DE /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2C2F0FD620FAB980001BBC17 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		2C2F0FD820FABCF4001BBC17 /* Notification.Name+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification.Name+Extensions.swift"; sourceTree = "<group>"; };
+		2C2F0FDA20FEE4DE001BBC17 /* Firebase */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Firebase; sourceTree = "<group>"; };
 		2C386BD320A94D4A00AC5F5D /* PackageAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageAnnotation.swift; sourceTree = "<group>"; };
 		2C386BD520A954C000AC5F5D /* utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = utils.swift; sourceTree = "<group>"; };
 		2C47AB4F20AAAA8A0050DC0D /* UIFont+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extensions.swift"; sourceTree = "<group>"; };
@@ -178,7 +177,7 @@
 		2C8809AF20C7CEAA00DDC357 /* MCCountdownKeyLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCCountdownKeyLabelView.swift; sourceTree = "<group>"; };
 		2C8809B120C81FF000DDC357 /* GenericArithmetic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericArithmetic.swift; sourceTree = "<group>"; };
 		2C90F02B20F0383F004966E4 /* mountain.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = mountain.gpx; path = /Users/eddie/Documents/Developer/Movables/Movables/Utils/mountain.gpx; sourceTree = "<absolute>"; };
-		2C96DFCA20F84E1A002A272D /* credentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = credentials.plist; sourceTree = "<group>"; };
+		2C96DFCA20F84E1A002A272D /* credentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = credentials.plist; path = "../../Movables-Credentials/credentials.plist"; sourceTree = "<group>"; };
 		2C996AEF20B12EEC00DC6E48 /* PackageDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageDetailViewController.swift; sourceTree = "<group>"; };
 		2C996AF020B12EEC00DC6E48 /* PackageDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PackageDetailViewController.xib; sourceTree = "<group>"; };
 		2C9975FB20AC3F86008B2B3C /* MCExploreCardCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCExploreCardCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -319,31 +318,6 @@
 				9AD895961502F523A9864C36 /* Pods_MovablesUITests.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		2C15EFBE20FB7B6C009038DE /* Firebase */ = {
-			isa = PBXGroup;
-			children = (
-				2C15EFC020FB7B7D009038DE /* Prod */,
-				2C15EFBF20FB7B77009038DE /* Dev */,
-			);
-			path = Firebase;
-			sourceTree = "<group>";
-		};
-		2C15EFBF20FB7B77009038DE /* Dev */ = {
-			isa = PBXGroup;
-			children = (
-				2C15EFC520FB801B009038DE /* GoogleService-Info.plist */,
-			);
-			path = Dev;
-			sourceTree = "<group>";
-		};
-		2C15EFC020FB7B7D009038DE /* Prod */ = {
-			isa = PBXGroup;
-			children = (
-				2C15EFC620FB8026009038DE /* GoogleService-Info.plist */,
-			);
-			path = Prod;
 			sourceTree = "<group>";
 		};
 		2C15EFC720FC66AC009038DE /* Annotations */ = {
@@ -528,7 +502,7 @@
 		2C9DA3D7206365EA0041098A /* Movables */ = {
 			isa = PBXGroup;
 			children = (
-				2C15EFBE20FB7B6C009038DE /* Firebase */,
+				2C2F0FDA20FEE4DE001BBC17 /* Firebase */,
 				2C9DA3D8206365EA0041098A /* AppDelegate.swift */,
 				2C9B2AFA209B212200BD66BB /* Coordinators */,
 				2C9B2B05209B293C00BD66BB /* CustomViews */,
@@ -646,8 +620,8 @@
 				2C15EFC320FB7C45009038DE /* Setup Firebase Environment GoogleService-Info.plist */,
 				2C9DA3D3206365EA0041098A /* Resources */,
 				2F578F9558989F766B995200 /* [CP] Embed Pods Frameworks */,
-				4D1E7082193FA660A5302FB7 /* [CP] Copy Pods Resources */,
 				2C793767206F725100E7C863 /* Setup Fabric */,
+				DE85CCE65BB8AF5C78ECA9A1 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -896,24 +870,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		4D1E7082193FA660A5302FB7 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Movables/Pods-Movables-resources.sh",
-				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Movables/Pods-Movables-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		631D8EFBB2ACB8A2FC66C50E /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -948,6 +904,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DE85CCE65BB8AF5C78ECA9A1 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Movables/Pods-Movables-resources.sh",
+				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Movables/Pods-Movables-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

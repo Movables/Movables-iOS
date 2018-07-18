@@ -130,8 +130,8 @@ class CreatePackageCoordinator: Coordinator {
         } else {
             reviewVC.coverImage = packageCoverPhotoImage
         }
-        reviewVC.sender = Person(displayName: Auth.auth().currentUser!.displayName ?? "", photoUrl: Auth.auth().currentUser!.photoURL?.absoluteString ?? "", reference: Firestore.firestore().collection("users").document(Auth.auth().currentUser!.uid), twitter: nil, facebook: nil, phone: nil)
-        reviewVC.recipient = Person(displayName: recipientResultItem!.name, photoUrl: recipientResultItem!.picUrl ?? "", reference: Firestore.firestore().collection("recipients").document(recipientResultItem!.documentID), twitter: recipientResultItem!.twitter, facebook: recipientResultItem!.facebook, phone: recipientResultItem!.phone)
+        reviewVC.sender = Person(displayName: UserManager.shared.userDocument!.publicProfile.displayName, photoUrl: UserManager.shared.userDocument!.publicProfile.picUrl, reference: UserManager.shared.userDocument?.reference, twitter: nil, facebook: nil, phone: nil, isEligibleToReceive: nil, recipientType: nil)
+        reviewVC.recipient = Person(displayName: recipientResultItem!.name, photoUrl: recipientResultItem!.picUrl ?? "", reference: Firestore.firestore().collection("recipients").document(recipientResultItem!.documentID), twitter: recipientResultItem!.twitter, facebook: recipientResultItem!.facebook, phone: recipientResultItem!.phone, isEligibleToReceive: recipientResultItem!.type != nil, recipientType: recipientResultItem!.type)
         reviewVC.packageHeadline = packageHeadline
         reviewVC.packageTopicName = topicResultItem?.name ?? ""
         reviewVC.packageDescription = packageDescription ?? ""

@@ -173,7 +173,7 @@ struct PackageTemplate {
     var headline: String
     var recipient: Person
     var status: PackageStatus
-    var topic: PackageTopic
+    var topic: Topic
     var author: Person?
     var reference: DocumentReference
     var dueDate: Date
@@ -207,7 +207,7 @@ struct PackageTemplate {
         
         self.status = getStatusEnum(with: dictionary["status"] as! String)
         
-        self.topic = PackageTopic(dict: dictionary["topic"] as! [String: Any])
+        self.topic = Topic(with: dictionary["topic"] as! [String: Any], reference: (dictionary["topic"] as! [String: Any])["reference"] as! DocumentReference)
         
         if let authorDict = dictionary["author"] as? [String: Any] {
             self.author = Person(dict: authorDict)
@@ -235,8 +235,8 @@ struct Package: Equatable {
     var origin: Location
     var recipient: Person
     var status: PackageStatus
-    var topic: PackageTopic
-    var templateBy: Person?
+    var topic: Topic
+    var contentTemplateBy: Person?
     var transitRecords: [TransitRecord]?
     var externalActions: [ExternalAction]?
     var reference: DocumentReference
@@ -245,7 +245,7 @@ struct Package: Equatable {
     var dropoffMessage: String?
     var followers: [String: Date]?
     
-    init(sender: Person, category: PackageCategory, count: PackageCount?, coverImageUrl: String?, description: String, destination: Location, headline: String, inTransitBy: Person?, origin: Location, recipient: Person, status: PackageStatus, topic: PackageTopic, templateBy: Person?, transitRecords: [TransitRecord]?, reference: DocumentReference, currentLocation: CLLocation, dueDate: Date) {
+    init(sender: Person, category: PackageCategory, count: PackageCount?, coverImageUrl: String?, description: String, destination: Location, headline: String, inTransitBy: Person?, origin: Location, recipient: Person, status: PackageStatus, topic: Topic, contentTemplateBy: Person?, transitRecords: [TransitRecord]?, reference: DocumentReference, currentLocation: CLLocation, dueDate: Date) {
         self.sender = sender
         self.category = category
         self.count = count
@@ -258,7 +258,7 @@ struct Package: Equatable {
         self.recipient = recipient
         self.status = status
         self.topic = topic
-        self.templateBy = templateBy
+        self.contentTemplateBy = contentTemplateBy
         self.transitRecords = transitRecords
         self.reference = reference
         self.currentLocation = currentLocation
@@ -300,12 +300,12 @@ struct Package: Equatable {
         
         self.status = getStatusEnum(with: logistics["status"] as! String)
         
-        self.topic = PackageTopic(dict: content["topic"] as! [String: Any])
+        self.topic = Topic(with: content["topic"] as! [String : Any], reference: (content["topic"] as! [String: Any])["reference"] as! DocumentReference)
         
         if let templateByDict = dictionary["template_by"] as? [String: Any] {
-            self.templateBy = Person(dict: templateByDict)
+            self.contentTemplateBy = Person(dict: templateByDict)
         } else {
-            self.templateBy = nil
+            self.contentTemplateBy = nil
         }
 
         self.transitRecords = nil
@@ -322,6 +322,69 @@ struct Package: Equatable {
         self.dropoffMessage = content["dropoff_message"] as? String
         self.externalActions = nil
         self.followers = relations["followers"] as? [String: Date]
+    }
+    
+    init(hit:[String: Any]) {
+        let hitContent = hit["content"] as! [String: Any]
+        let hitLogistics = hit["logistics"] as! [String: Any]
+        let hitRelations = hit["relations"] as! [String: Any]
+        
+        self.sender = Person(hitPerson: hitLogistics["author"] as! [String: Any])
+        self.category = getCategoryEnum(with: hitContent["category"] as! String)
+        
+        if let countDict = hitRelations["count"] as? [String: Int] {
+            self.count = PackageCount(dict: countDict)
+        } else {
+            self.count = nil
+        }
+        
+        self.coverImageUrl = hitContent["cover_pic_url"] as? String
+        
+        self.description = hitContent["description"] as! String
+        
+        self.destination = Location(hitLocation: hitContent["destination"] as! [String: Any])
+        
+        self.headline = hitContent["headline"] as! String
+        
+        if let inTransitByDict = hitLogistics["in_transit_by"] as? [String: Any] {
+            self.inTransitBy = Person(hitPerson: inTransitByDict)
+        } else {
+            self.inTransitBy = nil
+        }
+        
+        self.origin = Location(hitLocation: hitLogistics["origin"] as! [String: Any])
+        
+        self.recipient = Person(hitPerson: hitContent["recipient"] as! [String: Any])
+        
+        self.status = getStatusEnum(with: hitLogistics["status"] as! String)
+        
+        self.topic = Topic(hitTopic: hitContent["topic"] as! [String: Any])
+        
+        if let hitContentTemplateBy = hitLogistics["content_template_by"] as? [String: Any] {
+            self.contentTemplateBy = Person(hitPerson: hitContentTemplateBy)
+        } else {
+            self.contentTemplateBy = nil
+        }
+        
+        self.transitRecords = nil
+        
+        self.reference = Firestore.firestore().collection("packages").document(hit["objectID"] as! String)
+        
+        self.currentLocation = CLLocation(
+            latitude: (hit["_geoloc"] as! [String: CLLocationDegrees])["lat"]!,
+            longitude: (hit["_geoloc"] as! [String: CLLocationDegrees])["lng"]!
+        )
+        
+        self.dueDate = Date(timeIntervalSince1970: (hitContent["due_date"] as! TimeInterval))
+        
+        self.dropoffMessage = hitContent["dropoff_message"] as? String
+        if let externalActions = hitContent["external_actions"] as? [[String: Any]] {
+            self.externalActions = []
+            for action in externalActions {
+                self.externalActions?.append(ExternalAction(dict: action))
+            }
+        }
+        self.followers = hitRelations["followers"] as? [String: Date]
     }
     
     static func == (lhs: Package, rhs: Package) -> Bool {
@@ -344,13 +407,13 @@ struct Package: Equatable {
             inTransitByEqual = lhs.inTransitBy! == rhs.inTransitBy!
         }
         
-        var templateByEqual: Bool?
-        if lhs.templateBy == nil && rhs.templateBy == nil {
-            templateByEqual = true
-        } else if lhs.templateBy == nil || rhs.templateBy == nil {
-            templateByEqual = false
+        var contentTemplateByEqual: Bool?
+        if lhs.contentTemplateBy == nil && rhs.contentTemplateBy == nil {
+            contentTemplateByEqual = true
+        } else if lhs.contentTemplateBy == nil || rhs.contentTemplateBy == nil {
+            contentTemplateByEqual = false
         } else {
-            templateByEqual = lhs.templateBy! == rhs.templateBy!
+            contentTemplateByEqual = lhs.contentTemplateBy! == rhs.contentTemplateBy!
         }
         
         return (
@@ -365,12 +428,13 @@ struct Package: Equatable {
             lhs.recipient == rhs.recipient &&
             lhs.status == rhs.status &&
             lhs.topic == rhs.topic &&
-            templateByEqual! &&
+            contentTemplateByEqual! &&
             lhs.transitRecords == rhs.transitRecords &&
             lhs.reference == rhs.reference &&
             lhs.currentLocation.coordinate.latitude == rhs.currentLocation.coordinate.latitude &&
             lhs.currentLocation.coordinate.longitude == rhs.currentLocation.coordinate.longitude &&
-            lhs.dueDate == rhs.dueDate
+            lhs.dueDate == rhs.dueDate &&
+            lhs.followers == rhs.followers
         )
     }
 }
@@ -382,14 +446,18 @@ struct Person: Equatable {
     var twitter: String?
     var facebook: String?
     var phone: String?
+    var isEligibleToReceive: Bool?
+    var recipientType: RecipientType?
     
-    init(displayName: String, photoUrl: String?, reference: DocumentReference?, twitter: String?, facebook: String?, phone: String?) {
+    init(displayName: String, photoUrl: String?, reference: DocumentReference?, twitter: String?, facebook: String?, phone: String?, isEligibleToReceive: Bool?, recipientType: RecipientType?) {
         self.displayName = displayName
         self.photoUrl = photoUrl
         self.reference = reference
         self.twitter = twitter
         self.facebook = facebook
         self.phone = phone
+        self.isEligibleToReceive = isEligibleToReceive
+        self.recipientType = recipientType
     }
     
     init(dict: [String: Any]) {
@@ -399,6 +467,18 @@ struct Person: Equatable {
         self.twitter = dict["twitter"] as? String
         self.facebook = dict["facebook"] as? String
         self.phone = dict["phone"] as? String
+    }
+    
+    init(hitPerson: [String: Any]) {
+        self.displayName = hitPerson["name"] as! String
+        self.photoUrl = hitPerson["pic_url"] as? String
+        self.reference = Firestore.firestore().collection("users").document(hitPerson["documentID"] as! String)
+        self.twitter = hitPerson["twitter"] as? String
+        self.facebook = hitPerson["facebook"] as? String
+        self.phone = hitPerson["phone"] as? String
+        if let recipientTypeString = hitPerson["recipientType"] as? String {
+            self.recipientType = getEnumForRecipientTypeString(recipientTypeString: recipientTypeString)
+        }
     }
     
     static func == (lhs: Person, rhs: Person) -> Bool {
@@ -468,10 +548,10 @@ struct Location: Equatable{
         self.name = dict["name"] as? String
     }
     
-    init(algoliaDict: [String: Any]) {
-        self.address = algoliaDict["address"] as? String
-        self.geoPoint = GeoPoint(latitude: (algoliaDict["geo_point"] as! [String: Any])["_latitude"] as! Double, longitude: (algoliaDict["geo_point"] as! [String: Any])["_longitude"] as! Double)
-        self.name = algoliaDict["name"] as? String
+    init(hitLocation: [String: Any]) {
+        self.address = hitLocation["address"] as? String
+        self.geoPoint = GeoPoint(latitude: (hitLocation["geo_point"] as! [String: Any])["_latitude"] as! Double, longitude: (hitLocation["geo_point"] as! [String: Any])["_longitude"] as! Double)
+        self.name = hitLocation["name"] as? String
     }
 
     
@@ -481,25 +561,6 @@ struct Location: Equatable{
             lhs.geoPoint == rhs.geoPoint &&
             lhs.name == rhs.name
         )
-    }
-}
-
-struct PackageTopic: Equatable {
-    var name: String
-    var reference: DocumentReference
-    
-    init(name: String, reference: DocumentReference) {
-        self.name = name
-        self.reference = reference
-    }
-    
-    init(dict: [String: Any]) {
-        self.name = dict["name"] as! String
-        self.reference = dict["reference"] as! DocumentReference
-    }
-    
-    static func ==(lhs: PackageTopic, rhs: PackageTopic) -> Bool{
-        return lhs.name == rhs.name && lhs.reference == rhs.reference
     }
 }
 
@@ -567,31 +628,6 @@ struct TransitMovement: Equatable {
     
     static func ==(lhs: TransitMovement, rhs: TransitMovement) -> Bool {
         return lhs.date == rhs.date && lhs.geoPoint == rhs.geoPoint
-    }
-}
-
-struct PackageFollowing {
-    var packageCount: PackageCount
-    var packageUpdatesCount: PackageUpdatesCount
-    var followedDate: Date
-    var headline: String
-    var reference: DocumentReference
-    var topic: PackageTopic
-    var coverImageUrl: String?
-    var packageStatus: PackageStatus
-    var coordinate: CLLocationCoordinate2D
-    
-    init(dict: [String: Any]) {
-        self.packageCount = PackageCount(dict: dict["count"] as! [String: Int])
-        self.packageUpdatesCount = PackageUpdatesCount(dict: dict["updatesCount"] as! [String: Int])
-        self.followedDate = (dict["followed_date"] as! Timestamp).dateValue()
-        self.headline = dict["headline"] as! String
-        self.reference = dict["package_reference"] as! DocumentReference
-        self.topic = PackageTopic(dict: dict["topic"] as! [String: Any])
-        self.coverImageUrl = dict["cover_pic_url"] as? String
-        self.packageStatus = getStatusEnum(with: dict["status"] as! String)
-        let geoPoint = dict["_geoloc"] as! GeoPoint
-        self.coordinate = CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude)
     }
 }
 

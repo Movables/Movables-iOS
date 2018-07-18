@@ -59,8 +59,6 @@ class PackageDetailViewController: UIViewController {
         }
     }
     
-    var packagesFollowing: [PackageFollowing] = []
-    
     var delegate: PackageDetailViewControllerDelegate?
     var navBarIsTransparent: Bool = true
     var showAllDescription: Bool = false {
@@ -253,7 +251,6 @@ class PackageDetailViewController: UIViewController {
         checkAlreadyMoving()
         fetchPackage(with: self.packageDocumentId)
         fetchPosts()
-        listenForFollowStatus()
     }
     
     private func checkAlreadyMoving() {
@@ -292,12 +289,7 @@ class PackageDetailViewController: UIViewController {
     }
     
     private func checkUserIsFollowingPackage() -> Bool {
-        if self.packagesFollowing.index(where: {$0.reference.documentID == package?.reference.documentID}) != nil {
-            // user is following
-            return true
-        } else {
-            return false
-        }
+        return self.package!.followers != nil && self.package!.followers![UserManager.shared.userDocument!.reference.documentID] != nil
     }
     
     private func updateFollowButton() {
@@ -315,43 +307,6 @@ class PackageDetailViewController: UIViewController {
         }
     }
     
-    func listenForFollowStatus() {
-        self.followStatusListener = Firestore.firestore().document("users/\(Auth.auth().currentUser!.uid)").collection("packages_following").addSnapshotListener({ (querySnapshot, error) in
-            guard let snapshot = querySnapshot else {
-                print("Error fetching snapshots: \(error!)")
-                return
-            }
-            var newPackagesFollowing:[PackageFollowing] = []
-            snapshot.documentChanges.forEach { diff in
-                if (diff.type == .added) {
-                    if self.packagesFollowing.index(where: { $0.reference.documentID == (diff.document.data()["package_reference"] as! DocumentReference).documentID }) != nil {
-                    } else {
-                        newPackagesFollowing.append(PackageFollowing(dict: diff.document.data()))
-                    }
-                    print("added")
-                }
-                if (diff.type == .modified) {
-                    if let index = self.packagesFollowing.index(where: { $0.reference.documentID == (diff.document.data()["package_reference"] as! DocumentReference).documentID }) {
-                        self.packagesFollowing[index] = PackageFollowing(dict: diff.document.data())
-                        print("Modified")
-                    }
-                }
-                if (diff.type == .removed) {
-                    if let index = self.packagesFollowing.index(where: { $0.reference.documentID == (diff.document.data()["package_reference"] as! DocumentReference).documentID }) {
-                        self.packagesFollowing.remove(at: index)
-                        print("Removed")
-                    }
-                }
-            }
-            self.packagesFollowing.insert(contentsOf: newPackagesFollowing, at: 0)
-            if self.package != nil {
-                DispatchQueue.main.async {
-                    self.updateFollowButton()
-                }
-            }
-        })
-    }
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -449,8 +404,8 @@ extension PackageDetailViewController: UICollectionViewDataSource {
         if self.package != nil {
             if item == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "headerLabelCell", for: indexPath) as! HeaderLabelCollectionViewCell
-                if self.package!.templateBy != nil {
-                    cell.label.text = String(format: NSLocalizedString("label.templateBy", comment: "label text for template by"), self.package!.templateBy!.displayName)
+                if self.package!.contentTemplateBy != nil {
+                    cell.label.text = String(format: NSLocalizedString("label.templateBy", comment: "label text for template by"), self.package!.contentTemplateBy!.displayName)
                 } else {
                     cell.label.text = String(format: NSLocalizedString("label.by", comment: "label text for authored by") , self.package!.sender.displayName)
                 }
@@ -590,6 +545,9 @@ extension PackageDetailViewController: UICollectionViewDataSource {
             let snapshotPackage = Package(snapshot: documentSnapshot!)
             if self.package == nil || (self.package != nil && self.package != snapshotPackage) {
                 self.package = snapshotPackage
+                
+                self.updateFollowButton()
+                
                 self.packagePreview = PackagePreview(package: self.package!)
                 self.categoryTint = getTintForCategory(category: self.package!.category)
                 self.packageActionButton.setBackgroundColor(color: self.categoryTint!, forUIControlState: .normal)

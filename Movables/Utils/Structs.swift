@@ -106,6 +106,18 @@ struct Topic {
         self.reference = reference
     }
     
+    init(hitTopic: [String: Any]) {
+        self.count = TopicCount(with: hitTopic["count"] as! [String: Int])
+        self.name = hitTopic["name"] as! String
+        self.description = hitTopic["description"] as? String
+        self.reference = Firestore.firestore().collection("topics").document(hitTopic["objectID"] as! String)
+    }
+    
+    static func == (lhs: Topic, rhs: Topic) -> Bool {
+        return lhs.reference == rhs.reference
+    }
+
+    
 }
 
 struct TopicCount {
@@ -335,23 +347,39 @@ func getStringForStatusEnum(statusEnum: PackageStatus) -> String {
 
 enum RecipientType {
     case politician
-    case politicalParty
-    case corporation
+    case politicalOrganization
     case individual
+    case corporation
 }
 
 func getStringForRecipientTypeEnum(recipientTypeEnum: RecipientType) -> String {
     switch recipientTypeEnum {
     case .politician:
         return "politician"
-    case .politicalParty:
-        return "political_party"
+    case .politicalOrganization:
+        return "political_organization"
     case .corporation:
         return "corporation"
     case .individual:
         return "individual"
     }
 }
+
+func getEnumForRecipientTypeString(recipientTypeString: String?) -> RecipientType? {
+    switch recipientTypeString {
+    case "politician":
+        return .politician
+    case "political_party":
+        return .politicalOrganization
+    case "corporation":
+        return .corporation
+    case "individual":
+        return .individual
+    default:
+        return nil
+    }
+}
+
 
 
 

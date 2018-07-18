@@ -51,7 +51,9 @@ struct Post {
             reference: authorDict["reference"] as? DocumentReference,
             twitter: nil,
             facebook: nil,
-            phone: nil
+            phone: nil,
+            isEligibleToReceive: authorDict["type"] != nil,
+            recipientType: getEnumForRecipientTypeString(recipientTypeString: authorDict["type"] as? String)
         )
         self.content = PostContent(
             dictionary: dictionary["content"] as! [String: Any]

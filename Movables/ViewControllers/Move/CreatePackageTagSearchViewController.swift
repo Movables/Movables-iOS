@@ -49,7 +49,7 @@ class CreatePackageTopicSearchViewController: UIViewController {
     let CONTENT_INSET_BOTTOM: CGFloat = UIApplication.shared.keyWindow!.safeAreaInsets.bottom != 0 ? UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 30 + 10 : 34 + 30 + 28
     
     var createPackageCoordinator: CreatePackageCoordinator!
-    var topic: PackageTopic?
+    var topic: Topic?
     var textField: UITextField!
     var textFieldContainer: MCCard!
     var tableView: UITableView!

@@ -36,8 +36,9 @@ struct RecipientResultItem {
     var facebook: String?
     var phone: String?
     var documentID: String
+    var type: RecipientType?
     
-    init(name: String, picUrl: String?, position: String?, twitter: String?, facebook: String?, phone: String?, documentID: String) {
+    init(name: String, picUrl: String?, position: String?, twitter: String?, facebook: String?, phone: String?, documentID: String, type: RecipientType?) {
         self.name = name
         self.picUrl = picUrl
         self.position = position
@@ -45,6 +46,7 @@ struct RecipientResultItem {
         self.facebook = facebook
         self.phone = phone
         self.documentID = documentID
+        self.type = type
     }
 }
 
@@ -313,7 +315,7 @@ extension CreatePackagePersonSearchViewController: UITableViewDataSource {
             self.results.removeAll()
             print(hits.count)
             for hit in hits {
-                self.results.append(RecipientResultItem(name: hit["name"] as! String, picUrl: hit["picUrl"] as? String, position: hit["position"] as? String, twitter: hit["twitter"] as? String, facebook: hit["facebook"] as? String, phone: hit["phone"] as? String, documentID: hit["documentID"] as! String))
+                self.results.append(RecipientResultItem(name: hit["name"] as! String, picUrl: hit["picUrl"] as? String, position: hit["position"] as? String, twitter: hit["twitter"] as? String, facebook: hit["facebook"] as? String, phone: hit["phone"] as? String, documentID: hit["documentID"] as! String, type: getEnumForRecipientTypeString(recipientTypeString: hit["type"] as? String)))
             }
             DispatchQueue.main.async {
                 self.tableView.separatorStyle = .singleLine

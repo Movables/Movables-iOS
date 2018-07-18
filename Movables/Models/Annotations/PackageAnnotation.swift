@@ -32,22 +32,12 @@ class PackageAnnotation: NSObject, MKAnnotation {
     let subtitle: String?
     let coordinate: CLLocationCoordinate2D
     let packagePreview: PackagePreview?
-    let packageFollowing: PackageFollowing?
     
     init(with packagePreview: PackagePreview) {
         self.packagePreview = packagePreview
         self.title = getReadableForStatusEnum(statusEnum: packagePreview.packageStatus)
         self.subtitle = nil
         self.coordinate = packagePreview.coordinate
-        self.packageFollowing = nil
-    }
-    
-    init(with packageFollowing: PackageFollowing) {
-        self.packageFollowing = packageFollowing
-        self.title = getReadableForStatusEnum(statusEnum: packageFollowing.packageStatus)
-        self.subtitle = nil
-        self.coordinate = packageFollowing.coordinate
-        self.packagePreview = nil
     }
     
     init(with title: String?, coordinate: CLLocationCoordinate2D, packagePreview: PackagePreview?) {
@@ -55,7 +45,6 @@ class PackageAnnotation: NSObject, MKAnnotation {
         self.subtitle = nil
         self.coordinate = coordinate
         self.packagePreview = packagePreview
-        self.packageFollowing = nil
     }
     
 }
