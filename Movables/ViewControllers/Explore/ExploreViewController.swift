@@ -29,7 +29,7 @@ import MapKit
 import AlgoliaSearch
 
 protocol ExploreViewControllerDelegate: class {
-    func showPackageDetail(with packagePreview: PackagePreview)
+    func showPackageDetail(with package: Package)
 }
 
 class ExploreViewController: UIViewController {
@@ -42,7 +42,7 @@ class ExploreViewController: UIViewController {
     
     let apiClient = Client(appID: (UIApplication.shared.delegate as! AppDelegate).algoliaClientId!, apiKey: (UIApplication.shared.delegate as! AppDelegate).algoliaAPIKey!)
     
-    var packagePreviews: [PackagePreview] = []
+    var packages: [Package] = []
     
     var annotations: [PackageAnnotation] = []
     var coordinateToAnnotations: [CLLocationCoordinate2D: [PackageAnnotation]]?
@@ -247,50 +247,48 @@ class ExploreViewController: UIViewController {
 
             index = apiClient.index(withName: "packages")
             // sort by distance by default
-//            query.aroundLatLng = LatLng(lat: location.coordinate.latitude, lng: location.coordinate.longitude)
-//            query.aroundRadius = .explicit(300000)
+            query.aroundLatLng = LatLng(lat: location.coordinate.latitude, lng: location.coordinate.longitude)
+            query.aroundRadius = .explicit(300000)
             
-//            var categoriesArray:[String] = []
-//            for category in self.categories {
-//                categoriesArray.append(getStringForCategory(category: category))
-//            }
-//            query.tagFilters = categoriesArray
-//
-//            var filterString = ""
-//            if let topicName = self.topicName {
-//                filterString += "topicName:\(topicName)"
-//                query.filters = filterString
-//            }
-//            if let status = self.status {
-//                if self.topicName != nil && !self.topicName!.isEmpty {
-//                    filterString += " AND status:\(getStringForStatusEnum(statusEnum: status))"
-//                } else {
-//                    filterString += "NOT status:\(getStringForStatusEnum(statusEnum: .delivered))"
-//                }
-//                query.filters = filterString
-//            }
+            var categoriesArray:[String] = []
+            for category in self.categories {
+                categoriesArray.append(getStringForCategory(category: category))
+            }
+            query.tagFilters = categoriesArray
+
+            var filterString = ""
+            if let topicName = self.topicName {
+                filterString += "topicName:\(topicName)"
+                query.filters = filterString
+            }
+            if let status = self.status {
+                if self.topicName != nil && !self.topicName!.isEmpty {
+                    filterString += " AND status:\(getStringForStatusEnum(statusEnum: status))"
+                } else {
+                    filterString += "NOT status:\(getStringForStatusEnum(statusEnum: .delivered))"
+                }
+                query.filters = filterString
+            }
             
             index.search(query, completionHandler: { (content, error) -> Void in
                 if error == nil {
-                    print(content)
-                    var packagePreviews: [PackagePreview] = []
+                    var packages: [Package] = []
                     self.mapView.removeAnnotations(self.annotations)
                     self.annotations.removeAll()
-                    self.packagePreviews.removeAll()
+                    self.packages.removeAll()
                     guard let hits = content!["hits"] as? [[String: AnyObject]] else {
                         print("hits error")
                         return
                     }
-                    print(hits)
                     for hit in hits {
-                        let packagePreview = PackagePreview(hit: hit)
-                        packagePreviews.append(packagePreview)
+                        let package = Package(hit: hit)
+                        packages.append(package)
                         
-                        let packageAnnotation = PackageAnnotation(with: packagePreview)
+                        let packageAnnotation = PackageAnnotation(with: package)
                         self.annotations.append(packageAnnotation)
                     }
-                    self.packagePreviews.removeAll()
-                    self.packagePreviews = packagePreviews
+                    self.packages.removeAll()
+                    self.packages = packages
                     self.cardPeekCollectionView.reloadData()
                     let height: CGFloat = self.cardPeekCollectionView.collectionViewLayout.collectionViewContentSize.height
                     self.collectionViewHeightConstraint.constant = height
@@ -301,14 +299,14 @@ class ExploreViewController: UIViewController {
                             // construct new annotations
 
                         let newAnnotations = self.annotationsByDistributingAnnotations(annotations: self.annotations) { (oldAnnotation:PackageAnnotation, newCoordinate:CLLocationCoordinate2D) in
-                            return PackageAnnotation(with: oldAnnotation.title, coordinate: newCoordinate, packagePreview: oldAnnotation.packagePreview!)
+                            return PackageAnnotation(with: oldAnnotation.title, coordinate: newCoordinate, package: oldAnnotation.package!)
                         }
                         
-                        var newPackagePreviews:[PackagePreview] = []
+                        var newPackages:[Package] = []
                         for annotation in newAnnotations {
-                            newPackagePreviews.append(annotation.packagePreview!)
+                            newPackages.append(annotation.package!)
                         }
-                        self.packagePreviews = newPackagePreviews
+                        self.packages = newPackages
                         self.cardPeekCollectionView.reloadData()
                         
                         self.mapView.removeAnnotations(self.mapView.annotations)
@@ -469,7 +467,7 @@ extension ExploreViewController: MKMapViewDelegate {
             userLocation.title = ""
             return nil
         } else if annotation is PackageAnnotation {
-            let category = (annotation as! PackageAnnotation).packagePreview!.categories.first!
+            let category = (annotation as! PackageAnnotation).package!.category
             let stamp = mapView.dequeueReusableAnnotationView(withIdentifier: MKMapViewDefaultAnnotationViewReuseIdentifier, for: annotation) as! MKMarkerAnnotationView
             
             stamp.glyphText = getEmojiForCategory(category: category)
@@ -496,10 +494,10 @@ extension ExploreViewController: MKMapViewDelegate {
             print("tapped user location")
         } else if view.annotation!.isMember(of: PackageAnnotation.self) {
 //            (view as! MKMarkerAnnotationView).markerTintColor = Theme().mapStampTint
-            let packagePreview = (view.annotation as! PackageAnnotation).packagePreview
-            if let indexOfPackagePreview = self.packagePreviews.index(where: { $0.packageDocumentId == packagePreview!.packageDocumentId}) {
-                if indexOfPackagePreview != indexOfMajorCell(){
-                    cardPeekCollectionView.scrollToItem(at: IndexPath(item: indexOfPackagePreview, section: 0), at: .centeredHorizontally, animated: true)
+            let package = (view.annotation as! PackageAnnotation).package
+            if let indexOfPackage = self.packages.index(where: { $0.reference == package!.reference}) {
+                if indexOfPackage != indexOfMajorCell(){
+                    cardPeekCollectionView.scrollToItem(at: IndexPath(item: indexOfPackage, section: 0), at: .centeredHorizontally, animated: true)
                 }
             }
         } else if let cluster = view.annotation as? MKClusterAnnotation {
@@ -507,10 +505,10 @@ extension ExploreViewController: MKMapViewDelegate {
             let region = MKCoordinateRegion(coordinates: coordinates)!
             
             mapView.setRegion(region, animated: true)
-            let packagePreview = (cluster.memberAnnotations.first as! PackageAnnotation).packagePreview
-            if let indexOfPackagePreview = self.packagePreviews.index(where: { $0.packageDocumentId == packagePreview!.packageDocumentId}) {
-                if indexOfPackagePreview != indexOfMajorCell(){
-                    cardPeekCollectionView.scrollToItem(at: IndexPath(item: indexOfPackagePreview, section: 0), at: .centeredHorizontally, animated: true)
+            let package = (cluster.memberAnnotations.first as! PackageAnnotation).package
+            if let indexOfPackage = self.packages.index(where: { $0.reference == package!.reference}) {
+                if indexOfPackage != indexOfMajorCell(){
+                    cardPeekCollectionView.scrollToItem(at: IndexPath(item: indexOfPackage, section: 0), at: .centeredHorizontally, animated: true)
                     print("select map")
                     mapView.selectAnnotation(cluster.memberAnnotations.first!, animated: true)
                 }
@@ -523,7 +521,7 @@ extension ExploreViewController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, didDeselect view: MKAnnotationView) {
         if view.annotation!.isMember(of: PackageAnnotation.self) {
-            (view as! MKMarkerAnnotationView).markerTintColor = getTintForCategory(category: (view.annotation as! PackageAnnotation).packagePreview!.categories.first!)
+            (view as! MKMarkerAnnotationView).markerTintColor = getTintForCategory(category: (view.annotation as! PackageAnnotation).package!.category)
         }
     }
     
@@ -573,8 +571,8 @@ extension ExploreViewController: UICollectionViewDelegate {
                 var targetIndex: Int?
                 if indexOfMajorCell < 0 {
                     targetIndex = 0
-                } else if indexOfMajorCell > self.packagePreviews.count - 1 {
-                    targetIndex = self.packagePreviews.count - 1
+                } else if indexOfMajorCell > self.packages.count - 1 {
+                    targetIndex = self.packages.count - 1
                 } else {
                     targetIndex = indexOfMajorCell
                 }
@@ -600,8 +598,8 @@ extension ExploreViewController: UICollectionViewDelegate {
             var targetIndex: Int?
             if indexOfMajorCell < 0 {
                 targetIndex = 0
-            } else if indexOfMajorCell > self.packagePreviews.count - 1 {
-                targetIndex = self.packagePreviews.count - 1
+            } else if indexOfMajorCell > self.packages.count - 1 {
+                targetIndex = self.packages.count - 1
             } else {
                 targetIndex = indexOfMajorCell
             }
@@ -614,8 +612,8 @@ extension ExploreViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("did select \(indexPath)")
         if collectionView == cardPeekCollectionView {
-            let packagePreviewOfSelected = packagePreviews[indexPath.item]
-            delegate?.showPackageDetail(with: packagePreviewOfSelected)
+            let packageOfSelected = packages[indexPath.item]
+            delegate?.showPackageDetail(with: packageOfSelected)
         }
         if collectionView == togglesCollectionView {
             let category = packageCategoriesEnumArray[indexPath.item]
@@ -661,7 +659,7 @@ extension ExploreViewController: UICollectionViewDelegate {
 extension ExploreViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == cardPeekCollectionView {
-            return packagePreviews.count
+            return packages.count
         } else if collectionView == togglesCollectionView {
             // toggles
             return packageCategoriesEnumArray.count
@@ -673,7 +671,7 @@ extension ExploreViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == cardPeekCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "exploreCard", for: indexPath) as! MCExploreCardCollectionViewCell
-            cell.packagePreview = packagePreviews[indexPath.item]
+            cell.package = packages[indexPath.item]
             cell.cellWidth = collectionViewFlowLayout.estimatedItemSize.width
             cell.layout()
             return cell
@@ -706,7 +704,6 @@ extension ExploreViewController: UICollectionViewDataSource {
 
 extension ExploreViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print("did update locations: \(locations)")
         if !initialFetchMade {
             fetchNearbyPackagePreviews()
         }

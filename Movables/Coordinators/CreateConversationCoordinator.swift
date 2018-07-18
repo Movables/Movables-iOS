@@ -56,8 +56,8 @@ class CreateConversationCoordinator: Coordinator {
             print("dismissed create package")
             if created {
                 // dismiss and reload
-                if self.rootViewController.isMember(of: OrganizeDetailViewController.self) {
-                    (self.rootViewController as! OrganizeDetailViewController).loadMyConversations()
+                if self.rootViewController.isMember(of: SubscribedTopicDetailViewController.self) {
+                    (self.rootViewController as! SubscribedTopicDetailViewController).loadMyConversations()
                 }
             }
         }

@@ -75,7 +75,7 @@
 		2CAA8BEE20A40ADD007F625F /* ExploreViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CAA8BEC20A40ADD007F625F /* ExploreViewController.xib */; };
 		2CAA8BF720A40B63007F625F /* ActivitiesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAA8BF520A40B63007F625F /* ActivitiesViewController.swift */; };
 		2CAE905920E7C37C00F23937 /* ActivityRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAE905820E7C37C00F23937 /* ActivityRowView.swift */; };
-		2CAE905B20E9298000F23937 /* OrganizeDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAE905A20E9298000F23937 /* OrganizeDetailViewController.swift */; };
+		2CAE905B20E9298000F23937 /* SubscribedTopicDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAE905A20E9298000F23937 /* SubscribedTopicDetailViewController.swift */; };
 		2CAE905D20E92D9D00F23937 /* ClusterHangoutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAE905C20E92D9D00F23937 /* ClusterHangoutViewController.swift */; };
 		2CAE905F20E92E3A00F23937 /* TopicDiscussionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAE905E20E92E3A00F23937 /* TopicDiscussionViewController.swift */; };
 		2CAE906320EA8CEF00F23937 /* CommunityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAE906220EA8CEF00F23937 /* CommunityTableViewCell.swift */; };
@@ -220,7 +220,7 @@
 		2CAA8BEC20A40ADD007F625F /* ExploreViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ExploreViewController.xib; sourceTree = "<group>"; };
 		2CAA8BF520A40B63007F625F /* ActivitiesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitiesViewController.swift; sourceTree = "<group>"; };
 		2CAE905820E7C37C00F23937 /* ActivityRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityRowView.swift; sourceTree = "<group>"; };
-		2CAE905A20E9298000F23937 /* OrganizeDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeDetailViewController.swift; sourceTree = "<group>"; };
+		2CAE905A20E9298000F23937 /* SubscribedTopicDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscribedTopicDetailViewController.swift; sourceTree = "<group>"; };
 		2CAE905C20E92D9D00F23937 /* ClusterHangoutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClusterHangoutViewController.swift; sourceTree = "<group>"; };
 		2CAE905E20E92E3A00F23937 /* TopicDiscussionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicDiscussionViewController.swift; sourceTree = "<group>"; };
 		2CAE906220EA8CEF00F23937 /* CommunityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityTableViewCell.swift; sourceTree = "<group>"; };
@@ -362,7 +362,7 @@
 				2C6B407820C75A51001679D2 /* OrganizeViewController.swift */,
 				2CA1187820EB6B7D00EBA4A8 /* CreateConversationTypeSelectViewController.swift */,
 				2CA1187A20EB727800EBA4A8 /* CreateConversationLegislativeAreaViewController.swift */,
-				2CAE905A20E9298000F23937 /* OrganizeDetailViewController.swift */,
+				2CAE905A20E9298000F23937 /* SubscribedTopicDetailViewController.swift */,
 				2CAE905C20E92D9D00F23937 /* ClusterHangoutViewController.swift */,
 				2CAE905E20E92E3A00F23937 /* TopicDiscussionViewController.swift */,
 			);
@@ -998,7 +998,7 @@
 				2CA4476520E087FB00D8D897 /* ExternalActionEditorView.swift in Sources */,
 				2CE12D87208A294C00C4625A /* Comment.swift in Sources */,
 				2CDE1EC220B4351E00D45170 /* UIView+Extensions.swift in Sources */,
-				2CAE905B20E9298000F23937 /* OrganizeDetailViewController.swift in Sources */,
+				2CAE905B20E9298000F23937 /* SubscribedTopicDetailViewController.swift in Sources */,
 				2CF5BABE20CAE2DC006A6FAE /* DropoffSummaryViewController.swift in Sources */,
 				2CAE905D20E92D9D00F23937 /* ClusterHangoutViewController.swift in Sources */,
 				2C47AB5920AAC7700050DC0D /* MCCardHeadline.swift in Sources */,

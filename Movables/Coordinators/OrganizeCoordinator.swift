@@ -31,7 +31,7 @@ import Firebase
 class OrganizeCoordinator: Coordinator {
     let rootViewController: UINavigationController
     var organizeVC: OrganizeViewController
-    var organizeDetailVC: OrganizeDetailViewController?
+    var subscribedTopicDetailVC: SubscribedTopicDetailViewController?
     
     override init() {
         organizeVC = OrganizeViewController()
@@ -42,20 +42,20 @@ class OrganizeCoordinator: Coordinator {
 
 extension OrganizeCoordinator: OrganizeViewControllerDelegate {
     
-    func showOrganizeDetailVC(for organizeTopic: OrganizeTopic) {
-        organizeDetailVC = OrganizeDetailViewController()
-        organizeDetailVC?.organizeTopic = organizeTopic
-        organizeDetailVC?.delegate = self
-        let organizeDetailNC = UINavigationController(rootViewController: organizeDetailVC!)
-        self.rootViewController.present(organizeDetailNC, animated: true) {
+    func showSubscribedTopicDetailVC(for subscribedTopic: TopicSubscribed) {
+        subscribedTopicDetailVC = SubscribedTopicDetailViewController()
+        subscribedTopicDetailVC?.subscribedTopic = subscribedTopic
+        subscribedTopicDetailVC?.delegate = self
+        let subscribedTopicDetailNC = UINavigationController(rootViewController: subscribedTopicDetailVC!)
+        self.rootViewController.present(subscribedTopicDetailNC, animated: true) {
             print("presented organize detail")
         }
     }
 }
 
-extension OrganizeCoordinator: OrganizeDetailViewControllerDelegate {
-    func dismissOrganizeDetailVC() {
-        organizeDetailVC?.dismiss(animated: true, completion: {
+extension OrganizeCoordinator: SubscribedTopicDetailViewControllerDelegate {
+    func dismissSubscribedTopicDetailVC() {
+        subscribedTopicDetailVC?.dismiss(animated: true, completion: {
             print("dismissed organize detail vc")
         })
     }
@@ -63,6 +63,6 @@ extension OrganizeCoordinator: OrganizeDetailViewControllerDelegate {
     func showPostsVC(for reference: DocumentReference, referenceType: CommunityType) {
         let postsVC = PostsViewController(collectionViewLayout: UICollectionViewFlowLayout())
         postsVC!.reference = reference
-        self.organizeDetailVC?.navigationController?.pushViewController(postsVC!, animated: true)
+        self.subscribedTopicDetailVC?.navigationController?.pushViewController(postsVC!, animated: true)
     }
 }

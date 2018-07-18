@@ -550,7 +550,7 @@ struct Location: Equatable{
     
     init(hitLocation: [String: Any]) {
         self.address = hitLocation["address"] as? String
-        self.geoPoint = GeoPoint(latitude: (hitLocation["geo_point"] as! [String: Any])["_latitude"] as! Double, longitude: (hitLocation["geo_point"] as! [String: Any])["_longitude"] as! Double)
+        self.geoPoint = GeoPoint(latitude: (hitLocation["geo_point"] as! [String: Any])["lat"] as! Double, longitude: (hitLocation["geo_point"] as! [String: Any])["lng"] as! Double)
         self.name = hitLocation["name"] as? String
     }
 
@@ -716,10 +716,7 @@ struct PackagePreview {
             longitude: (hit["_geoloc"] as! [String: CLLocationDegrees])["lng"]!
         )
         
-        let destination = (hit["destination"] as! [String: Any])["geo_point"] == nil ? CLLocation(
-            latitude: (hit["destination"] as! [String: CLLocationDegrees])["lat"]!,
-            longitude: (hit["destination"] as! [String: CLLocationDegrees])["lng"]!
-            ) : CLLocation(
+        let destination =  CLLocation(
             latitude: ((hit["destination"] as! [String: Any])["geo_point"] as! [String: CLLocationDegrees])["_latitude"]!,
             longitude: ((hit["destination"] as! [String: Any])["geo_point"] as! [String: CLLocationDegrees])["_longitude"]!
         )
@@ -754,7 +751,7 @@ struct PackagePreview {
         for category in categories {
             self.categories.append(getCategoryEnum(with: category))
         }
-        self.destination = (hit["destination"] as! [String: Any])["geo_point"] != nil ? Location(algoliaDict: hit["destination"] as! [String: Any]) : nil
+        self.destination = (hit["destination"] as! [String: Any])["geo_point"] != nil ? Location(hitLocation: hit["destination"] as! [String: Any]) : nil
     }
 }
 

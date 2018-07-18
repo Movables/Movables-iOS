@@ -25,10 +25,11 @@
 //  SOFTWARE.
 
 import UIKit
+import CoreLocation
 
 class MCExploreCardCollectionViewCell: UICollectionViewCell {
     
-    var packagePreview: PackagePreview!
+    var package: Package!
     var cardView: MCCard!
     var topicPillView: MCPill!
     var headlineLabel: MCCardHeadline!
@@ -111,35 +112,46 @@ class MCExploreCardCollectionViewCell: UICollectionViewCell {
         timeLeftformatter.maximumUnitCount = 1
         timeLeftformatter.allowedUnits = [.day, .hour, .minute]
         
+        let timeLeft = package.dueDate.timeIntervalSinceReferenceDate - Date.timeIntervalSinceReferenceDate
+
         // Use the configured formatter to generate the string.
-        let timeLeftString = packagePreview.timeLeft > 0 ? timeLeftformatter.string(from: packagePreview.timeLeft) : String(NSLocalizedString("label.pastDue", comment: "status label for past due status"))
+        let timeLeftString = timeLeft > 0 ? timeLeftformatter.string(from: timeLeft) : String(NSLocalizedString("label.pastDue", comment: "status label for past due status"))
 
         
         let distanceLeftformatter = MeasurementFormatter()
         distanceLeftformatter.unitStyle = .short
         distanceLeftformatter.unitOptions = .naturalScale
         distanceLeftformatter.numberFormatter.maximumFractionDigits = 1
+
+        let currentLocation = package.currentLocation
         
-        let distance = Measurement(value: packagePreview.distanceLeft, unit: UnitLength.meters)
+        let destination = CLLocation(latitude: package.destination.geoPoint.latitude, longitude: package.destination.geoPoint.longitude)
+        
+        let origin = CLLocation(latitude: package.origin.geoPoint.latitude, longitude: package.origin.geoPoint.longitude)
+        let distanceTotal = destination.distance(from: origin)
+        let distanceLeft = destination.distance(from: currentLocation)
+        let distanceFrom =  distanceTotal - distanceLeft
+
+        let distance = Measurement(value: distanceLeft, unit: UnitLength.meters)
         let distanceLeftString = distanceLeftformatter.string(from: distance)
         
-        topicPillView.bodyLabel.text = packagePreview.topicName
-        topicPillView.pillContainerView.backgroundColor = getTintForCategory(category: packagePreview.categories.first!)
-        topicPillView.characterLabel.text = getEmojiForCategory(category: packagePreview.categories.first!)
-        headlineLabel.text = packagePreview.headline
+        topicPillView.bodyLabel.text = package.topic.name
+        topicPillView.pillContainerView.backgroundColor = getTintForCategory(category: package.category)
+        topicPillView.characterLabel.text = getEmojiForCategory(category: package.category)
+        headlineLabel.text = package.headline
         headlineLabel.restartLabel()
         toLabelView.keyLabel.text = String(NSLocalizedString("label.recipient", comment: "label title for recipient label"))
-        fromLabelView.keyLabel.text = packagePreview.destination != nil ? String(NSLocalizedString("label.destination", comment: "label title for destination label")) : String(NSLocalizedString("label.sender", comment: "label title for sender label"))
-        toLabelView.valueLabel.text = packagePreview.recipientName
-        fromLabelView.valueLabel.text = packagePreview.destination != nil ? packagePreview.destination!.name ?? string(from: packagePreview.destination!.geoPoint) : "\(packagePreview.moversCount) of us"
-        toGoLabel.text = packagePreview.packageStatus != .delivered ? "\(distanceLeftString) / \(timeLeftString!)" : String(NSLocalizedString("label.delivered", comment: "label title for package delivered status"))
+        fromLabelView.keyLabel.text = String(NSLocalizedString("label.destination", comment: "label title for destination label"))
+        toLabelView.valueLabel.text = package.recipient.displayName
+        fromLabelView.valueLabel.text = package.destination.name ?? string(from: package.destination.geoPoint)
+        toGoLabel.text = package.status != .delivered ? "\(distanceLeftString) / \(timeLeftString!)" : String(NSLocalizedString("label.delivered", comment: "label title for package delivered status"))
         infoStackView.addArrangedSubview(toLabelView)
         infoStackView.addArrangedSubview(fromLabelView)
         infoStackView.addArrangedSubview(toGoLabel)
         infoStackView.setCustomSpacing(16, after: fromLabelView)
     infoStackView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[toGoLabel]|", options: .directionLeadingToTrailing, metrics: nil, views: ["toGoLabel": toGoLabel]))
         
-        progressBarView.percentage = packagePreview.packageStatus == .delivered ? 1 : min(CGFloat((packagePreview.distanceFrom > 0 ? packagePreview.distanceFrom : 0) / packagePreview.distanceTotal),  1)
+        progressBarView.percentage = package.status == .delivered ? 1 : min(CGFloat((distanceFrom > 0 ? distanceFrom : 0) / distanceTotal),  1)
         progressBarView.layoutIfNeeded()
         progressBarView.isHidden = true
         

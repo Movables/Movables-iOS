@@ -94,23 +94,23 @@ struct TopicResultItem {
 }
 
 struct Topic {
-    var count: TopicCount
+    var count: TopicCount?
     var name: String
     var description: String?
     var reference: DocumentReference
     
     init(with dict: [String: Any], reference: DocumentReference) {
-        self.count = TopicCount(with: dict["count"] as! [String: Int])
+        self.count = TopicCount(with: dict["count"] as? [String: Int])
         self.name = dict["name"] as! String
         self.description = dict["description"] as? String
         self.reference = reference
     }
     
     init(hitTopic: [String: Any]) {
-        self.count = TopicCount(with: hitTopic["count"] as! [String: Int])
+        self.count = TopicCount(with: hitTopic["count"] as? [String: Int])
         self.name = hitTopic["name"] as! String
         self.description = hitTopic["description"] as? String
-        self.reference = Firestore.firestore().collection("topics").document(hitTopic["objectID"] as! String)
+        self.reference = Firestore.firestore().collection("topics").document(hitTopic["documentID"] as! String)
     }
     
     static func == (lhs: Topic, rhs: Topic) -> Bool {
@@ -121,12 +121,44 @@ struct Topic {
 }
 
 struct TopicCount {
-    var packages: Int
-    var templates: Int
+    var packages: Int?
+    var templates: Int?
     
-    init(with dict: [String: Int]) {
-        self.packages = dict["packages"]!
-        self.templates = dict["templates"]!
+    init(with dict: [String: Int]?) {
+        self.packages = dict?["packages"]
+        self.templates = dict?["templates"]
+    }
+}
+
+struct TopicSubscribed {
+    var topicName: String
+    var topicReference: DocumentReference
+    var count: TopicSubscribedCount
+    var packagesMoved: [String: Date]
+    
+    init(with dict: [String: Any]) {
+        let topic = dict["topic"] as! [String: Any]
+        self.topicName = topic["name"] as! String
+        self.topicReference = topic["reference"] as! DocumentReference
+        let count = dict["count"] as! [String: Any]
+        self.count = TopicSubscribedCount(packagesMoved: count["packagesMoved"] as! Int, localConversations: count["localConversations"] as! Int, privateConversations: count["privateConversations"] as! Int)
+        let packagesMovedDict = dict["packages_moved"] as! [String: Timestamp]
+        self.packagesMoved = [:]
+        for (key, value) in packagesMovedDict {
+            self.packagesMoved.updateValue(value.dateValue(), forKey: key)
+        }
+    }
+}
+
+struct TopicSubscribedCount {
+    var packagesMoved: Int
+    var localConversations: Int
+    var privateConversations: Int
+    
+    init(packagesMoved: Int, localConversations: Int, privateConversations: Int) {
+        self.packagesMoved = packagesMoved
+        self.localConversations = localConversations
+        self.privateConversations = privateConversations
     }
 }
 

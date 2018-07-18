@@ -31,20 +31,20 @@ class PackageAnnotation: NSObject, MKAnnotation {
     let title: String?
     let subtitle: String?
     let coordinate: CLLocationCoordinate2D
-    let packagePreview: PackagePreview?
+    let package: Package?
     
-    init(with packagePreview: PackagePreview) {
-        self.packagePreview = packagePreview
-        self.title = getReadableForStatusEnum(statusEnum: packagePreview.packageStatus)
+    init(with package: Package) {
+        self.package = package
+        self.title = getReadableForStatusEnum(statusEnum: package.status)
         self.subtitle = nil
-        self.coordinate = packagePreview.coordinate
+        self.coordinate = package.currentLocation.coordinate
     }
     
-    init(with title: String?, coordinate: CLLocationCoordinate2D, packagePreview: PackagePreview?) {
+    init(with title: String?, coordinate: CLLocationCoordinate2D, package: Package?) {
         self.title = title
         self.subtitle = nil
         self.coordinate = coordinate
-        self.packagePreview = packagePreview
+        self.package = package
     }
     
 }
