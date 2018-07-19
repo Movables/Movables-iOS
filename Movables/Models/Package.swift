@@ -607,7 +607,14 @@ struct TransitRecord: Equatable {
             self.dropoffGeoPoint = (dict["dropoff"] as! [String: Any])[
                 "geo_point"] as? GeoPoint
         }
-        self.movements = nil
+        self.movements = []
+        if let movementsDict = dict["movements"] as? [String: GeoPoint] {
+            for (key, value) in movementsDict {
+                self.movements!.append(TransitMovement(date: Date(timeIntervalSince1970: TimeInterval(key)!), geoPoint: value))
+            }
+        }
+        
+        self.movements = self.movements?.sorted(by: { $0.date < $1.date })
     }
     
     static func ==(lhs: TransitRecord, rhs: TransitRecord) -> Bool {
@@ -1263,137 +1270,4 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
             completion(true, object as? [String: Any], nil)
         }
     }
-}
-
-func internalFollow(with transaction: Transaction, packageDocument: DocumentSnapshot, packageReference: DocumentReference, userReference: DocumentReference, userDocument: DocumentSnapshot, errorPointer: NSErrorPointer) throws {
-    guard let oldCountFollowers = (packageDocument.data()!["count"] as! [String: Int])["followers"] else {
-        let error = NSError(
-            domain: "AppErrorDomain",
-            code: -1,
-            userInfo: [
-                NSLocalizedDescriptionKey: "Unable to retrieve followers from snapshot \(packageDocument)"
-            ]
-        )
-        errorPointer?.pointee = error
-        print(error)
-        throw error
-    }
-    let newCountFollowers = oldCountFollowers + 1
-    transaction.updateData(["count.followers": newCountFollowers, "followers.\(userReference.documentID)": Date().timeIntervalSince1970], forDocument: packageReference)
-    
-    guard let oldCountPackagesFollowing = (((userDocument.data()! as [String: Any])["public_profile"] as! [String: Any])["count"] as! [String: Int])["packages_following"] else {
-        let error = NSError(
-            domain: "AppErrorDomain",
-            code: -1,
-            userInfo: [
-                NSLocalizedDescriptionKey: "Unable to retrieve packages_following from snapshot \(userDocument)"
-            ]
-        )
-        errorPointer?.pointee = error
-        print(error)
-        throw error
-    }
-    let newCountPackagesFollowing = oldCountPackagesFollowing + 1
-    transaction.updateData(["public_profile.count.packages_following": newCountPackagesFollowing], forDocument: userReference)
-    
-    guard let topic = packageDocument.data()?["topic"] as? [String: Any] else {
-        let error = NSError(
-            domain: "AppErrorDomain",
-            code: -1,
-            userInfo: [
-                NSLocalizedDescriptionKey: "Unable to retrieve topic from snapshot \(packageDocument)"
-            ]
-        )
-        errorPointer?.pointee = error
-        print(error)
-        throw error
-    }
-    
-    guard let headline = packageDocument.data()?["headline"] as? String else {
-        let error = NSError(
-            domain: "AppErrorDomain",
-            code: -1,
-            userInfo: [
-                NSLocalizedDescriptionKey: "Unable to retrieve headline from snapshot \(packageDocument)"
-            ]
-        )
-        errorPointer?.pointee = error
-        print(error)
-        throw error
-    }
-    
-    guard let coverPicUrl = packageDocument.data()?["cover_pic_url"] as? String else {
-        let error = NSError(
-            domain: "AppErrorDomain",
-            code: -1,
-            userInfo: [
-                NSLocalizedDescriptionKey: "Unable to retrieve cover_pic_url from snapshot \(packageDocument)"
-            ]
-        )
-        errorPointer?.pointee = error
-        print(error)
-        throw error
-    }
-    
-    guard let countMovers = ((packageDocument.data()! as [String: Any])["count"] as! [String: Int])["movers"] else {
-        let error = NSError(
-            domain: "AppErrorDomain",
-            code: -1,
-            userInfo: [
-                NSLocalizedDescriptionKey: "Unable to retrieve movers from snapshot \(packageDocument)"
-            ]
-        )
-        errorPointer?.pointee = error
-        print(error)
-        throw error
-    }
-    
-    guard let status = packageDocument.data()?["status"] as? String else {
-        let error = NSError(
-            domain: "AppErrorDomain",
-            code: -1,
-            userInfo: [
-                NSLocalizedDescriptionKey: "Unable to retrieve status from snapshot \(packageDocument)"
-            ]
-        )
-        errorPointer?.pointee = error
-        print(error)
-        throw error
-    }
-    
-    guard let geoloc = packageDocument.data()?["_geoloc"] as? GeoPoint else {
-        let error = NSError(
-            domain: "AppErrorDomain",
-            code: -1,
-            userInfo: [
-                NSLocalizedDescriptionKey: "Unable to retrieve _geoloc from snapshot \(packageDocument)"
-            ]
-        )
-        errorPointer?.pointee = error
-        print(error)
-        throw error
-    }
-    
-    transaction.setData(
-        [
-            "package_reference": packageReference,
-            "topic": topic,
-            "headline": headline,
-            "cover_pic_url": coverPicUrl,
-            "followed_date": Timestamp(date: Date()),
-            "count": [
-                "followers": newCountFollowers,
-                "movers": countMovers
-            ],
-            "updatesCount": [
-                "progress_events": 0,
-                "unread_progress_events": 0,
-                "posts_events": 0,
-                "unread_posts_events": 0
-            ],
-            "status": status,
-            "_geoloc": geoloc,
-            ],
-        forDocument: userReference.collection("packages_following").document(packageReference.documentID)
-    )
 }
