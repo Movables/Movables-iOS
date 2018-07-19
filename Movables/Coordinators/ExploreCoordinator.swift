@@ -46,6 +46,7 @@ extension ExploreCoordinator: ExploreViewControllerDelegate {
         packageDetailVC?.headline = package.headline
         packageDetailVC?.topicName = package.topic.name
         packageDetailVC?.packageDocumentId = package.reference.documentID
+        packageDetailVC?.package = package
         packageDetailVC?.delegate = self
         let packageDetailNC = UINavigationController(rootViewController: packageDetailVC!)
         self.rootViewController.present(packageDetailNC, animated: true) {

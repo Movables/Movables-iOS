@@ -299,14 +299,14 @@ class DeliveryLogisticsCollectionViewCell: UICollectionViewCell {
                 
                 let subtitleLabel = UILabel(frame: .zero)
                 subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
-                subtitleLabel.font = UIFont.systemFont(ofSize: 10, weight: .medium)
+                subtitleLabel.font = UIFont.systemFont(ofSize: 11, weight: .medium)
                 subtitleLabel.text = unit.subtitleText.uppercased()
                 subtitleLabel.textColor = Theme().grayTextColor
                 subtitleLabel.numberOfLines = 1
                 labelsView.addSubview(subtitleLabel)
                 
                 let hConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[titleLabel]|", options: .directionLeadingToTrailing, metrics: nil, views: ["titleLabel": titleLabel, "subtitleLabel": subtitleLabel])
-                let vConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|[subtitleLabel]-2-[titleLabel]|", options: [.alignAllLeading, .alignAllTrailing], metrics: nil, views: ["titleLabel": titleLabel, "subtitleLabel": subtitleLabel])
+                let vConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|-1-[subtitleLabel]-2-[titleLabel]|", options: [.alignAllLeading, .alignAllTrailing], metrics: nil, views: ["titleLabel": titleLabel, "subtitleLabel": subtitleLabel])
                 labelsView.addConstraints(hConstraints + vConstraints)
                 
                 let buttonsStackView = UIStackView(frame: .zero)

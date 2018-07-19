@@ -55,7 +55,7 @@ class ExploreViewController: UIViewController {
     
     var topicName: String? {
         didSet {
-            fetchNearbyPackagePreviews()
+            fetchNearbyPackages()
         }
     }
     
@@ -63,7 +63,7 @@ class ExploreViewController: UIViewController {
     
     var categories: [PackageCategory] = [] {
         didSet{
-            fetchNearbyPackagePreviews()
+            fetchNearbyPackages()
         }
     }
     var sortBy: SortBy = .distance
@@ -132,7 +132,7 @@ class ExploreViewController: UIViewController {
     }
     
     func setupMapView() {
-        fetchNearbyPackagePreviews()
+        fetchNearbyPackages()
         mapView.tintColor = Theme().keyTint
         mapView.isRotateEnabled = false
         mapView.showsUserLocation = true
@@ -235,7 +235,7 @@ class ExploreViewController: UIViewController {
         ])
     }
     
-    func fetchNearbyPackagePreviews() {
+    func fetchNearbyPackages() {
         print("fetch nearby")
         LocationManager.shared.requestLocation()
         if let location = LocationManager.shared.location {
@@ -705,7 +705,7 @@ extension ExploreViewController: UICollectionViewDataSource {
 extension ExploreViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if !initialFetchMade {
-            fetchNearbyPackagePreviews()
+            fetchNearbyPackages()
         }
     }
     

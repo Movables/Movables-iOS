@@ -271,7 +271,7 @@ class MoveViewController: UIViewController {
         print("dropoff button tapped")
         sender.isEnabled = false
         let packageTemp = self.currentPackage!
-        dropoffPackageWithRef(packageReference: self.currentPackage!.reference, userReference: self.userDocument!.reference) { (success, response, alertVC) in
+        dropoffPackage(with: self.currentPackage!.reference, userReference: self.userDocument!.reference) { (success, response, alertVC) in
             if alertVC != nil {
                 self.present(alertVC!, animated: true, completion: {
                     print("presented alert")

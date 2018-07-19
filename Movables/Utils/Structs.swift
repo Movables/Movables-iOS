@@ -69,6 +69,8 @@ struct UserPrivateProfile {
     var pointsBalance: CGFloat
     var currentPackage: DocumentReference?
     var interests: [PackageCategory]
+    var packagesFollowing: [String: Date]?
+    var packagesMoved: [String: Date]?
     
     init(with dict: [String: Any]) {
         self.pointsBalance = dict["points_balance"] as! CGFloat
@@ -79,6 +81,19 @@ struct UserPrivateProfile {
                 if entry.value {
                     self.interests.append(getCategoryEnum(with: entry.key))
                 }
+            }
+        }
+        if let packagesFollowingDict = dict["packages_following"] as? [String: TimeInterval] {
+            packagesFollowing = [:]
+            for (key, value) in packagesFollowingDict {
+                packagesFollowing?.updateValue(Date(timeIntervalSince1970: value), forKey: key)
+            }
+        }
+        
+        if let packagesMovedDict = dict["packages_moved"] as? [String: TimeInterval] {
+            packagesMoved = [:]
+            for (key, value) in packagesMovedDict {
+                packagesMoved?.updateValue(Date(timeIntervalSince1970: value), forKey: key)
             }
         }
     }

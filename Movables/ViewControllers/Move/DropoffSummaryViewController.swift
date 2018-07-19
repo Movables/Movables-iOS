@@ -160,6 +160,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
             // optional dropoff action
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "paragraphActionsCell", for: indexPath) as! MCParagraphActionsCollectionViewCell
             cell.paragraphLabel.text = package.dropoffMessage ?? ""
+            cell.cardView.layer.borderColor = getTintForCategory(category: package.category).cgColor
             cell.actions = self.actions
             cell.activateStackView()
             for row in cell.actionsStackView.arrangedSubviews {
@@ -186,6 +187,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
                 cell.units = units
                 cell.activateStackView()
             }
+            cell.cardView.layer.borderColor = getTintForCategory(category: package.category).cgColor
             // route map without user location, showing pickup & dropoff/deliver, and routes with all movements
             return cell
         } else if indexPath.item == 3 {
@@ -333,25 +335,10 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
                 }
                 // update views
                 if self.transitRecord?.dropoffDate != nil {
-                    self.package.reference.collection("external_actions").getDocuments(completion: { (querySnapshot, error) in
-                        if let error = error {
-                            print(error)
-                        } else {
-                            guard let snapshot = querySnapshot else {
-                                return
-                            }
-                            var actions: [ExternalAction] = []
-                            snapshot.documents.forEach({ (docSnapshot) in
-                                actions.append(ExternalAction(dict: docSnapshot.data()))
-                            })
-                            self.actions = actions
-                            self.collectionView.reloadData()
-//                            UIView.animate(withDuration: 0.35) {
-                                self.bottomConstraintFAB.constant = -(self.view.safeAreaInsets.bottom + 50 + (UIDevice.isIphoneX ? 0 : 18))
-                                self.view.layoutIfNeeded()
-//                            }
-                        }
-                    })
+                    self.actions = self.package.externalActions ?? []
+                    self.collectionView.reloadData()
+                    self.bottomConstraintFAB.constant = -(self.view.safeAreaInsets.bottom + 50 + (UIDevice.isIphoneX ? 0 : 18))
+                    self.view.layoutIfNeeded()
                 }
             }
         })
