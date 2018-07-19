@@ -234,8 +234,6 @@ extension CreatePackageReviewViewController: UICollectionViewDataSource {
             } else {
                 cell.label.text = String(format: NSLocalizedString("label.by", comment: "label text for authored by") , sender.displayName)
             }
-
-            cell.label.text = "By \(sender.displayName)"
             return cell
         }
         else if item == 1 {
