@@ -41,6 +41,13 @@ struct PackageTopicResultItem {
         self.packagesCount = packagesCount
         self.documentID = documentID
     }
+    
+    init(hit: [String: Any]) {
+        self.name = hit["name"] as! String
+        self.templatesCount = (hit["count"] as! [String: Int])["templates"]
+        self.packagesCount = (hit["count"] as! [String: Int])["packages"]
+        self.documentID = hit["objectID"] as! String
+    }
 }
 
 class CreatePackageTopicSearchViewController: UIViewController {
@@ -318,7 +325,7 @@ extension CreatePackageTopicSearchViewController: UITableViewDataSource {
             self.results.removeAll()
             print(hits.count)
             for hit in hits {
-                self.results.append(PackageTopicResultItem(name: hit["name"] as! String, templatesCount: hit["templatesCount"] as? Int, packagesCount: hit["packagesCount"] as? Int, documentID: hit["reference"] as! String))
+                self.results.append(PackageTopicResultItem(hit: hit))
             }
             DispatchQueue.main.async {
                 self.tableView.separatorStyle = .singleLine

@@ -316,33 +316,15 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
                 return
             }
             self.transitRecord = TransitRecord(dict: documentSnapshot!.data()!, reference: documentSnapshot!.reference)
-            self.fetchMovements()
+            // update views
+            if self.transitRecord?.dropoffDate != nil {
+                self.actions = self.package.externalActions ?? []
+                self.collectionView.reloadData()
+                self.bottomConstraintFAB.constant = -(self.view.safeAreaInsets.bottom + 50 + (UIDevice.isIphoneX ? 0 : 18))
+                self.view.layoutIfNeeded()
+            }
         }
     }
-    
-    func fetchMovements() {
-        self.transitRecord?.reference.collection("movements").getDocuments(source: .default, completion: { (querySnapshot, error) in
-            if let error = error {
-                print(error)
-            } else {
-                if querySnapshot != nil {
-                    var movements: [TransitMovement] = []
-                    querySnapshot!.documents.forEach({ (snapshot) in
-                        let dict = snapshot.data()
-                        movements.append(TransitMovement(date: (dict["date"] as! Timestamp).dateValue(), geoPoint: dict["geo_point"] as! GeoPoint))
-                    })
-                    self.transitRecord?.movements = movements
-                }
-                // update views
-                if self.transitRecord?.dropoffDate != nil {
-                    self.actions = self.package.externalActions ?? []
-                    self.collectionView.reloadData()
-                    self.bottomConstraintFAB.constant = -(self.view.safeAreaInsets.bottom + 50 + (UIDevice.isIphoneX ? 0 : 18))
-                    self.view.layoutIfNeeded()
-                }
-            }
-        })
-    }    
 }
 
 extension DropoffSummaryViewController: UICollectionViewDelegate {
