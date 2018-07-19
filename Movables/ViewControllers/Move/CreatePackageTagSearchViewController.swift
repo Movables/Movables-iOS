@@ -142,7 +142,7 @@ class CreatePackageTopicSearchViewController: UIViewController {
         let apiClient = Client(appID: (UIApplication.shared.delegate as! AppDelegate).algoliaClientId!, apiKey: (UIApplication.shared.delegate as! AppDelegate).algoliaAPIKey!)
         topicsIndex = apiClient.index(withName: "topics")
         query.hitsPerPage = 15
-        query.attributesToRetrieve = ["name", "templatesCount", "packagesCount"]
+        query.attributesToRetrieve = ["name", "count", "objectID"]
         query.attributesToHighlight = ["name"]
     }
     
