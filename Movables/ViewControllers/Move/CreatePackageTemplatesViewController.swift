@@ -239,34 +239,20 @@ extension CreatePackageTemplatesViewController: UITableViewDelegate {
     }
     
     private func useTemplate(with template: PackageTemplate) {
-        
         // fetch external actions
-        
-        template.reference.collection("external_actions").getDocuments { (querySnapshot, error) in
-            if let error = error {
-                print(error)
-                return
-            } else {
-                guard let snapshot = querySnapshot else { return }
-                var externalActionsTemp:[ExternalAction] = []
-                snapshot.documents.forEach({ (docSnapshot) in
-                    externalActionsTemp.append(ExternalAction(dict: docSnapshot.data()))
-                })
-                self.createPackageCoordinator.externalActions = externalActionsTemp
-                self.createPackageCoordinator.recipientResultItem = RecipientResultItem(name: template.recipient.displayName, picUrl: template.recipient.photoUrl, position: template.destination.name, twitter:template.recipient.twitter, facebook: template.recipient.facebook, phone: template.recipient.phone, documentID: template.recipient.reference!.documentID, type: template.recipient.recipientType)
-                self.createPackageCoordinator.destinationResultItem = DestinationResultItem(name: template.destination.name, placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: template.destination.geoPoint.latitude, longitude: template.destination.geoPoint.longitude)))
-                self.createPackageCoordinator.category = template.category
-                self.createPackageCoordinator.packageCoverPhotoImage = nil
-                self.createPackageCoordinator.packageDueDate = template.dueDate
-                self.createPackageCoordinator.packageHeadline = template.headline
-                self.createPackageCoordinator.packageDescription = template.description
-                self.createPackageCoordinator.usingTemplate = true
-                self.createPackageCoordinator.template = template
-                self.createPackageCoordinator.dropoffMessage = template.dropoffMessage
-                self.createPackageCoordinator.coverImageUrl = template.coverImageUrl!
-                self.createPackageCoordinator.setContentAndPushToReview(promptTemplate: false, coverImageUrl: URL(string: template.coverImageUrl!))
-            }
-        }
+        self.createPackageCoordinator.externalActions = template.externalActions
+        self.createPackageCoordinator.recipientResultItem = RecipientResultItem(name: template.recipient.displayName, picUrl: template.recipient.photoUrl, position: template.destination.name, twitter:template.recipient.twitter, facebook: template.recipient.facebook, phone: template.recipient.phone, documentID: template.recipient.reference!.documentID, type: template.recipient.recipientType)
+        self.createPackageCoordinator.destinationResultItem = DestinationResultItem(name: template.destination.name, placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: template.destination.geoPoint.latitude, longitude: template.destination.geoPoint.longitude)))
+        self.createPackageCoordinator.category = template.category
+        self.createPackageCoordinator.packageCoverPhotoImage = nil
+        self.createPackageCoordinator.packageDueDate = template.dueDate
+        self.createPackageCoordinator.packageHeadline = template.headline
+        self.createPackageCoordinator.packageDescription = template.description
+        self.createPackageCoordinator.usingTemplate = true
+        self.createPackageCoordinator.template = template
+        self.createPackageCoordinator.dropoffMessage = template.dropoffMessage
+        self.createPackageCoordinator.coverImageUrl = template.coverImageUrl!
+        self.createPackageCoordinator.setContentAndPushToReview(promptTemplate: false, coverImageUrl: URL(string: template.coverImageUrl!))
     }
 }
 

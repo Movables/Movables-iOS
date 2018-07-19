@@ -67,7 +67,7 @@ class DropoffSummaryViewController: UIViewController {
         collectionView.contentInset.top = UIApplication.shared.keyWindow!.safeAreaInsets.top + 20
         collectionView.alwaysBounceVertical = true
         collectionView.contentInsetAdjustmentBehavior = .never
-        collectionView.contentInset.bottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 50 + (UIDevice.isIphoneX ? 10 : 28)
+        collectionView.contentInset.bottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 50 + 10 + (UIDevice.isIphoneX ? 10 : 28)
         collectionView.scrollIndicatorInsets.bottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 50 + (UIDevice.isIphoneX ? 10 : 28)
         collectionView.register(HeaderLabelCollectionViewCell.self, forCellWithReuseIdentifier: "headerLabelCell")
         collectionView.register(MCRouteSummaryCollectionViewCell.self, forCellWithReuseIdentifier: "routeSummaryCell")

@@ -213,6 +213,13 @@ struct PackageTemplate {
         self.dueDate = (dictionary["due_date"] as! Timestamp).dateValue()
         
         self.dropoffMessage = dictionary["dropoff_message"] as? String
+        
+        if let externalActions = dictionary["external_actions"] as? [[String: Any]] {
+            self.externalActions = []
+            for action in externalActions {
+                self.externalActions?.append(ExternalAction(dict: action))
+            }
+        }
     }
 }
 
@@ -313,7 +320,13 @@ struct Package: Equatable {
         
         self.dueDate = (content["due_date"] as! Timestamp).dateValue()
         self.dropoffMessage = content["dropoff_message"] as? String
-        self.externalActions = nil
+        if let externalActions = content["external_actions"] as? [[String: Any]] {
+            self.externalActions = []
+            for action in externalActions {
+                self.externalActions?.append(ExternalAction(dict: action))
+            }
+        }
+
         self.followers = [:]
         if let followersDict = relations["followers"] as? [String: TimeInterval] {
             for (key, value) in followersDict {

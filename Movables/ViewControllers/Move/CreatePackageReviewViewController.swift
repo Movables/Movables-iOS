@@ -106,7 +106,7 @@ class CreatePackageReviewViewController: UIViewController {
         collectionView.alwaysBounceVertical = true
         collectionView.backgroundColor = UIColor(red: 0.97, green: 0.97, blue: 0.97, alpha: 1)
         collectionView.contentInsetAdjustmentBehavior = .never
-        collectionView.contentInset.bottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 50 + (UIDevice.isIphoneX ? 10 : 28)
+        collectionView.contentInset.bottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 50 + 10 + (UIDevice.isIphoneX ? 10 : 28)
         collectionView.scrollIndicatorInsets.bottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 50 + (UIDevice.isIphoneX ? 10 : 28)
 
     }
@@ -229,6 +229,12 @@ extension CreatePackageReviewViewController: UICollectionViewDataSource {
         let item = indexPath.item
         if item == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "headerLabelCell", for: indexPath) as! HeaderLabelCollectionViewCell
+            if createPackageCoordinator.usingTemplate {
+                cell.label.text = String(format: NSLocalizedString("label.templateBy", comment: "label text for template by"), createPackageCoordinator.template!.author!.displayName)
+            } else {
+                cell.label.text = String(format: NSLocalizedString("label.by", comment: "label text for authored by") , sender.displayName)
+            }
+
             cell.label.text = "By \(sender.displayName)"
             return cell
         }
