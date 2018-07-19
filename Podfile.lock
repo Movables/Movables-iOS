@@ -1,4 +1,5 @@
 PODS:
+  - Alamofire (4.7.2)
   - AlgoliaSearch-Client-Swift (5.1.7)
   - Bolts (1.9.0):
     - Bolts/AppLinks (= 1.9.0)
@@ -131,10 +132,12 @@ PODS:
   - SDWebImage/Core (4.4.1)
   - SlackTextViewController (1.9.6)
   - SwiftLint (0.26.0)
+  - SwiftyJSON (4.1.0)
   - TTTAttributedLabel (2.0.0)
   - "UITextView+Placeholder (1.2.1)"
 
 DEPENDENCIES:
+  - Alamofire
   - AlgoliaSearch-Client-Swift
   - CountdownLabel
   - Crashlytics
@@ -155,11 +158,13 @@ DEPENDENCIES:
   - SDWebImage (~> 4.0)
   - SlackTextViewController
   - SwiftLint
+  - SwiftyJSON (~> 4.0)
   - TTTAttributedLabel
   - "UITextView+Placeholder"
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
+    - Alamofire
     - AlgoliaSearch-Client-Swift
     - Bolts
     - BoringSSL
@@ -196,10 +201,12 @@ SPEC REPOS:
     - SDWebImage
     - SlackTextViewController
     - SwiftLint
+    - SwiftyJSON
     - TTTAttributedLabel
     - "UITextView+Placeholder"
 
 SPEC CHECKSUMS:
+  Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
   AlgoliaSearch-Client-Swift: 13f8abe012615ed3ccc35dc61ce0401a191be0ff
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   BoringSSL: cf3f1793eb6e3c445c4d150456341f149c268a35
@@ -236,9 +243,10 @@ SPEC CHECKSUMS:
   SDWebImage: 47e9b5b925cbce75946c23f0c42dd19464189af4
   SlackTextViewController: b854e62c1c156336bc4fd409c6ca79b5773e8f9d
   SwiftLint: f6b83e8d95ee1e91e11932d843af4fdcbf3fc764
+  SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
   TTTAttributedLabel: 8cffe8e127e4e82ff3af1e5386d4cd0ad000b656
   "UITextView+Placeholder": 0c3efd97f37ea64bde7f34cc6e90fe02e87b3909
 
-PODFILE CHECKSUM: 1d34545458241686eefc50c2fdf0ad5cf322ee99
+PODFILE CHECKSUM: 2510c6abfec75d4a5b766d63e82bf31e56ef6f6e
 
 COCOAPODS: 1.5.3

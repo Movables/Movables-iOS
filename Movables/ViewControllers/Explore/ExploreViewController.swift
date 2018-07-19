@@ -86,7 +86,7 @@ class ExploreViewController: UIViewController {
         setupTopicsTrendingCollectionView()
         setupToggleCollectionView()
         setupCollectionView()
-        fetchTopics()
+        fetchTopics()        
     }
     
     override func viewDidLayoutSubviews() {
@@ -129,6 +129,7 @@ class ExploreViewController: UIViewController {
         LocationManager.shared.desiredAccuracy = kCLLocationAccuracyHundredMeters
         LocationManager.shared.startUpdatingLocation()
         locationManager.delegate = self
+        
     }
     
     func setupMapView() {
@@ -239,8 +240,9 @@ class ExploreViewController: UIViewController {
         print("fetch nearby")
         LocationManager.shared.requestLocation()
         if let location = LocationManager.shared.location {
+            
             initialFetchMade = true
-            let index:Index!
+            let index: Index!
             
             let query = Query(query: "")
             query.attributesToRetrieve = ["_geoloc", "content", "logistics", "relations", "objectID"]
@@ -332,7 +334,7 @@ class ExploreViewController: UIViewController {
     }
     
     private func fetchTopics() {
-        let index:Index = apiClient.index(withName: "topics")
+        let index: Index = apiClient.index(withName: "topics")
         
         let query = Query(query: "")
         query.attributesToRetrieve = ["name", "objectID"]

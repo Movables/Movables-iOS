@@ -23,12 +23,13 @@ target 'Movables' do
   pod 'Crashlytics'
   
   # Utilities
-#  pod 'SwiftyJSON', '~> 4.0'
+  pod 'SwiftyJSON', '~> 4.0'
 #  pod 'Timepiece'
 #  pod 'Localize-Swift', '~> 2.0'
 #  pod 'CodableFirebase'
   pod 'SDWebImage', '~> 4.0'
   pod 'DateToolsSwift'
+  pod 'Alamofire'
   
   # UI
   pod 'CropViewController'

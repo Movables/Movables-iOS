@@ -26,6 +26,9 @@
 
 import Foundation
 import Firebase
+import CoreLocation
+import Alamofire
+import SwiftyJSON
 
 let packageCategoriesStringArray = [
     "animals",
@@ -256,5 +259,25 @@ func getStatusEnum(with string: String) -> PackageStatus {
         return .delivered
     default:
         return .unknown
+    }
+}
+
+func getGeoJSONTaiwan(location: CLLocation) {
+    let parameters: Parameters = [
+        "zoom": 19,
+        "lat": location.coordinate.latitude,
+        "lng": location.coordinate.longitude,
+        "format": "geojson"
+    ]
+    
+    // All three of these calls are equivalent
+    Alamofire.request("https://sheethub.com/ronnywang/%E6%9D%91%E9%87%8C%E7%95%8C%E5%9C%9620140313/geolookup", parameters: parameters).responseJSON { (response) in
+        let json = JSON(response.data!)
+        let id = json.arrayValue.first!["name"].stringValue.components(separatedBy: ":").last!
+        
+        Alamofire.request("https://sheethub.com/ronnywang/%E6%9D%91%E9%87%8C%E7%95%8C%E5%9C%9620140313/uri/\(id)?format=geojson", parameters: parameters).responseJSON { (response) in
+            let json = JSON(response.data!)
+            print(json)
+        }
     }
 }
