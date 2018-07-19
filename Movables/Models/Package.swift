@@ -165,14 +165,13 @@ struct TemplateCount: Equatable {
 }
 
 struct PackageTemplate {
-    var categories: [PackageCategory]
+    var category: PackageCategory
     var count: TemplateCount?
     var coverImageUrl: String?
     var description: String
     var destination: Location
     var headline: String
     var recipient: Person
-    var status: PackageStatus
     var topic: Topic
     var author: Person?
     var reference: DocumentReference
@@ -183,11 +182,7 @@ struct PackageTemplate {
     init(snapshot: DocumentSnapshot) {
         let dictionary = snapshot.data()!
         
-        var categoriesArray:[PackageCategory] = []
-        for (category, _) in dictionary["categories"] as! [String: Bool] {
-            categoriesArray.append(getCategoryEnum(with: category))
-        }
-        self.categories = categoriesArray
+        self.category = getCategoryEnum(with: dictionary["category"] as! String)
         
         if let countDict = dictionary["count"] as? [String: Int] {
             self.count = TemplateCount(dict: countDict)
@@ -204,9 +199,7 @@ struct PackageTemplate {
         self.headline = dictionary["headline"] as! String
         
         self.recipient = Person(dict: dictionary["recipient"] as! [String: Any])
-        
-        self.status = getStatusEnum(with: dictionary["status"] as! String)
-        
+                
         self.topic = Topic(with: dictionary["topic"] as! [String: Any], reference: (dictionary["topic"] as! [String: Any])["reference"] as! DocumentReference)
         
         if let authorDict = dictionary["author"] as? [String: Any] {

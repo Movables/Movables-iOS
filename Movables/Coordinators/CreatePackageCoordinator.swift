@@ -304,6 +304,9 @@ class CreatePackageCoordinator: Coordinator {
         var content = packageContent
         if coverImageUrl != nil {
             content["cover_pic_url"] = coverImageUrl
+            if topicTemplate != nil {
+                topicTemplate!["cover_pic_url"] = coverImageUrl
+            }
         } else {
             let image = self.packageCoverPhotoImage!
             let metaData = StorageMetadata()
@@ -322,6 +325,9 @@ class CreatePackageCoordinator: Coordinator {
                             return
                         }
                         content["cover_pic_url"] = downloadURL.absoluteString
+                        if topicTemplate != nil {
+                            topicTemplate!["cover_pic_url"] = downloadURL.absoluteString
+                        }
                         let package = [
                             "content": content,
                             "logistics": packageLogistics,
