@@ -296,6 +296,7 @@ class CreatePackageCoordinator: Coordinator {
             topicTemplateRef = ((packageContent["topic"] as! [String : Any])["reference"] as! DocumentReference).collection("templates").document()
             topicTemplate = packageContent
             topicTemplate!["author"] = packageLogistics["author"]
+            topicTemplate!["count"] = ["packages": 0]
             
             // save topic Template at topicTemplateRef with transaction
         }
@@ -385,6 +386,8 @@ class CreatePackageCoordinator: Coordinator {
                     "amount": 10
                 ]
                 transaction.setData(templateUsageTransaction, forDocument: templateAuthorReference.collection("account_activities").document())
+                
+                
 
                 let topicDocument: DocumentSnapshot?
                 
@@ -427,6 +430,17 @@ class CreatePackageCoordinator: Coordinator {
 
                 // save topic template
                 transaction.setData(topicTemplate!, forDocument: topicTemplateReference!)
+            } else {
+                let topicTemplateDocument: DocumentSnapshot?
+                do {
+                    try topicTemplateDocument = transaction.getDocument(topicTemplateReference!)
+                } catch let fetchError as NSError {
+                    errorPointer?.pointee = fetchError
+                    return nil
+                }
+                let oldCountPackagesOnTopicTemplate = (topicTemplateDocument?.data()!["count"] as! [String: Int])["packages"]!
+                let newCountPackagesOnTopicTemplate = oldCountPackagesOnTopicTemplate + 1
+                transaction.updateData(["count.packages": newCountPackagesOnTopicTemplate], forDocument: topicTemplateReference!)
             }
             
             // record packageCreation account activity

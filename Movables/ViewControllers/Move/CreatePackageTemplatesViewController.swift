@@ -158,7 +158,7 @@ class CreatePackageTemplatesViewController: UIViewController {
                 if querySnapshot != nil {
                     for document in querySnapshot!.documents {
                         let topicReference = document.reference
-                        topicReference.collection("templates").whereField("due_date.end", isGreaterThan: Timestamp(date: Date())).order(by: "due_date.end", descending: false).order(by: "count.packages", descending: true).getDocuments(completion: { (querySnapshot, error) in
+                        topicReference.collection("templates").whereField("due_date", isGreaterThan: Timestamp(date: Date())).order(by: "due_date", descending: false).order(by: "count.packages", descending: true).getDocuments(completion: { (querySnapshot, error) in
                             if let error = error {
                                 print(error)
                             }
