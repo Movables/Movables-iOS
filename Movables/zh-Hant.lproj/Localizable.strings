@@ -128,7 +128,7 @@
 "copy.alert.signout" = "確定要登出?";
 "copy.alert.privateConversation" = "私密對話尚未開放";
 "copy.alert.packageTemplates" = "議題包範本";
-"copy.alert.packageTemplateDesc" = "若您選擇製作範本，他人在為#%@標籤製作議題包時將可利用您的封面照片、頭條、內容、到期日語放置後活動資訊。";
+"copy.alert.packageTemplateDesc" = "若您選擇製作範本，他人在為 #%@ 製作議題包時將可利用您的封面照片、頭條、內容、到期日語放置後活動資訊。";
 "copy.alert.packageCreation" = "確認製作議題包";
 "copy.alert.packageCreationDesc" = "100 點數將從您帳戶中扣除來製作此議題包。扣除後您帳戶還剩下%d點數。";
 "copy.alert.unableToDropoff" = "無法放置議題包";

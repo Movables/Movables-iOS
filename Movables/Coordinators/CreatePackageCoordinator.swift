@@ -111,7 +111,7 @@ class CreatePackageCoordinator: Coordinator {
                 self.shouldSaveAsTemplate = false
                 self.pushToReview(coverImageUrl: coverImageUrl)
             }))
-            alertController.addAction(UIAlertAction(title: "button.cancel", style: .cancel, handler: { (action) in
+            alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.cancel", comment: "button title for cancel")), style: .cancel, handler: { (action) in
                 self.shouldSaveAsTemplate = nil
             }))
             self.navigationController.present(alertController, animated: true) {
@@ -387,16 +387,6 @@ class CreatePackageCoordinator: Coordinator {
                 return nil
             }
             
-            let topicDocument: DocumentSnapshot?
-            
-            // increment packages count on the template
-            do {
-                try topicDocument = transaction.getDocument(((package["content"] as! [String: Any])["topic"] as! [String: Any])["reference"] as! DocumentReference)
-            } catch let fetchError as NSError {
-                errorPointer?.pointee = fetchError
-                return nil
-            }
-
             var oldAuthorBalance = (authorDocument!.data()!["private_profile"] as! [String: Any])["points_balance"] as! Int
 
             let topicTemplateDocument: DocumentSnapshot?
@@ -437,6 +427,16 @@ class CreatePackageCoordinator: Coordinator {
 
             
             if self.usingTemplate {
+                let topicDocument: DocumentSnapshot?
+                
+                // increment packages count on the template
+                do {
+                    try topicDocument = transaction.getDocument(((package["content"] as! [String: Any])["topic"] as! [String: Any])["reference"] as! DocumentReference)
+                } catch let fetchError as NSError {
+                    errorPointer?.pointee = fetchError
+                    return nil
+                }
+
                 // if the author is using a template
                 let templateAuthorReference = ((package["logistics"] as! [String: Any])["content_template_by"] as! [String: Any])["reference"] as! DocumentReference
                 let templateAuthorDocument: DocumentSnapshot?

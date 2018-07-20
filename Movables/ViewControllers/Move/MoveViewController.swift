@@ -221,9 +221,9 @@ class MoveViewController: UIViewController {
                 self.moveLocationManager.stopUpdatingLocation()
                 return
             }
-            self.moveLocationManager.requestLocation()
             self.moveLocationManager.startUpdatingHeading()
             self.moveLocationManager.startUpdatingLocation()
+            self.moveLocationManager.requestLocation()
             if self.currentPackage != nil {
                 let snapshotPackage = Package(snapshot: snapshot)
                 if snapshotPackage == self.currentPackage! {
@@ -246,7 +246,7 @@ class MoveViewController: UIViewController {
             self.moveCardView.countdownLabelView.keyLabel.text = String(NSLocalizedString("label.timeRemaining", comment: "label text for time remaining"))
             self.moveCardView.countdownLabelView.valueLabel.setCountDownDate(targetDate: self.currentTransitRecord!.pickupDate!.add(1.hours) as NSDate)
             self.moveCardView.countdownLabelView.valueLabel.start()
-            self.moveCardView.distanceLabelView.keyLabel.text = "Distance Left"
+            self.moveCardView.distanceLabelView.keyLabel.text = String(NSLocalizedString("label.distanceRemaining", comment: "label text for distance left"))
             let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapDetailsButton(sender:)))
             self.moveCardView.addGestureRecognizer(tapGestureRecognizer)
             self.moveCardView.dropoffButton.addTarget(self, action: #selector(didTapDropoffButton(sender:)), for: .touchUpInside)
@@ -408,7 +408,7 @@ extension MoveViewController: CLLocationManagerDelegate {
                         // So for the MapView to recognize the overlay's size has changed, we remove it, then add it again.
                         self.mapView.remove(self.progress! as MKOverlay)
                         self.progressPathRenderer = nil
-                        self.mapView.add(self.progress!, level: .aboveRoads)
+                        self.mapView.add(self.progress!, level: .aboveLabels)
 //                        let r = self.progress!.boundingMapRect
 //                        var pts: [MKMapPoint] = [
 //                            MKMapPointMake(MKMapRectGetMinX(r), MKMapRectGetMinY(r)),
@@ -451,7 +451,7 @@ extension MoveViewController: CLLocationManagerDelegate {
                     self.progress = ProgressPath(center: CLLocationCoordinate2D(latitude: movement.geoPoint.latitude, longitude: movement.geoPoint.longitude))
                     self.mapView.remove(self.progress as! MKOverlay)
                     self.progressPathRenderer = nil
-                    self.mapView.add(self.progress!, level: .aboveRoads)
+                    self.mapView.add(self.progress!, level: .aboveLabels)
                     
                     let r = self.progress!.boundingMapRect
                     var pts: [MKMapPoint] = [
