@@ -530,6 +530,8 @@ extension PackageDetailViewController: UICollectionViewDataSource {
             view.topicPill.pillContainerView.backgroundColor = getTintForCategory(category: self.package!.category)
             view.topicPill.bodyLabel.text = self.package!.topic.name
             view.topicPill.isHidden = false
+        } else {
+            view.topicPill.isHidden = true
         }
             view.titleLabel.text = self.headline!
             return view
@@ -558,45 +560,48 @@ extension PackageDetailViewController: UICollectionViewDataSource {
             self.packageActionButton.setBackgroundColor(color: getTintForCategory(category: self.package!.category).withAlphaComponent(0.85), forUIControlState: .highlighted)
             (self.navigationItem.titleView as! TitleView).subtitleLabel.text = "#\(self.package!.topic.name)"
             print("finished attacing package listener")
+            self.listenToTransitRecords()
         })
     }
     
     private func listenToTransitRecords() {
-        self.packageTransitRecordsListener =  self.package!.reference.collection("transit_records").addSnapshotListener({ (querySnapshot, error) in
-            guard let snapshot = querySnapshot else {
-                print("Error fetching snapshots: \(error!)")
-                return
-            }
-            var newTransitRecords:[TransitRecord] = []
-            snapshot.documentChanges.forEach { diff in
-                if (diff.type == .added) {
-                    if (self.transitRecords?.index(where: { $0.reference == diff.document.reference})) != nil {
-                    } else {
-                        newTransitRecords.append(TransitRecord(dict: diff.document.data(), reference: diff.document.reference))
-                    }
-                    print("added")
+        if self.packageTransitRecordsListener == nil {
+            self.packageTransitRecordsListener =  self.package!.reference.collection("transit_records").addSnapshotListener({ (querySnapshot, error) in
+                guard let snapshot = querySnapshot else {
+                    print("Error fetching snapshots: \(error!)")
+                    return
                 }
-                if (diff.type == .modified) {
-                    if let index = self.transitRecords?.index(where: { $0.reference == diff.document.reference}) {
-                        self.transitRecords?[index] = TransitRecord(dict: diff.document.data(), reference: diff.document.reference)
-                        print("Modified")
+                var newTransitRecords:[TransitRecord] = []
+                snapshot.documentChanges.forEach { diff in
+                    if (diff.type == .added) {
+                        if (self.transitRecords?.index(where: { $0.reference == diff.document.reference})) != nil {
+                        } else {
+                            newTransitRecords.append(TransitRecord(dict: diff.document.data(), reference: diff.document.reference))
+                        }
+                        print("added")
+                    }
+                    if (diff.type == .modified) {
+                        if let index = self.transitRecords?.index(where: { $0.reference == diff.document.reference}) {
+                            self.transitRecords?[index] = TransitRecord(dict: diff.document.data(), reference: diff.document.reference)
+                            print("Modified")
+                        }
+                    }
+                    if (diff.type == .removed) {
+                        if let index = self.transitRecords?.index(where: { $0.reference == diff.document.reference}) {
+                            self.transitRecords?.remove(at: index)
+                            print("Removed")
+                        }
                     }
                 }
-                if (diff.type == .removed) {
-                    if let index = self.transitRecords?.index(where: { $0.reference == diff.document.reference}) {
-                        self.transitRecords?.remove(at: index)
-                        print("Removed")
-                    }
+                if self.transitRecords != nil {
+                    self.transitRecords?.insert(contentsOf: newTransitRecords, at: 0)
+                } else {
+                    self.transitRecords = newTransitRecords
                 }
-            }
-            if self.transitRecords != nil {
-                self.transitRecords?.insert(contentsOf: newTransitRecords, at: 0)
-            } else {
-                self.transitRecords = newTransitRecords
-            }
-            self.setupFAB()
-            LocationManager.shared.startUpdatingLocation()
-        })
+                self.setupFAB()
+                LocationManager.shared.startUpdatingLocation()
+            })
+        }
     }
     
     func generateLogisticsRowsForPackage(package: Package) -> [LogisticsRow] {
