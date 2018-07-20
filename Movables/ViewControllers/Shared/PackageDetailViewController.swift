@@ -74,7 +74,7 @@ class PackageDetailViewController: UIViewController {
             if posts != nil {
                 reloadCollectionView()
             }
-            self.newUpdatePackageActionButton(with: LocationManager.shared.location)
+            self.updatePackageActionButton(with: LocationManager.shared.location)
         }
     }
     var userAlreadyMovedPackage: Bool?
@@ -243,7 +243,7 @@ class PackageDetailViewController: UIViewController {
         updateNavigationBarAppearance(withTransparency: true)
         
         LocationManager.shared.delegate = self
-        
+        LocationManager.shared.requestLocation()
         checkAlreadyMoving()
         if package == nil {
             fetchPackage(with: self.packageDocumentId)
@@ -261,7 +261,7 @@ class PackageDetailViewController: UIViewController {
     private func checkAlreadyMoving() {
         if UserManager.shared.userDocument != nil {
             self.alreadyMoving = UserManager.shared.userDocument!.privateProfile.currentPackage != nil
-            self.newUpdatePackageActionButton(with: LocationManager.shared.location!)
+            self.updatePackageActionButton(with: LocationManager.shared.location!)
         }
     }
     
@@ -823,7 +823,7 @@ extension PackageDetailViewController: CLLocationManagerDelegate {
         return false
     }
     
-    func newUpdatePackageActionButton(with location: CLLocation?) {
+    func updatePackageActionButton(with location: CLLocation?) {
         DispatchQueue.main.async {
             if self.package != nil {
                 if self.packageInTransitByCurrentUser() {
@@ -926,7 +926,7 @@ extension PackageDetailViewController: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        newUpdatePackageActionButton(with: locations.first)
+        updatePackageActionButton(with: locations.first)
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
