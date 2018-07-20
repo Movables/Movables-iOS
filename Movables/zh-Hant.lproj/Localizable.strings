@@ -61,6 +61,7 @@
 "label.recipient" = "收件人";
 "label.sender" = "寄件人";
 "label.time" = "剩餘時間";
+"label.distanceMoved" = "移動距離";
 "label.timeElapsed" = "使用時間";
 "label.creditsEarned" = "獲得點數";
 "label.deliveryBonus" = "送達紅利";
@@ -112,6 +113,7 @@
 "label.donate" = "捐款";
 "label.act" = "行動";
 "label.learn" = "學習";
+"copy.dropoffSummary" = "移動報告";
 "copy.makeItHappen" = "你就是沒有人";
 "copy.makeItHappenBody" = "製作一個全新的議題包或是以範本來製作議題包。你來決定！";
 "copy.wannaOrgnize" = "想開始組織嗎?";

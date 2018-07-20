@@ -153,7 +153,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.item == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "headerLabelCell", for: indexPath) as! HeaderLabelCollectionViewCell
-            cell.label.text = "Dropoff Summary"
+            cell.label.text = String(NSLocalizedString("copy.dropoffSummary", comment: "label text for dropoff summary"))
             cell.label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
             return cell
         } else if indexPath.item == 1 {
@@ -240,7 +240,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
         let distanceMovedMeters = Measurement(value: distanceMoved, unit: UnitLength.meters)
         let distanceMovedString = distanceMovedformatter.string(from: distanceMovedMeters)
 
-        let distanceMovedRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: distanceMovedString, subtitleText: "Distance Moved".uppercased(), tint: getTintForCategory(category: self.package.category), actions: nil, type: .Directions)
+        let distanceMovedRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: distanceMovedString, subtitleText: String(NSLocalizedString("label.distanceMoved", comment: "label text for distance moved")), tint: getTintForCategory(category: self.package.category), actions: nil, type: .Directions)
         
         rows.append(distanceMovedRow)
         
@@ -299,7 +299,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
             circleText: nil,
             circleSubscript: nil,
             titleText: "\(response["new_balance"] as! Double)",
-            subtitleText: String(NSLocalizedString("creditsTotal", comment: "label text for credits total")),
+            subtitleText: String(NSLocalizedString("label.creditsTotal", comment: "label text for credits total")),
             tint: getTintForCategory(category: self.package.category),
             actions: nil,
             type: .Balance

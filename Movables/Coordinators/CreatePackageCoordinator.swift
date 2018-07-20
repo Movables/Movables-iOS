@@ -300,7 +300,7 @@ class CreatePackageCoordinator: Coordinator {
             topicTemplateRef = ((packageContent["topic"] as! [String : Any])["reference"] as! DocumentReference).collection("templates").document()
             topicTemplate = packageContent
             topicTemplate!["author"] = packageLogistics["author"]
-            topicTemplate!["count"] = ["packages": 0]
+            topicTemplate!["count"] = ["packages": 1]
             
             // save topic Template at topicTemplateRef with transaction
         }

@@ -79,6 +79,7 @@
 "label.recipient" = "Recipient";
 "label.sender" = "Sender";
 "label.time" = "Time Remaining";
+"label.distanceMoved" = "Distance Moved";
 "label.timeElapsed" = "Time Elapsed";
 "label.creditsEarned" = "Credits Earned";
 "label.deliveryBonus" = "Delivery Bonus";
@@ -134,6 +135,7 @@
 "copy.alert.packageTemplateDesc" = "By saving the contents of your package as a template, others will be able to reuse your cover photo, headline, description, due date, and dropoff actions when they create packages for #%@.";
 "copy.alert.packageCreation" = "Confirm Package Creation";
 "copy.alert.packageCreationDesc" = "100 credits will be deducted from your account to create this package. After the deduction, you will have %d credits in your account.";
+"copy.dropoffSummary" = "Dropoff Summary";
 "copy.makeItHappen" = "Make it happen.";
 "copy.makeItHappenBody" = "Create a new package using templates others have created or create something new from scratch. Your call.";
 "copy.wannaOrgnize" = "Wanna organize?";
