@@ -435,7 +435,6 @@ extension MoveViewController: CLLocationManagerDelegate {
     }
     
     private func fetchMovements() {
-        print("fetch movements now")
         self.movements = currentTransitRecord!.movements!
         if self.movements!.isEmpty {
             self.progress = ProgressPath(center: CLLocationCoordinate2D(latitude: self.currentTransitRecord!.pickupGeoPoint!.latitude, longitude: self.currentTransitRecord!.pickupGeoPoint!.longitude))

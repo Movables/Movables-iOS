@@ -207,6 +207,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
         print("action tapped is \(self.actions[sender.tag])")
         let action = self.actions[sender.tag]
         let safariVC = SFSafariViewController(url: URL(string: action.webLink!)!)
+        safariVC.preferredControlTintColor = getTintForCategory(category: self.package.category)
         navigationController?.present(safariVC, animated: true, completion: nil)
     }
     
