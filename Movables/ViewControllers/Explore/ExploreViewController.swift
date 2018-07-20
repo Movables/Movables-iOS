@@ -61,7 +61,7 @@ class ExploreViewController: UIViewController {
     
     var selectedTopicIndex: IndexPath?
     
-    var categories: [PackageCategory] = [] {
+    var category: PackageCategory? {
         didSet{
             fetchNearbyPackages()
         }
@@ -161,7 +161,8 @@ class ExploreViewController: UIViewController {
         topicsTrendingCollectionView.showsVerticalScrollIndicator = false
         topicsTrendingCollectionView.clipsToBounds = false
         topicsTrendingCollectionView.allowsSelection = true
-        topicsTrendingCollectionView.allowsMultipleSelection = false
+        topicsTrendingCollectionView.allowsMultipleSelection = true
+        topicsTrendingCollectionView.alwaysBounceHorizontal = true
         topicsTrendingCollectionView.register(TopicTrendingCollectionViewCell.self, forCellWithReuseIdentifier: "topicTrending")
         topicsTrendingCollectionView.dataSource = self
         topicsTrendingCollectionView.delegate = self
@@ -186,6 +187,7 @@ class ExploreViewController: UIViewController {
         togglesCollectionView.backgroundColor = .clear
         togglesCollectionView.showsHorizontalScrollIndicator = false
         togglesCollectionView.showsVerticalScrollIndicator = false
+        togglesCollectionView.alwaysBounceHorizontal = true
         togglesCollectionView.clipsToBounds = false
         togglesCollectionView.allowsSelection = true
         togglesCollectionView.allowsMultipleSelection = true
@@ -252,25 +254,29 @@ class ExploreViewController: UIViewController {
             query.aroundLatLng = LatLng(lat: location.coordinate.latitude, lng: location.coordinate.longitude)
             query.aroundRadius = .explicit(300000)
             
-            var categoriesArray:[String] = []
-            for category in self.categories {
-                categoriesArray.append(getStringForCategory(category: category))
+            var filterString = "NOT logistics.status:\(getStringForStatusEnum(statusEnum: .delivered))"
+            
+            if let category = self.category {
+                filterString += " AND content.category:\(getStringForCategory(category: category))"
             }
-            query.tagFilters = categoriesArray
-
-            var filterString = ""
+            
             if let topicName = self.topicName {
-                filterString += "topicName:\(topicName)"
-                query.filters = filterString
+                filterString += " AND content.topic.name:\(topicName)"
             }
-            if let status = self.status {
-                if self.topicName != nil && !self.topicName!.isEmpty {
-                    filterString += " AND status:\(getStringForStatusEnum(statusEnum: status))"
-                } else {
-                    filterString += "NOT status:\(getStringForStatusEnum(statusEnum: .delivered))"
-                }
-                query.filters = filterString
-            }
+            
+//            if let status = self.status {
+//                if self.topicName != nil && !self.topicName!.isEmpty {
+//                    filterString += " AND logistics.status:\(getStringForStatusEnum(statusEnum: status))"
+//                } else {
+//                    filterString += "NOT logistics.status:\(getStringForStatusEnum(statusEnum: .delivered))"
+//                }
+//                query.filters = filterString
+//            }
+            
+            
+            print(filterString)
+            
+            query.filters = filterString
             
             index.search(query, completionHandler: { (content, error) -> Void in
                 if error == nil {
@@ -618,41 +624,60 @@ extension ExploreViewController: UICollectionViewDelegate {
             delegate?.showPackageDetail(with: packageOfSelected)
         }
         if collectionView == togglesCollectionView {
+            if let selectedIndexPaths = collectionView.indexPathsForSelectedItems {
+                for selectedIndexPath in selectedIndexPaths {
+                    collectionView.deselectItem(at: selectedIndexPath, animated: false)
+                    if let cell = collectionView.cellForItem(at: selectedIndexPath) as? CircularToggleCollectionViewCell {
+                        cell.containerView.backgroundColor = .white
+                    }
+
+                }
+            }
+            collectionView.selectItem(at: indexPath, animated: false, scrollPosition: UICollectionViewScrollPosition(rawValue:0))
             let category = packageCategoriesEnumArray[indexPath.item]
-            self.categories.append(category)
-            self.togglesCollectionView.reloadItems(at: [IndexPath(item: packageCategoriesEnumArray.index(of: category)!, section: 0)])
-            collectionView.selectItem(at: indexPath, animated: false, scrollPosition: UICollectionViewScrollPosition(rawValue: 0))
+            self.category = category
+            if let cell = collectionView.cellForItem(at: indexPath) as? CircularToggleCollectionViewCell {
+                cell.containerView.backgroundColor = getTintForCategory(category: category)
+            }
         }
         if collectionView == topicsTrendingCollectionView {
-            let topic = self.topics[indexPath.item]
-            if selectedTopicIndex == indexPath {
-                // deselect
-                self.topicName = nil
-                collectionView.deselectItem(at: selectedTopicIndex!, animated: false)
-
-            } else {
-                // select
-                self.topicName = topic.name
-                collectionView.selectItem(at: indexPath, animated: false, scrollPosition: UICollectionViewScrollPosition(rawValue: 0))
+            if let selectedIndexPaths = collectionView.indexPathsForSelectedItems {
+                for selectedIndexPath in selectedIndexPaths {
+                    collectionView.deselectItem(at: selectedIndexPath, animated: false)
+                    if let cell = collectionView.cellForItem(at: selectedIndexPath) as? TopicTrendingCollectionViewCell {
+                        cell.containerView.backgroundColor = .white
+                    }
+                    
+                }
             }
-            collectionView.reloadData()
-            self.selectedTopicIndex = indexPath
+            collectionView.selectItem(at: indexPath, animated: false, scrollPosition: UICollectionViewScrollPosition(rawValue:0))
+            self.topicName = topics[indexPath.item].name
+            if let cell = collectionView.cellForItem(at: indexPath) as? TopicTrendingCollectionViewCell {
+                cell.containerView.backgroundColor = Theme().textColor
+                cell.label.textColor = .white
+            }
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         print("did deselect \(indexPath)")
         if collectionView == togglesCollectionView {
-            let category = packageCategoriesEnumArray[indexPath.item]
-            self.categories.remove(at: categories.index(of: category)!)
-            self.togglesCollectionView.reloadItems(at: [IndexPath(item: packageCategoriesEnumArray.index(of: category)!, section: 0)])
-            collectionView.deselectItem(at: indexPath, animated: false)
+            self.category = nil
+            if let cell = collectionView.cellForItem(at: indexPath) as? CircularToggleCollectionViewCell {
+                cell.containerView.backgroundColor = .white
+            }
+            self.togglesCollectionView.deselectItem(at: indexPath, animated: false)
+            print("deselected: \(self.togglesCollectionView.indexPathsForSelectedItems)")
         }
         if collectionView == topicsTrendingCollectionView {
-            collectionView.deselectItem(at: indexPath, animated: false)
             self.topicName = nil
             self.selectedTopicIndex = nil
-            collectionView.reloadData()
+            if let cell = collectionView.cellForItem(at: indexPath) as? TopicTrendingCollectionViewCell {
+                cell.containerView.backgroundColor = .white
+                cell.label.textColor = Theme().grayTextColor
+            }
+            self.topicsTrendingCollectionView.deselectItem(at: indexPath, animated: false)
+            print("deselected: \(self.topicsTrendingCollectionView.indexPathsForSelectedItems)")
         }
     }
     
@@ -681,7 +706,7 @@ extension ExploreViewController: UICollectionViewDataSource {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "circularToggle", for: indexPath) as! CircularToggleCollectionViewCell
             let category = packageCategoriesEnumArray[indexPath.item]
             cell.label.text = getEmojiForCategory(category: category)
-            if self.categories.contains(category) {
+            if category == self.category {
                 cell.containerView.backgroundColor = getTintForCategory(category: category)
             } else {
                 cell.containerView.backgroundColor = .white
