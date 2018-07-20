@@ -113,8 +113,6 @@ class MoveViewController: UIViewController {
         mapView.mapType = .mutedStandard
         mapView.showsPointsOfInterest = false
         mapView.showsCompass = false
-        mapView.isPitchEnabled = false
-        mapView.isRotateEnabled = false
         mapView.isScrollEnabled = false
         mapView.isZoomEnabled = true
         mapView.delegate = self
@@ -472,7 +470,7 @@ extension MoveViewController: CLLocationManagerDelegate {
                 
                 if error != nil {
                     print("Error getting directions")
-                    self.mapView.setUserTrackingMode(.followWithHeading, animated: true)
+                    self.mapView.setUserTrackingMode(.follow, animated: true)
                     self.routeToDestinationDrawn = true
                 } else {
                     self.drawMoveRoutesAndStamps(with: response!.routes)
@@ -494,7 +492,7 @@ extension MoveViewController: CLLocationManagerDelegate {
                              level: MKOverlayLevel.aboveLabels)
             print("draw route")
         }
-        self.mapView.setUserTrackingMode(.followWithHeading, animated: true)
+        self.mapView.setUserTrackingMode(.follow, animated: true)
         self.routeToDestinationDrawn = true
     }
 }
