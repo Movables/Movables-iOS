@@ -92,8 +92,8 @@ class OrganizeViewController: UIViewController {
         
         emptyStateView = EmptyStateView(frame: .zero)
         emptyStateView.translatesAutoresizingMaskIntoConstraints = false
-        emptyStateView.titleLabel.text = "Wanna organize?"
-        emptyStateView.subtitleLabel.text = "Move a package first."
+        emptyStateView.titleLabel.text = String(NSLocalizedString("copy.wannaOrgnize", comment: "Organize tab empty state title"))
+        emptyStateView.subtitleLabel.text = String(NSLocalizedString("copy.wannaOrgnizeBody", comment: "Organize tab empty state body"))
         emptyStateView.actionButton.isHidden = true
         emptyStateView.isHidden = true
         view.addSubview(emptyStateView)

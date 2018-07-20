@@ -113,6 +113,8 @@
 "label.learn" = "學習";
 "copy.makeItHappen" = "你就是沒有人";
 "copy.makeItHappenBody" = "製作一個全新的議題包或是以範本來製作議題包。你來決定！";
+"copy.wannaOrgnize" = "想開始組織嗎?";
+"copy.wannaOrgnizeBody" = "先移動一個議題包再說。";
 "copy.nothingToSee" = "這裡沒東西，還沒有";
 "copy.publicActivity.packagePickup" = "%@ 已撿取 %@。";
 "copy.publicActivity.packageDelivery" = "%@ 已送達 %@。";

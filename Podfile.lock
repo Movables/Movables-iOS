@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (4.7.2)
+  - Alamofire (4.7.3)
   - AlgoliaSearch-Client-Swift (5.1.7)
   - Bolts (1.9.0):
     - Bolts/AppLinks (= 1.9.0)
@@ -14,11 +14,11 @@ PODS:
     - BoringSSL/Interface (= 10.0.5)
   - BoringSSL/Interface (10.0.5)
   - CountdownLabel (3.0.0)
-  - Crashlytics (3.10.3):
-    - Fabric (~> 1.7.8)
+  - Crashlytics (3.10.5):
+    - Fabric (~> 1.7.9)
   - CropViewController (2.3.6)
   - DateToolsSwift (4.0.0)
-  - Fabric (1.7.8)
+  - Fabric (1.7.9)
   - FBSDKCoreKit (4.34.0):
     - Bolts (~> 1.7)
   - FBSDKLoginKit (4.34.0):
@@ -114,7 +114,7 @@ PODS:
   - GTMSessionFetcher/Core (1.1.15)
   - GTMSessionFetcher/Full (1.1.15):
     - GTMSessionFetcher/Core (= 1.1.15)
-  - IQKeyboardManagerSwift (6.0.4)
+  - IQKeyboardManagerSwift (6.1.1)
   - KMNavigationBarTransition (1.1.5)
   - leveldb-library (1.20)
   - MarqueeLabel/Swift (3.1.6)
@@ -123,13 +123,13 @@ PODS:
     - nanopb/encode (= 0.3.8)
   - nanopb/decode (0.3.8)
   - nanopb/encode (0.3.8)
-  - NVActivityIndicatorView (4.2.1):
-    - NVActivityIndicatorView/Presenter (= 4.2.1)
-  - NVActivityIndicatorView/Presenter (4.2.1)
+  - NVActivityIndicatorView (4.3.0):
+    - NVActivityIndicatorView/Presenter (= 4.3.0)
+  - NVActivityIndicatorView/Presenter (4.3.0)
   - Protobuf (3.6.0)
-  - SDWebImage (4.4.1):
-    - SDWebImage/Core (= 4.4.1)
-  - SDWebImage/Core (4.4.1)
+  - SDWebImage (4.4.2):
+    - SDWebImage/Core (= 4.4.2)
+  - SDWebImage/Core (4.4.2)
   - SlackTextViewController (1.9.6)
   - SwiftLint (0.26.0)
   - SwiftyJSON (4.1.0)
@@ -206,15 +206,15 @@ SPEC REPOS:
     - "UITextView+Placeholder"
 
 SPEC CHECKSUMS:
-  Alamofire: e4fa87002c137ba2d8d634d2c51fabcda0d5c223
+  Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
   AlgoliaSearch-Client-Swift: 13f8abe012615ed3ccc35dc61ce0401a191be0ff
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   BoringSSL: cf3f1793eb6e3c445c4d150456341f149c268a35
   CountdownLabel: 4534a68892b1deb73fda18702dfdc2c8444cec08
-  Crashlytics: 2aea305161a2122492698c75af27f2b98aa49a25
+  Crashlytics: 7f2e38d302d9da96475b3d64d86fb29e31a542b7
   CropViewController: e6d4bd512d15a1709e9ddf71fe7d98ffd05dda0f
   DateToolsSwift: 875d97ff9e3a5d54abdd67a269b3f51c757b71ab
-  Fabric: fba4684a95df789565b0b27fc5b6e68f1755af32
+  Fabric: a2917d3895e4c1569b9c3170de7320ea1b1e6661
   FBSDKCoreKit: 0ff57f093b85c8c9d5aba697d3edf68a8960ce78
   FBSDKLoginKit: 8c78f57a145afb756e4755e69195ebe08a42466e
   Firebase: d66f4f29c23f22d96808d9abc174d81d8eee968f
@@ -233,14 +233,14 @@ SPEC CHECKSUMS:
   gRPC-RxLibrary: fa6852f98d6ec0b73c0ec2f6406c26943099d501
   GTMOAuth2: c77fe325e4acd453837e72d91e3b5f13116857b2
   GTMSessionFetcher: 5fa5b80fd20e439ef5f545fb2cb3ca6c6714caa2
-  IQKeyboardManagerSwift: 36dbe324b4f9793f5f41ba5227f3e7c76dfefd50
+  IQKeyboardManagerSwift: 977affaeb4d6e971975c7790a6850f31d38f1207
   KMNavigationBarTransition: 7a52c9bc25b39b6e3343e980b453facee1591b82
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   MarqueeLabel: 0c41f08ef5773e29c0f71064a8fa788a2fd8b365
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
-  NVActivityIndicatorView: 8068ba3ad39cb44cbaab25d89ff2546b3f092681
+  NVActivityIndicatorView: 963f62bf9f993fcf23218e55958e5b1761b9504c
   Protobuf: 0fc0ad8bec688b2a3017a139953e01374fedbd5f
-  SDWebImage: 47e9b5b925cbce75946c23f0c42dd19464189af4
+  SDWebImage: 624d6e296c69b244bcede364c72ae0430ac14681
   SlackTextViewController: b854e62c1c156336bc4fd409c6ca79b5773e8f9d
   SwiftLint: f6b83e8d95ee1e91e11932d843af4fdcbf3fc764
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
