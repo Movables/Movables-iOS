@@ -292,6 +292,8 @@ class CreatePackageCoordinator: Coordinator {
                     "packages": 1,
                 ],
             ]
+        } else {
+            topicReference = Firestore.firestore().collection("topics").document(topicResultItem!.documentID)
         }
         
         var topicTemplateRef: DocumentReference?
@@ -389,6 +391,16 @@ class CreatePackageCoordinator: Coordinator {
             
             var oldAuthorBalance = (authorDocument!.data()!["private_profile"] as! [String: Any])["points_balance"] as! Int
 
+            let topicDocument: DocumentSnapshot?
+            
+            // increment packages count on the template
+            do {
+                try topicDocument = transaction.getDocument(((package["content"] as! [String: Any])["topic"] as! [String: Any])["reference"] as! DocumentReference)
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+            
             let topicTemplateDocument: DocumentSnapshot?
             
             if topicTemplate != nil {
@@ -413,29 +425,10 @@ class CreatePackageCoordinator: Coordinator {
                 
                 // save topic template
                 transaction.setData(topicTemplate!, forDocument: topicTemplateReference!)
-            } else {
-                do {
-                    try topicTemplateDocument = transaction.getDocument(topicTemplateReference!)
-                } catch let fetchError as NSError {
-                    errorPointer?.pointee = fetchError
-                    return nil
-                }
-                let oldCountPackagesOnTopicTemplate = (topicTemplateDocument?.data()!["count"] as! [String: Int])["packages"]!
-                let newCountPackagesOnTopicTemplate = oldCountPackagesOnTopicTemplate + 1
-                transaction.updateData(["count.packages": newCountPackagesOnTopicTemplate], forDocument: topicTemplateReference!)
             }
 
             
             if self.usingTemplate {
-                let topicDocument: DocumentSnapshot?
-                
-                // increment packages count on the template
-                do {
-                    try topicDocument = transaction.getDocument(((package["content"] as! [String: Any])["topic"] as! [String: Any])["reference"] as! DocumentReference)
-                } catch let fetchError as NSError {
-                    errorPointer?.pointee = fetchError
-                    return nil
-                }
 
                 // if the author is using a template
                 let templateAuthorReference = ((package["logistics"] as! [String: Any])["content_template_by"] as! [String: Any])["reference"] as! DocumentReference
@@ -469,14 +462,24 @@ class CreatePackageCoordinator: Coordinator {
                 ]
                 transaction.setData(templateUsageTransaction, forDocument: templateAuthorReference.collection("account_activities").document())
                 
-                let oldTopicPackagesCount = (topicDocument!.data()!["count"] as! [String: Any])["packages"] as! Int
-                transaction.updateData(["count.packages": oldTopicPackagesCount + 1], forDocument: topicDocument!.reference)
+                do {
+                    try topicTemplateDocument = transaction.getDocument(topicTemplateReference!)
+                } catch let fetchError as NSError {
+                    errorPointer?.pointee = fetchError
+                    return nil
+                }
+                let oldCountPackagesOnTopicTemplate = (topicTemplateDocument?.data()!["count"] as! [String: Int])["packages"]!
+                let newCountPackagesOnTopicTemplate = oldCountPackagesOnTopicTemplate + 1
+                transaction.updateData(["count.packages": newCountPackagesOnTopicTemplate], forDocument: topicTemplateReference!)
             }
             
             if topic != nil {
                 // if the author is creating a new topic
                 // save topic
                 transaction.setData(topic!, forDocument: topicReference!)
+            } else {
+                let oldTopicPackagesCount = (topicDocument!.data()!["count"] as! [String: Any])["packages"] as! Int
+                transaction.updateData(["count.packages": oldTopicPackagesCount + 1], forDocument: topicReference!)
             }
             
             
