@@ -24,6 +24,10 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+
+// Modified from Apple's BreadCrumb code example, rights with Apple
+
+
 import MapKit
 
 let MINIMUM_DELTA_METERS = 10.0

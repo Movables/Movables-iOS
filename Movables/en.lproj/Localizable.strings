@@ -34,6 +34,7 @@
 "button.pickup" = "Pickup";
 "button.pickupAway" = "Pickup %@ away";
 "button.dropoff" = "Dropoff";
+"button.deliver" = "Deliver";
 "button.track" = "Follow";
 "button.tracking" = "Following";
 "button.inTransit" = "In Transit";

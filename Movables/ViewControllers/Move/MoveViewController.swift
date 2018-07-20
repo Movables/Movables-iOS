@@ -382,44 +382,12 @@ extension MoveViewController: CLLocationManagerDelegate {
                 
                 self.moveCardView.distanceLabelView.valueLabel.text = distanceLeftString
                 if self.progress != nil {
-                    // This is the first time we're getting a location update, so create
-                    // the CrumbPath and add it to the map.
-                    //
-                    
-                    
-                    // default -boundingMapRect size is 1km^2 centered on coord
-                    //                let region = self.coordinateRegionWithCenter(newCoordinate, approximateRadiusInMeters: 2500)
-                    //
-                    //                self.mapView.setRegion(region, animated: true)
-                    // This is a subsequent location update.
-                    //
-                    // If the crumbs MKOverlay model object determines that the current location has moved
-                    // far enough from the previous location, use the returned updateRect to redraw just
-                    // the changed area.
-                    //
-                    // note: cell-based devices will locate you using the triangulation of the cell towers.
-                    // so you may experience spikes in location data (in small time intervals)
-                    // due to cell tower triangulation.
-                    //
                     var boundingMapRectChanged = false
                     var updateRect = self.progress!.addCoordinate(newLocation.coordinate, boundingMapRectChanged: &boundingMapRectChanged)
                     if boundingMapRectChanged {
-                        // MKMapView expects an overlay's boundingMapRect to never change (it's a readonly @property).
-                        // So for the MapView to recognize the overlay's size has changed, we remove it, then add it again.
                         self.mapView.remove(self.progress! as MKOverlay)
                         self.progressPathRenderer = nil
                         self.mapView.add(self.progress!, level: .aboveLabels)
-//                        let r = self.progress!.boundingMapRect
-//                        var pts: [MKMapPoint] = [
-//                            MKMapPointMake(MKMapRectGetMinX(r), MKMapRectGetMinY(r)),
-//                            MKMapPointMake(MKMapRectGetMinX(r), MKMapRectGetMaxY(r)),
-//                            MKMapPointMake(MKMapRectGetMaxX(r), MKMapRectGetMaxY(r)),
-//                            MKMapPointMake(MKMapRectGetMaxX(r), MKMapRectGetMinY(r)),
-//                            ]
-//                        let count = pts.count
-//                        let boundingMapRectOverlay = MKPolygon(points: &pts, count: count)
-//                        self.mapView.add(boundingMapRectOverlay, level: .aboveLabels)
-                        print("added boundingMapRectOverlay")
                     }
                     if !MKMapRectIsNull(updateRect) {
                         // There is a non null update rect.

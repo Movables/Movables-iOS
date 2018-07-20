@@ -833,10 +833,10 @@ extension PackageDetailViewController: CLLocationManagerDelegate {
                         applyEnabledStyleToButton(button: self.packageActionButton, withTint: getTintForCategory(category: self.package!.category))
                         if location!.distance(from: CLLocation(latitude: self.package!.destination.geoPoint.latitude, longitude: self.package!.destination.geoPoint.longitude)) < self.ACTIONABLE_DISTANCE {
                             // if current location is within actionable distance from destination
-                            self.packageActionButton.setTitle("Deliver", for: .normal)
+                            self.packageActionButton.setTitle(String(NSLocalizedString("button.deliver", comment: "button title for deliver action")), for: .normal)
                         } else {
                             // if current location is outside actionable distance from destination
-                            self.packageActionButton.setTitle("Dropoff", for: .normal)
+                            self.packageActionButton.setTitle(String(NSLocalizedString("button.dropoff", comment: "button title for dropoff action")), for: .normal)
                         }
                     } else {
                         // if current location is not available
