@@ -247,7 +247,7 @@ extension CreateConversationLegislativeAreaViewController: UITableViewDataSource
                         let newConversationData:[String: Any] = [
                             "legislative_area": [self.createConversationCoordinator.legislativeArea!.0: self.createConversationCoordinator.legislativeArea!.1],
                             "participants": [
-                                Auth.auth().currentUser!.uid: Date().timeIntervalSince1970
+                                Auth.auth().currentUser!.uid: Date()
                             ]
                         ]
                         transaction.setData(newConversationData, forDocument: newConversationRef)

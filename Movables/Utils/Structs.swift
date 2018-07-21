@@ -156,7 +156,7 @@ struct TopicSubscribed {
         self.topicName = topic["name"] as! String
         self.topicReference = topic["reference"] as! DocumentReference
         let count = dict["count"] as! [String: Any]
-        self.count = TopicSubscribedCount(packagesMoved: count["packagesMoved"] as! Int, localConversations: count["localConversations"] as! Int, privateConversations: count["privateConversations"] as! Int)
+        self.count = TopicSubscribedCount(packagesMoved: count["packages_moved"] as! Int, localConversations: count["local_conversations"] as! Int, privateConversations: count["private_conversations"] as! Int)
         let packagesMovedDict = dict["packages_moved"] as! [String: Timestamp]
         self.packagesMoved = [:]
         for (key, value) in packagesMovedDict {

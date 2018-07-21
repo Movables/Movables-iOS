@@ -195,7 +195,7 @@ class PostsViewController: SLKTextViewController {
             }
         }
         reference.updateData([
-                "participants.\(Auth.auth().currentUser!.uid)": Date().timeIntervalSince1970
+                "participants.\(Auth.auth().currentUser!.uid)": Date()
             ]) { (error) in
             if let error = error {
                 print(error)

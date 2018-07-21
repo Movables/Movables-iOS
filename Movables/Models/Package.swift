@@ -812,7 +812,7 @@ func followPackage(with packageReference: DocumentReference, userReference: Docu
         
         let newCountFollowers = oldCountFollowers + 1
         
-        transaction.updateData(["relations.count.followers": newCountFollowers, "relations.followers.\(userReference.documentID)": Date().timeIntervalSince1970], forDocument: packageReference)
+        transaction.updateData(["relations.count.followers": newCountFollowers, "relations.followers.\(userReference.documentID)": Date()], forDocument: packageReference)
         
         // update user's private profile's packages following dict with packageID: Date
         // update user's public profile's count packages_following
@@ -830,7 +830,7 @@ func followPackage(with packageReference: DocumentReference, userReference: Docu
         
         let newCountPackagesFollowing = oldCountPackagesFollowing + 1
         
-        transaction.updateData(["public_profile.count.packages_following": newCountPackagesFollowing, "private_profile.packages_following.\(packageReference.documentID)": Date().timeIntervalSince1970], forDocument: userReference)
+        transaction.updateData(["public_profile.count.packages_following": newCountPackagesFollowing, "private_profile.packages_following.\(packageReference.documentID)": Date()], forDocument: userReference)
         
         return nil
     }) { (object, error) in
@@ -940,14 +940,14 @@ func pickupPackage(with packageReference: DocumentReference, userReference: Docu
             transaction.updateData(
                 [
                     "relations.count.followers": (packageRelations["count"] as! [String: Int])["followers"]! + 1,
-                    "relations.followers.\(UserManager.shared.userDocument!.reference.documentID)": Date().timeIntervalSince1970
+                    "relations.followers.\(UserManager.shared.userDocument!.reference.documentID)": Date()
                 ],
                 forDocument: packageReference
             )
             
             transaction.updateData([
                     "public_profile.count.packages_following": UserManager.shared.userDocument!.publicProfile.count.packagesFollowing + 1,
-                    "private_profile.packages_following.\(packageReference.documentID)": Date().timeIntervalSince1970,
+                    "private_profile.packages_following.\(packageReference.documentID)": Date(),
                     "private_profile.current_package": packageReference
                 ],
                forDocument: userReference
@@ -1050,6 +1050,63 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
             return nil
         }
         
+        let topicReference = ((((packageDocument["content"] as! [String: Any])["content"] as! [String: Any])["topic"] as! [String: Any])["reference"] as! DocumentReference)
+        let topicName = ((((packageDocument["content"] as! [String: Any])["content"] as! [String: Any])["topic"] as! [String: Any])["name"] as! String)
+
+        
+        if let subscribedTopics = userDocument["subscripbed_topics"] as? [String: Double] {
+            if subscribedTopics[topicReference.documentID] != nil {
+                // user already subscribed to the topic
+                let subscribedTopicDocument: DocumentSnapshot?
+                do {
+                try subscribedTopicDocument = transaction.getDocument(userReference.collection("subscribed_topic").document(topicReference.documentID))
+                } catch let fetchError as NSError {
+                    errorPointer?.pointee = fetchError
+                    return nil
+                }
+                // update packagesMoved and count
+                let oldPackagesMovedCount = (subscribedTopicDocument!["count"] as! [String:Int])["packages_moved"]!
+                
+                transaction.updateData(
+                    [
+                        "count.packages_moved": oldPackagesMovedCount + 1,
+                        "packages_moved.\(packageReference.documentID)": Date()
+                    ],
+                    forDocument: subscribedTopicDocument!.reference
+                )
+            } else {
+                // user hasn't subscribed to the topic
+                transaction.setData(
+                    [
+                        "name": topicName,
+                        "reference": topicReference,
+                        "count": [
+                            "packages_moved": 1,
+                            "local_conversations": 0,
+                            "private_conversations": 0,
+                        ],
+                        "packages_moved.\(packageReference.documentID)": Date(),
+                    ],
+                    forDocument: userReference.collection("subscribed_topics").document(topicReference.documentID)
+                )
+            }
+        } else {
+            // user hasn't subscribed to any topic
+            transaction.setData(
+                [
+                    "name": topicName,
+                    "reference": topicReference,
+                    "count": [
+                        "packages_moved": 1,
+                        "local_conversations": 0,
+                        "private_conversations": 0,
+                    ],
+                    "packages_moved.\(packageReference.documentID)": Date(),
+                    ],
+                forDocument: userReference.collection("subscribed_topics").document(topicReference.documentID)
+            )
+        }
+        
         
         let location = GeoPoint(latitude: LocationManager.shared.location!.coordinate.latitude, longitude: LocationManager.shared.location!.coordinate.longitude)
         let locationCL = CLLocation(latitude: location.latitude, longitude: location.longitude)
@@ -1119,7 +1176,7 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
             
             // add to packages_moved under private_profile as String: TimeInterval
             transaction.updateData(
-                ["private_profile.packages_moved.\(packageReference.documentID)": Date().timeIntervalSince1970],
+                ["private_profile.packages_moved.\(packageReference.documentID)": Date()],
                 forDocument: userReference
             )
 
@@ -1167,10 +1224,10 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
             ]
             transaction.setData(dropoffAccountActivity, forDocument: userReference.collection("account_activities").document())
             
-            var followers: [String: Double] = packageRelations["followers"] as? [String: Double] ?? [:]
+            var followers: [String: Date] = packageRelations["followers"] as? [String: Date] ?? [:]
             for entry in followers {
-                if entry.value > 0 {
-                    followers[entry.key] = Date().timeIntervalSince1970
+                if entry.value.timeIntervalSince1970 > 0 {
+                    followers[entry.key] = Date()
                 }
             }
             

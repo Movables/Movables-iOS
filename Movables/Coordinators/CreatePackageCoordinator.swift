@@ -269,7 +269,7 @@ class CreatePackageCoordinator: Coordinator {
         var packageRelations: [String: Any] = [:]
         
         packageRelations["count"] = ["followers": 1, "movers": 0]
-        packageRelations["followers"] = [ UserManager.shared.userDocument!.reference.documentID: Date().timeIntervalSince1970 ]
+        packageRelations["followers"] = [ UserManager.shared.userDocument!.reference.documentID: Date() ]
         
         return packageRelations
     }
