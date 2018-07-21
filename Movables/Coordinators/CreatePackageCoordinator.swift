@@ -390,18 +390,77 @@ class CreatePackageCoordinator: Coordinator {
             }
             
             var oldAuthorBalance = (authorDocument!.data()!["private_profile"] as! [String: Any])["points_balance"] as! Int
-
-            let topicDocument: DocumentSnapshot?
             
-            // increment packages count on the template
-            do {
-                try topicDocument = transaction.getDocument(((package["content"] as! [String: Any])["topic"] as! [String: Any])["reference"] as! DocumentReference)
-            } catch let fetchError as NSError {
-                errorPointer?.pointee = fetchError
-                return nil
+            var topicDocument: DocumentSnapshot? = nil
+
+            if topic == nil {
+                // increment packages count on the template
+                do {
+                    try topicDocument = transaction.getDocument(((package["content"] as! [String: Any])["topic"] as! [String: Any])["reference"] as! DocumentReference)
+                } catch let fetchError as NSError {
+                    errorPointer?.pointee = fetchError
+                    return nil
+                }
             }
             
-            let topicTemplateDocument: DocumentSnapshot?
+            if self.usingTemplate {
+                let topicTemplateDocument: DocumentSnapshot?
+                do {
+                    try topicTemplateDocument = transaction.getDocument(topicTemplateReference!)
+                } catch let fetchError as NSError {
+                    errorPointer?.pointee = fetchError
+                    return nil
+                }
+                
+                // if the author is using a template
+                let templateAuthorReference = ((package["logistics"] as! [String: Any])["content_template_by"] as! [String: Any])["reference"] as! DocumentReference
+
+                let templateAuthorDocument: DocumentSnapshot?
+                if templateAuthorReference != authorReference {
+                    do {
+                        try templateAuthorDocument = transaction.getDocument(templateAuthorReference)
+                    } catch let fetchError as NSError {
+                        errorPointer?.pointee = fetchError
+                        return nil
+                    }
+                } else {
+                    templateAuthorDocument = authorDocument
+                }
+                
+                let oldTemplateAuthorBalance = (templateAuthorDocument!.data()!["private_profile"] as! [String: Any])["points_balance"] as! Int
+                
+                // credit template author's balance with 10 credits
+                transaction.updateData(["private_profile.points_balance": oldTemplateAuthorBalance + 10], forDocument: templateAuthorReference)
+                
+                // record a template usage account activity for template author
+                let templateUsageTransaction: [String: Any] = [
+                    "date": Date(),
+                    "object_reference": topicTemplateReference!,
+                    "object_type": getStringForObjectTypeEnum(type: .template),
+                    "object_name": (package["content"] as! [String: Any])["headline"] as! String,
+                    "type": getStringForActivityTypeEnum(type: .templateUsage),
+                    "actor_name": UserManager.shared.userDocument!.publicProfile.displayName,
+                    "actor_pic": UserManager.shared.userDocument!.publicProfile.picUrl ?? "",
+                    "actor_reference": UserManager.shared.userDocument!.reference,
+                    "amount": 10
+                ]
+                transaction.setData(templateUsageTransaction, forDocument: templateAuthorReference.collection("account_activities").document())
+                
+                let oldCountPackagesOnTopicTemplate = (topicTemplateDocument?.data()!["count"] as! [String: Int])["packages"]!
+                let newCountPackagesOnTopicTemplate = oldCountPackagesOnTopicTemplate + 1
+                transaction.updateData(["count.packages": newCountPackagesOnTopicTemplate], forDocument: topicTemplateReference!)
+            }
+            
+            if topic != nil {
+                // if the author is creating a new topic
+                // save topic
+                transaction.setData(topic!, forDocument: topicReference!)
+            }
+            
+            if topicDocument != nil {
+                let oldTopicPackagesCount = (topicDocument!.data()!["count"] as! [String: Any])["packages"] as! Int
+                transaction.updateData(["count.packages": oldTopicPackagesCount + 1], forDocument: topicReference!)
+            }
             
             if topicTemplate != nil {
                 // if the author is creating a template
@@ -426,62 +485,6 @@ class CreatePackageCoordinator: Coordinator {
                 // save topic template
                 transaction.setData(topicTemplate!, forDocument: topicTemplateReference!)
             }
-
-            
-            if self.usingTemplate {
-
-                // if the author is using a template
-                let templateAuthorReference = ((package["logistics"] as! [String: Any])["content_template_by"] as! [String: Any])["reference"] as! DocumentReference
-                let templateAuthorDocument: DocumentSnapshot?
-                if templateAuthorReference != authorReference {
-                    do {
-                        try templateAuthorDocument = transaction.getDocument(templateAuthorReference)
-                    } catch let fetchError as NSError {
-                        errorPointer?.pointee = fetchError
-                        return nil
-                    }
-                } else {
-                    templateAuthorDocument = authorDocument
-                }
-                let oldTemplateAuthorBalance = (templateAuthorDocument!.data()!["private_profile"] as! [String: Any])["points_balance"] as! Int
-                
-                // credit template author's balance with 10 credits
-                transaction.updateData(["private_profile.points_balance": oldTemplateAuthorBalance + 10], forDocument: templateAuthorReference)
-                
-                // record a template usage account activity for template author
-                let templateUsageTransaction: [String: Any] = [
-                    "date": Date(),
-                    "object_reference": topicTemplateReference!,
-                    "object_type": getStringForObjectTypeEnum(type: .template),
-                    "object_name": (package["content"] as! [String: Any])["headline"] as! String,
-                    "type": getStringForActivityTypeEnum(type: .templateUsage),
-                    "actor_name": UserManager.shared.userDocument!.publicProfile.displayName,
-                    "actor_pic": UserManager.shared.userDocument!.publicProfile.picUrl ?? "",
-                    "actor_reference": UserManager.shared.userDocument!.reference,
-                    "amount": 10
-                ]
-                transaction.setData(templateUsageTransaction, forDocument: templateAuthorReference.collection("account_activities").document())
-                
-                do {
-                    try topicTemplateDocument = transaction.getDocument(topicTemplateReference!)
-                } catch let fetchError as NSError {
-                    errorPointer?.pointee = fetchError
-                    return nil
-                }
-                let oldCountPackagesOnTopicTemplate = (topicTemplateDocument?.data()!["count"] as! [String: Int])["packages"]!
-                let newCountPackagesOnTopicTemplate = oldCountPackagesOnTopicTemplate + 1
-                transaction.updateData(["count.packages": newCountPackagesOnTopicTemplate], forDocument: topicTemplateReference!)
-            }
-            
-            if topic != nil {
-                // if the author is creating a new topic
-                // save topic
-                transaction.setData(topic!, forDocument: topicReference!)
-            } else {
-                let oldTopicPackagesCount = (topicDocument!.data()!["count"] as! [String: Any])["packages"] as! Int
-                transaction.updateData(["count.packages": oldTopicPackagesCount + 1], forDocument: topicReference!)
-            }
-            
             
             // record packageCreation account activity
             let packageCreationTransaction: [String: Any] = [
@@ -495,6 +498,7 @@ class CreatePackageCoordinator: Coordinator {
                 "actor_reference": authorReference,
                 "amount": -100
             ]
+            
             transaction.setData(packageCreationTransaction, forDocument: authorReference.collection("account_activities").document())
             
             transaction.setData(

@@ -1050,8 +1050,8 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
             return nil
         }
         
-        let topicReference = ((((packageDocument["content"] as! [String: Any])["content"] as! [String: Any])["topic"] as! [String: Any])["reference"] as! DocumentReference)
-        let topicName = ((((packageDocument["content"] as! [String: Any])["content"] as! [String: Any])["topic"] as! [String: Any])["name"] as! String)
+        let topicReference = (((packageDocument["content"] as! [String: Any])["topic"] as! [String: Any])["reference"] as! DocumentReference)
+        let topicName = (((packageDocument["content"] as! [String: Any])["topic"] as! [String: Any])["name"] as! String)
 
         
         if let subscribedTopics = userDocument["subscripbed_topics"] as? [String: Double] {
@@ -1085,7 +1085,7 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
                             "local_conversations": 0,
                             "private_conversations": 0,
                         ],
-                        "packages_moved.\(packageReference.documentID)": Date(),
+                        "packages_moved": [packageReference.documentID: Date()],
                     ],
                     forDocument: userReference.collection("subscribed_topics").document(topicReference.documentID)
                 )
@@ -1101,7 +1101,7 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
                         "local_conversations": 0,
                         "private_conversations": 0,
                     ],
-                    "packages_moved.\(packageReference.documentID)": Date(),
+                    "packages_moved":[packageReference.documentID: Date()],
                     ],
                 forDocument: userReference.collection("subscribed_topics").document(topicReference.documentID)
             )
@@ -1224,12 +1224,7 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
             ]
             transaction.setData(dropoffAccountActivity, forDocument: userReference.collection("account_activities").document())
             
-            var followers: [String: Date] = packageRelations["followers"] as? [String: Date] ?? [:]
-            for entry in followers {
-                if entry.value.timeIntervalSince1970 > 0 {
-                    followers[entry.key] = Date()
-                }
-            }
+            let followers: [String: Timestamp] = packageRelations["followers"] as? [String: Timestamp] ?? [:]
             
             if delivered {
                 let deliveryPublicActivitySupplements: [String: Any] = [

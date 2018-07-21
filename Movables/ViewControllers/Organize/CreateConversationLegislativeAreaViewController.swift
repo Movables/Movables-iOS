@@ -254,7 +254,7 @@ extension CreateConversationLegislativeAreaViewController: UITableViewDataSource
                         return nil
                     }) { (object, error) in
                         if let error = error {
-                            print("Error saving transaction package with error: \(error)")
+                            print("Error saving transaction conversation with error: \(error)")
                         }
                         // conversation created, dismiss this createConversationm, reload favorites community and then push to new conversation vc
                         self.createConversationCoordinator.cancelConversationCreation(created: true)

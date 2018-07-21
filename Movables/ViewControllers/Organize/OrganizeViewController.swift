@@ -118,7 +118,7 @@ class OrganizeViewController: UIViewController {
     }
     
     private func fetchTopicsSubscribed() {
-        UserManager.shared.userDocument!.reference.collection("topics_subscribed").getDocuments { (querySnapshot, error) in
+        UserManager.shared.userDocument!.reference.collection("subscribed_topics").getDocuments { (querySnapshot, error) in
             if let error = error {
                 print(error)
             } else {

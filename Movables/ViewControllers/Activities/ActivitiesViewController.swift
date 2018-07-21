@@ -81,7 +81,7 @@ class ActivitiesViewController: UIViewController {
     private func fetchPublicActivities() {
         print("fetch public activities")
         let db = Firestore.firestore()
-        db.collection("public_activities").whereField("followers.\(Auth.auth().currentUser!.uid)", isGreaterThan: 0).order(by: "followers.\(Auth.auth().currentUser!.uid)", descending: true).getDocuments { (querySnapshot, error) in
+        db.collection("public_activities").whereField("followers.\(Auth.auth().currentUser!.uid)", isGreaterThan: Date(timeIntervalSince1970: 0)).order(by: "followers.\(Auth.auth().currentUser!.uid)", descending: true).getDocuments { (querySnapshot, error) in
             if let error = error {
                 print(error)
                 return

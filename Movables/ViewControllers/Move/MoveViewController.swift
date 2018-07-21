@@ -82,7 +82,6 @@ class MoveViewController: UIViewController {
                 }
                 self.emptyStateCardView.isHidden = true
                 self.mapView.removeOverlays(self.mapView.overlays)
-                self.routeToDestinationDrawn = false
                 self.progress = nil
             } else {
                 self.moveCardView.isHidden = true
