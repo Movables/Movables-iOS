@@ -149,17 +149,17 @@ struct TopicSubscribed {
     var topicName: String
     var topicReference: DocumentReference
     var count: TopicSubscribedCount
-    var packagesMoved: [String: Date]
+    var communities: [Community]
     
     init(with dict: [String: Any]) {
         self.topicName = dict["name"] as! String
         self.topicReference = dict["reference"] as! DocumentReference
         let count = dict["count"] as! [String: Any]
         self.count = TopicSubscribedCount(packagesMoved: count["packages_moved"] as! Int, localConversations: count["local_conversations"] as! Int, privateConversations: count["private_conversations"] as! Int)
-        let packagesMovedDict = dict["packages_moved"] as! [String: Timestamp]
-        self.packagesMoved = [:]
-        for (key, value) in packagesMovedDict {
-            self.packagesMoved.updateValue(value.dateValue(), forKey: key)
+        let communitiesDict = dict["communities"] as! [String: [String: Any]]
+        self.communities = []
+        for (_, value) in communitiesDict {
+            self.communities.append(Community(name: value["name"] as! String, type: .package, reference: value["reference"] as! DocumentReference))
         }
     }
 }

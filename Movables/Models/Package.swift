@@ -1042,6 +1042,10 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
             return nil
         }
         
+        let packageContent = (packageDocument.data()!)["content"] as! [String: Any]
+        let packageLogistics = (packageDocument.data()!)["logistics"] as! [String: Any]
+        let packageRelations = (packageDocument.data()!)["relations"] as! [String: Any]
+        
         let transitRecordDocument: DocumentSnapshot
         do {
             try transitRecordDocument = transaction.getDocument(packageReference.collection("transit_records").document(Auth.auth().currentUser!.uid))
@@ -1050,8 +1054,8 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
             return nil
         }
         
-        let topicReference = (((packageDocument["content"] as! [String: Any])["topic"] as! [String: Any])["reference"] as! DocumentReference)
-        let topicName = (((packageDocument["content"] as! [String: Any])["topic"] as! [String: Any])["name"] as! String)
+        let topicReference = ((packageContent["topic"] as! [String: Any])["reference"] as! DocumentReference)
+        let topicName = ((packageContent["topic"] as! [String: Any])["name"] as! String)
 
         
         if let subscribedTopics = userDocument["subscripbed_topics"] as? [String: Double] {
@@ -1070,7 +1074,10 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
                 transaction.updateData(
                     [
                         "count.packages_moved": oldPackagesMovedCount + 1,
-                        "packages_moved.\(packageReference.documentID)": Date()
+                        "packages_moved.\(packageReference.documentID)": [
+                                "name": packageContent["headline"] as! String,
+                                "reference": packageReference,
+                        ]
                     ],
                     forDocument: subscribedTopicDocument!.reference
                 )
@@ -1085,7 +1092,12 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
                             "local_conversations": 0,
                             "private_conversations": 0,
                         ],
-                        "packages_moved": [packageReference.documentID: Date()],
+                        "communities": [
+                            packageReference.documentID: [
+                                "name": packageContent["headline"] as! String,
+                                "reference": packageReference,
+                            ]
+                        ],
                     ],
                     forDocument: userReference.collection("subscribed_topics").document(topicReference.documentID)
                 )
@@ -1101,8 +1113,13 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
                         "local_conversations": 0,
                         "private_conversations": 0,
                     ],
-                    "packages_moved":[packageReference.documentID: Date()],
-                    ],
+                    "communities": [
+                        packageReference.documentID: [
+                            "name": packageContent["headline"] as! String,
+                            "reference": packageReference,
+                        ]
+                    ]
+                ],
                 forDocument: userReference.collection("subscribed_topics").document(topicReference.documentID)
             )
         }
@@ -1115,9 +1132,6 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
         // update package status to pending or delivered
         // update package _geoloc/current location
         
-        let packageContent = (packageDocument.data()!)["content"] as! [String: Any]
-        let packageLogistics = (packageDocument.data()!)["logistics"] as! [String: Any]
-        let packageRelations = (packageDocument.data()!)["relations"] as! [String: Any]
         
         let destinationCL = CLLocation(
             latitude: ((packageContent["destination"] as! [String: Any])["geo_point"] as! GeoPoint).latitude,

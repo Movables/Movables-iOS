@@ -123,7 +123,7 @@ class SubscribedTopicDetailViewController: UIViewController {
     }
     
     func loadMyConversations() {
-        topic!.reference.collection("conversations").whereField("participants.\(Auth.auth().currentUser!.uid)", isGreaterThan: 0).getDocuments { (querySnapshot, error) in
+        topic!.reference.collection("conversations").whereField("participants.\(Auth.auth().currentUser!.uid)", isGreaterThan: Date(timeIntervalSince1970: 0)).getDocuments { (querySnapshot, error) in
             if let error = error {
                 print(error)
                 return
@@ -135,9 +135,9 @@ class SubscribedTopicDetailViewController: UIViewController {
                         let legislativeAreaString = legislativeArea.first!.value
                         tempMyLegislativeAreaConversations.append(Community(name: legislativeAreaString, type: .location, reference: docSnapshot.reference))
                     })
-//                    for package in self.subscribedTopic.packagesMoved.keys {
-//                        tempMyLegislativeAreaConversations.append(Community(name: package.headline, type: .package, reference: package.reference))
-//                    }
+                    for community in self.subscribedTopic.communities {
+                        tempMyLegislativeAreaConversations.append(community)
+                    }
                     self.favoriteCommunities = tempMyLegislativeAreaConversations
                     self.loadNearByConversations()
                 }
