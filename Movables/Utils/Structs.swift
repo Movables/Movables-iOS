@@ -159,7 +159,7 @@ struct TopicSubscribed {
         let communitiesDict = dict["communities"] as! [String: [String: Any]]
         self.communities = []
         for (_, value) in communitiesDict {
-            self.communities.append(Community(name: value["name"] as! String, type: .package, reference: value["reference"] as! DocumentReference))
+            self.communities.append(Community(name: value["name"] as! String, type: getEnumForCommunityType(with: value["type"] as! String), reference: value["reference"] as! DocumentReference))
         }
     }
 }
@@ -279,11 +279,33 @@ enum CommunityType {
 func getStringForCommunityType(type: CommunityType) -> String {
     switch type {
     case .location:
+        return "location"
+    case .package:
+        return "package"
+    case .group:
+        return "group"
+    }
+}
+
+func getReadableForCommunityType(type: CommunityType) -> String {
+    switch type {
+    case .location:
         return String(NSLocalizedString("label.conversationTypeLocal", comment: "label text for local conversation"))
     case .package:
         return String(NSLocalizedString("label.conversationTypePackage", comment: "label text for package conversation"))
     default:
         return String(NSLocalizedString("label.conversationTypePrivate", comment: "label text for private conversation"))
+    }
+}
+
+func getEnumForCommunityType(with string: String) -> CommunityType {
+    switch string {
+    case "group":
+        return .group
+    case "location":
+        return .location
+    default:
+        return .package
     }
 }
 

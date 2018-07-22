@@ -216,6 +216,7 @@ class MoveViewController: UIViewController {
                 print("error fetching document: \(error!)")
                 self.moveLocationManager.stopUpdatingHeading()
                 self.moveLocationManager.stopUpdatingLocation()
+                self.currentPackage = nil
                 return
             }
             self.moveLocationManager.startUpdatingHeading()

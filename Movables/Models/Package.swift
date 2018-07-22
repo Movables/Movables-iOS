@@ -1077,6 +1077,7 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
                         "packages_moved.\(packageReference.documentID)": [
                                 "name": packageContent["headline"] as! String,
                                 "reference": packageReference,
+                                "type": getStringForCommunityType(type: .package)
                         ]
                     ],
                     forDocument: subscribedTopicDocument!.reference
@@ -1096,6 +1097,7 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
                             packageReference.documentID: [
                                 "name": packageContent["headline"] as! String,
                                 "reference": packageReference,
+                                "type": getStringForCommunityType(type: .package)
                             ]
                         ],
                     ],
@@ -1117,6 +1119,7 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
                         packageReference.documentID: [
                             "name": packageContent["headline"] as! String,
                             "reference": packageReference,
+                            "type": getStringForCommunityType(type: .package)
                         ]
                     ]
                 ],

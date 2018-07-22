@@ -154,7 +154,7 @@ class SubscribedTopicDetailViewController: UIViewController {
                 return
             } else {
                 if let placemark = placemarks?.first {
-                    let index = self.apiClient.index(withName: "topicConversations")
+                    let index = self.apiClient.index(withName: "conversations")
                     let query = Query(query: "")
                     query.attributesToRetrieve = ["country", "administrative_area", "sub_administrative_area", "locality", "sub_locality", "objectID"]
                     
