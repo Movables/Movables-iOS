@@ -463,7 +463,6 @@ class CreatePackageContentViewController: UIViewController {
     }
     
     @objc private func didTapNextButton(sender: UIButton) {
-        sender.isEnabled = false
         for view in self.externalActionsStackView.arrangedSubviews {
             if !view.isMember(of: UIButton.self) {
                 let editorView = view as! ExternalActionEditorView

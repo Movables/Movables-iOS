@@ -108,7 +108,8 @@ fastlane/test_output
 ## Other
 
 ## Credentials
-Movables/GoogleService-Info.plist
+Movables/Firebase/Dev/GoogleService-Info.plist
+Movables/Firebase/Prod/GoogleService-Info.plist
 Movables/credentials.plist
 
 

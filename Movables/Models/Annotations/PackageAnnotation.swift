@@ -1,5 +1,5 @@
 //
-//  KeyVallueCollectionViewCell.swift
+//  PackageAnnotation.swift
 //  Movables
 //
 //  MIT License
@@ -25,21 +25,26 @@
 //  SOFTWARE.
 
 import UIKit
+import MapKit
 
-class KeyVallueCollectionViewCell: UICollectionViewCell {
+class PackageAnnotation: NSObject, MKAnnotation {
+    let title: String?
+    let subtitle: String?
+    let coordinate: CLLocationCoordinate2D
+    let package: Package?
     
-    var separatorView: UIView!
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+    init(with package: Package) {
+        self.package = package
+        self.title = getReadableForStatusEnum(statusEnum: package.status)
+        self.subtitle = nil
+        self.coordinate = package.currentLocation.coordinate
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        addConstraints([
-            NSLayoutConstraint(item: contentView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: UIScreen.main.bounds.width),
-            NSLayoutConstraint(item: contentView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 88)])
+    init(with title: String?, coordinate: CLLocationCoordinate2D, package: Package?) {
+        self.title = title
+        self.subtitle = nil
+        self.coordinate = coordinate
+        self.package = package
     }
     
 }

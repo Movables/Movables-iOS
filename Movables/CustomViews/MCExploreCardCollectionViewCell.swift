@@ -25,12 +25,13 @@
 //  SOFTWARE.
 
 import UIKit
+import CoreLocation
 
 class MCExploreCardCollectionViewCell: UICollectionViewCell {
     
-    var packagePreview: PackagePreview!
+    var package: Package!
     var cardView: MCCard!
-    var tagPillView: MCPill!
+    var topicPillView: MCPill!
     var headlineLabel: MCCardHeadline!
     var infoStackView: UIStackView!
     var toLabelView: MCCardKeyValueLabel!
@@ -53,13 +54,13 @@ class MCExploreCardCollectionViewCell: UICollectionViewCell {
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-14-[cardView]|", options: .directionLeadingToTrailing, metrics: nil, views: ["cardView": cardView]))
         
         
-        tagPillView = MCPill(frame: .zero, character: "#", image: nil, body: "", color: .white)
-        tagPillView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(tagPillView)
+        topicPillView = MCPill(frame: .zero, character: "#", image: nil, body: "", color: .white)
+        topicPillView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(topicPillView)
         contentView.addConstraints([
-            NSLayoutConstraint(item: tagPillView, attribute: .top, relatedBy: .equal, toItem: cardView, attribute: .top, multiplier: 1, constant: -14),
-            NSLayoutConstraint(item: tagPillView, attribute: .left, relatedBy: .equal, toItem: cardView, attribute: .left, multiplier: 1, constant: -16),
-            NSLayoutConstraint(item: tagPillView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 28)
+            NSLayoutConstraint(item: topicPillView, attribute: .top, relatedBy: .equal, toItem: cardView, attribute: .top, multiplier: 1, constant: -14),
+            NSLayoutConstraint(item: topicPillView, attribute: .left, relatedBy: .equal, toItem: cardView, attribute: .left, multiplier: 1, constant: -16),
+            NSLayoutConstraint(item: topicPillView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 28)
         ])
         
         headlineLabel = MCCardHeadline(frame: .zero, rate: 50, fadeLength: 80, body: "")
@@ -111,35 +112,46 @@ class MCExploreCardCollectionViewCell: UICollectionViewCell {
         timeLeftformatter.maximumUnitCount = 1
         timeLeftformatter.allowedUnits = [.day, .hour, .minute]
         
+        let timeLeft = package.dueDate.timeIntervalSinceReferenceDate - Date.timeIntervalSinceReferenceDate
+
         // Use the configured formatter to generate the string.
-        let timeLeftString = packagePreview.timeLeft > 0 ? timeLeftformatter.string(from: packagePreview.timeLeft) : String(NSLocalizedString("label.pastDue", comment: "status label for past due status"))
+        let timeLeftString = timeLeft > 0 ? timeLeftformatter.string(from: timeLeft) : String(NSLocalizedString("label.pastDue", comment: "status label for past due status"))
 
         
         let distanceLeftformatter = MeasurementFormatter()
         distanceLeftformatter.unitStyle = .short
         distanceLeftformatter.unitOptions = .naturalScale
         distanceLeftformatter.numberFormatter.maximumFractionDigits = 1
+
+        let currentLocation = package.currentLocation
         
-        let distance = Measurement(value: packagePreview.distanceLeft, unit: UnitLength.meters)
+        let destination = CLLocation(latitude: package.destination.geoPoint.latitude, longitude: package.destination.geoPoint.longitude)
+        
+        let origin = CLLocation(latitude: package.origin.geoPoint.latitude, longitude: package.origin.geoPoint.longitude)
+        let distanceTotal = destination.distance(from: origin)
+        let distanceLeft = destination.distance(from: currentLocation)
+        let distanceFrom =  distanceTotal - distanceLeft
+
+        let distance = Measurement(value: distanceLeft, unit: UnitLength.meters)
         let distanceLeftString = distanceLeftformatter.string(from: distance)
         
-        tagPillView.bodyLabel.text = packagePreview.tagName
-        tagPillView.pillContainerView.backgroundColor = getTintForCategory(category: packagePreview.categories.first!)
-        tagPillView.characterLabel.text = getEmojiForCategory(category: packagePreview.categories.first!)
-        headlineLabel.text = packagePreview.headline
+        topicPillView.bodyLabel.text = package.topic.name
+        topicPillView.pillContainerView.backgroundColor = getTintForCategory(category: package.category)
+        topicPillView.characterLabel.text = getEmojiForCategory(category: package.category)
+        headlineLabel.text = package.headline
         headlineLabel.restartLabel()
         toLabelView.keyLabel.text = String(NSLocalizedString("label.recipient", comment: "label title for recipient label"))
-        fromLabelView.keyLabel.text = packagePreview.destination != nil ? String(NSLocalizedString("label.destination", comment: "label title for destination label")) : String(NSLocalizedString("label.sender", comment: "label title for sender label"))
-        toLabelView.valueLabel.text = packagePreview.recipientName
-        fromLabelView.valueLabel.text = packagePreview.destination != nil ? packagePreview.destination!.name ?? string(from: packagePreview.destination!.geoPoint) : "\(packagePreview.moversCount) of us"
-        toGoLabel.text = packagePreview.packageStatus != .delivered ? "\(distanceLeftString) / \(timeLeftString!)" : String(NSLocalizedString("label.delivered", comment: "label title for package delivered status"))
+        fromLabelView.keyLabel.text = String(NSLocalizedString("label.destination", comment: "label title for destination label"))
+        toLabelView.valueLabel.text = package.recipient.displayName
+        fromLabelView.valueLabel.text = package.destination.name ?? string(from: package.destination.geoPoint)
+        toGoLabel.text = package.status != .delivered ? "\(distanceLeftString) / \(timeLeftString!)" : String(NSLocalizedString("label.delivered", comment: "label title for package delivered status"))
         infoStackView.addArrangedSubview(toLabelView)
         infoStackView.addArrangedSubview(fromLabelView)
         infoStackView.addArrangedSubview(toGoLabel)
         infoStackView.setCustomSpacing(16, after: fromLabelView)
     infoStackView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[toGoLabel]|", options: .directionLeadingToTrailing, metrics: nil, views: ["toGoLabel": toGoLabel]))
         
-        progressBarView.percentage = packagePreview.packageStatus == .delivered ? 1 : min(CGFloat((packagePreview.distanceFrom > 0 ? packagePreview.distanceFrom : 0) / packagePreview.distanceTotal),  1)
+        progressBarView.percentage = package.status == .delivered ? 1 : min(CGFloat((distanceFrom > 0 ? distanceFrom : 0) / distanceTotal),  1)
         progressBarView.layoutIfNeeded()
         progressBarView.isHidden = true
         

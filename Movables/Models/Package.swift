@@ -165,29 +165,24 @@ struct TemplateCount: Equatable {
 }
 
 struct PackageTemplate {
-    var categories: [PackageCategory]
+    var category: PackageCategory
     var count: TemplateCount?
     var coverImageUrl: String?
     var description: String
     var destination: Location
     var headline: String
     var recipient: Person
-    var status: PackageStatus
-    var tag: PackageTag
-    var templateBy: Person?
+    var topic: Topic
+    var author: Person?
     var reference: DocumentReference
-    var dueDate: PackageDueDate?
+    var dueDate: Date
     var dropoffMessage: String?
     var externalActions: [ExternalAction]?
     
     init(snapshot: DocumentSnapshot) {
         let dictionary = snapshot.data()!
         
-        var categoriesArray:[PackageCategory] = []
-        for (category, _) in dictionary["categories"] as! [String: Bool] {
-            categoriesArray.append(getCategoryEnum(with: category))
-        }
-        self.categories = categoriesArray
+        self.category = getCategoryEnum(with: dictionary["category"] as! String)
         
         if let countDict = dictionary["count"] as? [String: Int] {
             self.count = TemplateCount(dict: countDict)
@@ -204,28 +199,33 @@ struct PackageTemplate {
         self.headline = dictionary["headline"] as! String
         
         self.recipient = Person(dict: dictionary["recipient"] as! [String: Any])
+                
+        self.topic = Topic(with: dictionary["topic"] as! [String: Any], reference: (dictionary["topic"] as! [String: Any])["reference"] as! DocumentReference)
         
-        self.status = getStatusEnum(with: dictionary["status"] as! String)
-        
-        self.tag = PackageTag(dict: dictionary["tag"] as! [String: Any])
-        
-        if let templateByDict = dictionary["template_by"] as? [String: Any] {
-            self.templateBy = Person(dict: templateByDict)
+        if let authorDict = dictionary["author"] as? [String: Any] {
+            self.author = Person(dict: authorDict)
         } else {
-            self.templateBy = nil
+            self.author = nil
         }
         
         self.reference = snapshot.reference
         
-        self.dueDate = PackageDueDate(dict: dictionary["due_date"] as! [String : Timestamp?])
+        self.dueDate = (dictionary["due_date"] as! Timestamp).dateValue()
         
         self.dropoffMessage = dictionary["dropoff_message"] as? String
+        
+        if let externalActions = dictionary["external_actions"] as? [[String: Any]] {
+            self.externalActions = []
+            for action in externalActions {
+                self.externalActions?.append(ExternalAction(dict: action))
+            }
+        }
     }
 }
 
 struct Package: Equatable {
     var sender: Person
-    var categories: [PackageCategory]
+    var category: PackageCategory
     var count: PackageCount?
     var coverImageUrl: String?
     var description: String
@@ -235,19 +235,19 @@ struct Package: Equatable {
     var origin: Location
     var recipient: Person
     var status: PackageStatus
-    var tag: PackageTag
-    var templateBy: Person?
+    var topic: Topic
+    var contentTemplateBy: Person?
     var transitRecords: [TransitRecord]?
     var externalActions: [ExternalAction]?
     var reference: DocumentReference
     var currentLocation: CLLocation
-    var dueDate: PackageDueDate?
+    var dueDate: Date
     var dropoffMessage: String?
-    var followers: [String: Double]?
+    var followers: [String: Date]?
     
-    init(sender: Person, categories: [PackageCategory], count: PackageCount?, coverImageUrl: String?, description: String, destination: Location, headline: String, inTransitBy: Person?, origin: Location, recipient: Person, status: PackageStatus, tag: PackageTag, templateBy: Person?, transitRecords: [TransitRecord]?, reference: DocumentReference, currentLocation: CLLocation, dueDate: PackageDueDate) {
+    init(sender: Person, category: PackageCategory, count: PackageCount?, coverImageUrl: String?, description: String, destination: Location, headline: String, inTransitBy: Person?, origin: Location, recipient: Person, status: PackageStatus, topic: Topic, contentTemplateBy: Person?, transitRecords: [TransitRecord]?, reference: DocumentReference, currentLocation: CLLocation, dueDate: Date) {
         self.sender = sender
-        self.categories = categories
+        self.category = category
         self.count = count
         self.coverImageUrl = coverImageUrl
         self.description = description
@@ -257,8 +257,8 @@ struct Package: Equatable {
         self.origin = origin
         self.recipient = recipient
         self.status = status
-        self.tag = tag
-        self.templateBy = templateBy
+        self.topic = topic
+        self.contentTemplateBy = contentTemplateBy
         self.transitRecords = transitRecords
         self.reference = reference
         self.currentLocation = currentLocation
@@ -267,62 +267,141 @@ struct Package: Equatable {
     
     init(snapshot: DocumentSnapshot) {
         let dictionary = snapshot.data()!
-        self.sender = Person(dict: dictionary["author"] as! [String: Any])
+        let content = dictionary["content"] as! [String: Any]
+        let logistics = dictionary["logistics"] as! [String: Any]
+        let relations = dictionary["relations"] as! [String: Any]
         
-        var categoriesArray:[PackageCategory] = []
-        for (category, _) in dictionary["categories"] as! [String: Bool] {
-            categoriesArray.append(getCategoryEnum(with: category))
-        }
-        self.categories = categoriesArray
+        self.sender = Person(dict: logistics["author"] as! [String: Any])
+        self.category = getCategoryEnum(with: content["category"] as! String)
         
-        if let countDict = dictionary["count"] as? [String: Int] {
+        if let countDict = relations["count"] as? [String: Int] {
             self.count = PackageCount(dict: countDict)
         } else {
             self.count = nil
         }
         
-        self.coverImageUrl = dictionary["cover_pic_url"] as? String
+        self.coverImageUrl = content["cover_pic_url"] as? String
         
-        self.description = dictionary["description"] as! String
+        self.description = content["description"] as! String
         
-        self.destination = Location(dict: dictionary["destination"] as! [String: Any])
+        self.destination = Location(dict: content["destination"] as! [String: Any])
         
-        self.headline = dictionary["headline"] as! String
+        self.headline = content["headline"] as! String
         
-        if let inTransitByDict = dictionary["in_transit_by"] as? [String: Any] {
+        if let inTransitByDict = logistics["in_transit_by"] as? [String: Any] {
             self.inTransitBy = Person(dict: inTransitByDict)
         } else {
             self.inTransitBy = nil
         }
         
-        self.origin = Location(dict: dictionary["origin"] as! [String: Any])
+        self.origin = Location(dict: logistics["origin"] as! [String: Any])
         
-        self.recipient = Person(dict: dictionary["recipient"] as! [String: Any])
+        self.recipient = Person(dict: content["recipient"] as! [String: Any])
         
-        self.status = getStatusEnum(with: dictionary["status"] as! String)
+        self.status = getStatusEnum(with: logistics["status"] as! String)
         
-        self.tag = PackageTag(dict: dictionary["tag"] as! [String: Any])
+        self.topic = Topic(with: content["topic"] as! [String : Any], reference: (content["topic"] as! [String: Any])["reference"] as! DocumentReference)
         
         if let templateByDict = dictionary["template_by"] as? [String: Any] {
-            self.templateBy = Person(dict: templateByDict)
+            self.contentTemplateBy = Person(dict: templateByDict)
         } else {
-            self.templateBy = nil
+            self.contentTemplateBy = nil
         }
 
         self.transitRecords = nil
         
         self.reference = snapshot.reference
         
-        let currentLocation = dictionary["_geoloc"] as! GeoPoint
+        let currentLocation = logistics["current_location"] as! GeoPoint
         self.currentLocation = CLLocation(
             latitude: currentLocation.latitude,
             longitude: currentLocation.longitude
         )
         
-        self.dueDate = PackageDueDate(dict: dictionary["due_date"] as! [String : Timestamp?])
-        self.dropoffMessage = dictionary["dropoff_message"] as? String
-        self.externalActions = nil
-        self.followers = dictionary["followers"] as? [String: Double]
+        self.dueDate = (content["due_date"] as! Timestamp).dateValue()
+        self.dropoffMessage = content["dropoff_message"] as? String
+        if let externalActions = content["external_actions"] as? [[String: Any]] {
+            self.externalActions = []
+            for action in externalActions {
+                self.externalActions?.append(ExternalAction(dict: action))
+            }
+        }
+
+        self.followers = [:]
+        if let followersDict = relations["followers"] as? [String: Timestamp] {
+            for (key, value) in followersDict {
+                self.followers!.updateValue(value.dateValue(), forKey: key)
+            }
+        }
+    }
+    
+    init(hit:[String: Any]) {
+        let hitContent = hit["content"] as! [String: Any]
+        let hitLogistics = hit["logistics"] as! [String: Any]
+        let hitRelations = hit["relations"] as! [String: Any]
+        
+        self.sender = Person(hitPerson: hitLogistics["author"] as! [String: Any])
+        self.category = getCategoryEnum(with: hitContent["category"] as! String)
+        
+        if let countDict = hitRelations["count"] as? [String: Int] {
+            self.count = PackageCount(dict: countDict)
+        } else {
+            self.count = nil
+        }
+        
+        self.coverImageUrl = hitContent["cover_pic_url"] as? String
+        
+        self.description = hitContent["description"] as! String
+        
+        self.destination = Location(hitLocation: hitContent["destination"] as! [String: Any])
+        
+        self.headline = hitContent["headline"] as! String
+        
+        if let inTransitByDict = hitLogistics["in_transit_by"] as? [String: Any] {
+            self.inTransitBy = Person(hitPerson: inTransitByDict)
+        } else {
+            self.inTransitBy = nil
+        }
+        
+        self.origin = Location(hitLocation: hitLogistics["origin"] as! [String: Any])
+        
+        self.recipient = Person(hitPerson: hitContent["recipient"] as! [String: Any])
+        
+        self.status = getStatusEnum(with: hitLogistics["status"] as! String)
+        
+        self.topic = Topic(hitTopic: hitContent["topic"] as! [String: Any])
+        
+        if let hitContentTemplateBy = hitLogistics["content_template_by"] as? [String: Any] {
+            self.contentTemplateBy = Person(hitPerson: hitContentTemplateBy)
+        } else {
+            self.contentTemplateBy = nil
+        }
+        
+        self.transitRecords = nil
+        
+        self.reference = Firestore.firestore().collection("packages").document(hit["objectID"] as! String)
+        
+        self.currentLocation = CLLocation(
+            latitude: (hit["_geoloc"] as! [String: CLLocationDegrees])["lat"]!,
+            longitude: (hit["_geoloc"] as! [String: CLLocationDegrees])["lng"]!
+        )
+        
+        self.dueDate = Date(timeIntervalSince1970: (hitContent["due_date"] as! TimeInterval))
+        
+        self.dropoffMessage = hitContent["dropoff_message"] as? String
+        if let externalActions = hitContent["external_actions"] as? [[String: Any]] {
+            self.externalActions = []
+            for action in externalActions {
+                self.externalActions?.append(ExternalAction(dict: action))
+            }
+        }
+        
+        self.followers = [:]
+        if let followersDict = hitRelations["followers"] as? [String: TimeInterval] {
+            for (key, value) in followersDict {
+                self.followers!.updateValue(Date(timeIntervalSince1970: value), forKey: key)
+            }
+        }
     }
     
     static func == (lhs: Package, rhs: Package) -> Bool {
@@ -345,27 +424,18 @@ struct Package: Equatable {
             inTransitByEqual = lhs.inTransitBy! == rhs.inTransitBy!
         }
         
-        var templateByEqual: Bool?
-        if lhs.templateBy == nil && rhs.templateBy == nil {
-            templateByEqual = true
-        } else if lhs.templateBy == nil || rhs.templateBy == nil {
-            templateByEqual = false
+        var contentTemplateByEqual: Bool?
+        if lhs.contentTemplateBy == nil && rhs.contentTemplateBy == nil {
+            contentTemplateByEqual = true
+        } else if lhs.contentTemplateBy == nil || rhs.contentTemplateBy == nil {
+            contentTemplateByEqual = false
         } else {
-            templateByEqual = lhs.templateBy! == rhs.templateBy!
+            contentTemplateByEqual = lhs.contentTemplateBy! == rhs.contentTemplateBy!
         }
         
-        var dueDateEqual: Bool?
-        if lhs.dueDate == nil && rhs.dueDate == nil {
-            dueDateEqual = true
-        } else if lhs.dueDate == nil || rhs.dueDate == nil {
-            dueDateEqual = false
-        } else {
-            dueDateEqual = lhs.dueDate! == rhs.dueDate!
-        }
-
         return (
             lhs.sender == rhs.sender &&
-            lhs.categories == rhs.categories &&
+            lhs.category == rhs.category &&
             coverImageUrlEqual! &&
             lhs.description == rhs.description &&
             lhs.destination == rhs.destination &&
@@ -374,28 +444,15 @@ struct Package: Equatable {
             lhs.origin == rhs.origin &&
             lhs.recipient == rhs.recipient &&
             lhs.status == rhs.status &&
-            lhs.tag == rhs.tag &&
-            templateByEqual! &&
+            lhs.topic == rhs.topic &&
+            contentTemplateByEqual! &&
             lhs.transitRecords == rhs.transitRecords &&
             lhs.reference == rhs.reference &&
             lhs.currentLocation.coordinate.latitude == rhs.currentLocation.coordinate.latitude &&
             lhs.currentLocation.coordinate.longitude == rhs.currentLocation.coordinate.longitude &&
-            dueDateEqual!
+            lhs.dueDate == rhs.dueDate &&
+            lhs.followers == rhs.followers
         )
-    }
-}
-
-struct PackageDueDate {
-    var start: Date?
-    var end: Date?
-    
-    init(dict: [String: Timestamp?]) {
-        self.start = (dict["start"] as? Timestamp)?.dateValue()
-        self.end = (dict["end"] as? Timestamp)?.dateValue()
-    }
-    
-    static func ==(lhs: PackageDueDate, rhs: PackageDueDate) -> Bool {
-        return lhs.start == rhs.start && lhs.end == rhs.end
     }
 }
 
@@ -403,23 +460,42 @@ struct Person: Equatable {
     var displayName: String
     var photoUrl: String?
     var reference: DocumentReference?
-    var twitter_handle: String?
+    var twitter: String?
+    var facebook: String?
     var phone: String?
+    var isEligibleToReceive: Bool?
+    var recipientType: RecipientType?
     
-    init(displayName: String, photoUrl: String?, reference: DocumentReference?, twitter_handle: String?, phone: String?) {
+    init(displayName: String, photoUrl: String?, reference: DocumentReference?, twitter: String?, facebook: String?, phone: String?, isEligibleToReceive: Bool?, recipientType: RecipientType?) {
         self.displayName = displayName
         self.photoUrl = photoUrl
         self.reference = reference
-        self.twitter_handle = twitter_handle
+        self.twitter = twitter
+        self.facebook = facebook
         self.phone = phone
+        self.isEligibleToReceive = isEligibleToReceive
+        self.recipientType = recipientType
     }
     
     init(dict: [String: Any]) {
         self.displayName = dict["name"] as! String
         self.photoUrl = dict["pic_url"] as? String
         self.reference = dict["reference"] as? DocumentReference
-        self.twitter_handle = dict["twitter_handle"] as? String
+        self.twitter = dict["twitter"] as? String
+        self.facebook = dict["facebook"] as? String
         self.phone = dict["phone"] as? String
+    }
+    
+    init(hitPerson: [String: Any]) {
+        self.displayName = hitPerson["name"] as! String
+        self.photoUrl = hitPerson["pic_url"] as? String
+        self.reference = Firestore.firestore().collection("users").document(hitPerson["documentID"] as! String)
+        self.twitter = hitPerson["twitter"] as? String
+        self.facebook = hitPerson["facebook"] as? String
+        self.phone = hitPerson["phone"] as? String
+        if let recipientTypeString = hitPerson["recipientType"] as? String {
+            self.recipientType = getEnumForRecipientTypeString(recipientTypeString: recipientTypeString)
+        }
     }
     
     static func == (lhs: Person, rhs: Person) -> Bool {
@@ -427,7 +503,8 @@ struct Person: Equatable {
             lhs.displayName == rhs.displayName &&
             lhs.photoUrl == rhs.photoUrl &&
             lhs.reference == rhs.reference &&
-            lhs.twitter_handle == rhs.twitter_handle &&
+            lhs.twitter == rhs.twitter &&
+            lhs.facebook == rhs.facebook &&
             lhs.phone == rhs.phone
         )
     }
@@ -488,10 +565,10 @@ struct Location: Equatable{
         self.name = dict["name"] as? String
     }
     
-    init(algoliaDict: [String: Any]) {
-        self.address = algoliaDict["address"] as? String
-        self.geoPoint = GeoPoint(latitude: (algoliaDict["geo_point"] as! [String: Any])["_latitude"] as! Double, longitude: (algoliaDict["geo_point"] as! [String: Any])["_longitude"] as! Double)
-        self.name = algoliaDict["name"] as? String
+    init(hitLocation: [String: Any]) {
+        self.address = hitLocation["address"] as? String
+        self.geoPoint = GeoPoint(latitude: (hitLocation["geo_point"] as! [String: Any])["lat"] as! Double, longitude: (hitLocation["geo_point"] as! [String: Any])["lng"] as! Double)
+        self.name = hitLocation["name"] as? String
     }
 
     
@@ -501,25 +578,6 @@ struct Location: Equatable{
             lhs.geoPoint == rhs.geoPoint &&
             lhs.name == rhs.name
         )
-    }
-}
-
-struct PackageTag: Equatable {
-    var name: String
-    var reference: DocumentReference
-    
-    init(name: String, reference: DocumentReference) {
-        self.name = name
-        self.reference = reference
-    }
-    
-    init(dict: [String: Any]) {
-        self.name = dict["name"] as! String
-        self.reference = dict["reference"] as! DocumentReference
-    }
-    
-    static func ==(lhs: PackageTag, rhs: PackageTag) -> Bool{
-        return lhs.name == rhs.name && lhs.reference == rhs.reference
     }
 }
 
@@ -555,7 +613,14 @@ struct TransitRecord: Equatable {
             self.dropoffGeoPoint = (dict["dropoff"] as! [String: Any])[
                 "geo_point"] as? GeoPoint
         }
-        self.movements = nil
+        self.movements = []
+        if let movementsDict = dict["movements"] as? [String: GeoPoint] {
+            for (key, value) in movementsDict {
+                self.movements!.append(TransitMovement(date: Date(timeIntervalSince1970: TimeInterval(key)!), geoPoint: value))
+            }
+        }
+        
+        self.movements = self.movements?.sorted(by: { $0.date < $1.date })
     }
     
     static func ==(lhs: TransitRecord, rhs: TransitRecord) -> Bool {
@@ -590,163 +655,9 @@ struct TransitMovement: Equatable {
     }
 }
 
-struct PackageFollowing {
-    var packageCount: PackageCount
-    var packageUpdatesCount: PackageUpdatesCount
-    var followedDate: Date
-    var headline: String
-    var reference: DocumentReference
-    var tag: PackageTag
-    var coverImageUrl: String?
-    var packageStatus: PackageStatus
-    var coordinate: CLLocationCoordinate2D
-    
-    init(dict: [String: Any]) {
-        self.packageCount = PackageCount(dict: dict["count"] as! [String: Int])
-        self.packageUpdatesCount = PackageUpdatesCount(dict: dict["updatesCount"] as! [String: Int])
-        self.followedDate = (dict["followed_date"] as! Timestamp).dateValue()
-        self.headline = dict["headline"] as! String
-        self.reference = dict["package_reference"] as! DocumentReference
-        self.tag = PackageTag(dict: dict["tag"] as! [String: Any])
-        self.coverImageUrl = dict["cover_pic_url"] as? String
-        self.packageStatus = getStatusEnum(with: dict["status"] as! String)
-        let geoPoint = dict["_geoloc"] as! GeoPoint
-        self.coordinate = CLLocationCoordinate2D(latitude: geoPoint.latitude, longitude: geoPoint.longitude)
-    }
-}
-
-struct PackageMoved {
-    var movedDate: Date
-    var headline: String
-    var reference: DocumentReference
-    var tag: PackageTag
-    var coverImageUrl: String?
-    var packageStatus: PackageStatus
-    var packageMovedCount: PackageMovedCount
-    var categories: [PackageCategory]?
-    
-    init(dict: [String: Any]) {
-        var categoriesArray:[PackageCategory] = []
-        for (category, _) in dict["categories"] as! [String: Bool] {
-            categoriesArray.append(getCategoryEnum(with: category))
-        }
-        self.categories = categoriesArray
-        self.packageMovedCount = PackageMovedCount(dict: dict["count"] as! [String: Int])
-        self.movedDate = (dict["moved_date"] as! Timestamp).dateValue()
-        self.headline = dict["headline"] as! String
-        self.reference = dict["package_reference"] as! DocumentReference
-        self.tag = PackageTag(dict: dict["tag"] as! [String: Any])
-        self.coverImageUrl = dict["cover_pic_url"] as? String
-        self.packageStatus = getStatusEnum(with: dict["status"] as! String)
-    }
-}
-
-struct PackageMovedCount {
-    var unreadTotal: Int
-    
-    init(dict:[String: Any]) {
-        self.unreadTotal = dict["unread_total"] as! Int
-    }
-}
-
-
-struct PackagePreview {
-    var tagName: String
-    var headline: String
-    var recipientName: String
-    var moversCount: Int
-    var distanceFrom: CLLocationDistance
-    var distanceTotal: CLLocationDistance
-    var distanceLeft: CLLocationDistance
-    var timeLeft: TimeInterval
-    var categories: [PackageCategory]
-    var packageStatus: PackageStatus
-    var packageDocumentId: String
-    var coordinate: CLLocationCoordinate2D
-    var destination: Location?
-    var destinationCoordinate: CLLocationCoordinate2D
-    var originCoordinate: CLLocationCoordinate2D
-    
-    init(package: Package) {
-        let currentLocation = package.currentLocation
-        
-        let destination = CLLocation(latitude: package.destination.geoPoint.latitude, longitude: package.destination.geoPoint.longitude)
-        
-        let origin = CLLocation(latitude: package.origin.geoPoint.latitude, longitude: package.origin.geoPoint.longitude)
-        
-        self.tagName = package.tag.name
-        self.headline = package.headline
-        self.recipientName = package.recipient.displayName
-        self.moversCount = package.count!.movers!
-        self.distanceTotal = destination.distance(from: origin)
-        self.distanceLeft = destination.distance(from: currentLocation)
-        self.distanceFrom =  distanceTotal - distanceLeft
-        
-        if let dueDate = package.dueDate?.end {
-            self.timeLeft = dueDate.timeIntervalSinceReferenceDate - Date.timeIntervalSinceReferenceDate
-        } else {
-            self.timeLeft = 0
-        }
-        self.packageStatus = package.status
-        self.packageDocumentId = package.reference.documentID
-        self.coordinate = package.currentLocation.coordinate
-        self.destinationCoordinate = destination.coordinate
-        self.originCoordinate = origin.coordinate
-        self.categories = package.categories
-        self.destination = package.destination
-    }
-    
-    init(hit: [String: Any]) {
-        
-        let currentLocation = CLLocation(
-            latitude: (hit["_geoloc"] as! [String: CLLocationDegrees])["lat"]!,
-            longitude: (hit["_geoloc"] as! [String: CLLocationDegrees])["lng"]!
-        )
-        
-        let destination = (hit["destination"] as! [String: Any])["geo_point"] == nil ? CLLocation(
-            latitude: (hit["destination"] as! [String: CLLocationDegrees])["lat"]!,
-            longitude: (hit["destination"] as! [String: CLLocationDegrees])["lng"]!
-            ) : CLLocation(
-            latitude: ((hit["destination"] as! [String: Any])["geo_point"] as! [String: CLLocationDegrees])["_latitude"]!,
-            longitude: ((hit["destination"] as! [String: Any])["geo_point"] as! [String: CLLocationDegrees])["_longitude"]!
-        )
-        
-        let origin = CLLocation(
-            latitude: (hit["origin"] as! [String: CLLocationDegrees])["lat"]!,
-            longitude: (hit["origin"] as! [String: CLLocationDegrees])["lng"]!
-        )
-        
-        let categories = hit["_tags"] as! [String]
-        
-        self.tagName = hit["tagName"] as! String
-        self.headline = hit["headline"] as! String
-        self.recipientName = hit["recipientName"] as! String
-        self.moversCount = hit["moversCount"] as! Int
-        self.distanceTotal = destination.distance(from: origin)
-        self.distanceLeft = destination.distance(from: currentLocation)
-        self.distanceFrom =  distanceTotal - distanceLeft
-
-        let dueDate = Date(timeIntervalSince1970: hit["dueDate"] as! TimeInterval)
-        let diff = dueDate.timeIntervalSinceReferenceDate - Date.timeIntervalSinceReferenceDate
-        self.timeLeft = diff > 0 ? TimeInterval(diff) : 0
-        self.packageStatus = getStatusEnum(with: hit["status"] as! String)
-        self.packageDocumentId = hit["objectID"] as! String
-        self.coordinate = CLLocationCoordinate2D(
-            latitude: (hit["_geoloc"] as! [String: CLLocationDegrees])["lat"]!,
-            longitude: (hit["_geoloc"] as! [String: CLLocationDegrees])["lng"]!
-        )
-        self.destinationCoordinate = destination.coordinate
-        self.originCoordinate = origin.coordinate
-        self.categories = []
-        for category in categories {
-            self.categories.append(getCategoryEnum(with: category))
-        }
-        self.destination = (hit["destination"] as! [String: Any])["geo_point"] != nil ? Location(algoliaDict: hit["destination"] as! [String: Any]) : nil
-    }
-}
-
-func followPackageWithRef(packageReference: DocumentReference, userReference: DocumentReference, completion: @escaping (Bool) -> ()) {
+func followPackage(with packageReference: DocumentReference, userReference: DocumentReference, completion: @escaping (Bool) -> ()) {
     Firestore.firestore().runTransaction({ (transaction, errorPointer) -> Any? in
+        // update package count followers and add user to package followers
         let packageDocument: DocumentSnapshot
         do {
             try packageDocument = transaction.getDocument(packageReference)
@@ -763,7 +674,7 @@ func followPackageWithRef(packageReference: DocumentReference, userReference: Do
             return nil
         }
         
-        guard let oldCountFollowers = ((packageDocument.data()! as [String: Any])["count"] as! [String: Int])["followers"] else {
+        guard let oldCountFollowers = ((packageDocument.data()!["relations"] as! [String: Any])["count"] as! [String: Int])["followers"] else {
             let error = NSError(
                 domain: "AppErrorDomain",
                 code: -1,
@@ -774,9 +685,13 @@ func followPackageWithRef(packageReference: DocumentReference, userReference: Do
             errorPointer?.pointee = error
             return nil
         }
-        let newCountFollowers = oldCountFollowers + 1
-        transaction.updateData(["count.followers": newCountFollowers, "followers.\(userReference.documentID)": Date().timeIntervalSince1970], forDocument: packageReference)
         
+        let newCountFollowers = oldCountFollowers + 1
+        
+        transaction.updateData(["relations.count.followers": newCountFollowers, "relations.followers.\(userReference.documentID)": Date()], forDocument: packageReference)
+        
+        // update user's private profile's packages following dict with packageID: Date
+        // update user's public profile's count packages_following
         guard let oldCountPackagesFollowing = (((userDocument.data()! as [String: Any])["public_profile"] as! [String: Any])["count"] as! [String: Int])["packages_following"] else {
             let error = NSError(
                 domain: "AppErrorDomain",
@@ -788,103 +703,11 @@ func followPackageWithRef(packageReference: DocumentReference, userReference: Do
             errorPointer?.pointee = error
             return nil
         }
+        
         let newCountPackagesFollowing = oldCountPackagesFollowing + 1
-        transaction.updateData(["public_profile.count.packages_following": newCountPackagesFollowing], forDocument: userReference)
         
-        guard let tag = packageDocument.data()?["tag"] as? [String: Any] else {
-            let error = NSError(
-                domain: "AppErrorDomain",
-                code: -1,
-                userInfo: [
-                    NSLocalizedDescriptionKey: "Unable to retrieve tag from snapshot \(packageDocument)"
-                ]
-            )
-            errorPointer?.pointee = error
-            return nil
-        }
+        transaction.updateData(["public_profile.count.packages_following": newCountPackagesFollowing, "private_profile.packages_following.\(packageReference.documentID)": Date()], forDocument: userReference)
         
-        guard let headline = packageDocument.data()?["headline"] as? String else {
-            let error = NSError(
-                domain: "AppErrorDomain",
-                code: -1,
-                userInfo: [
-                    NSLocalizedDescriptionKey: "Unable to retrieve headline from snapshot \(packageDocument)"
-                ]
-            )
-            errorPointer?.pointee = error
-            return nil
-        }
-        
-        guard let coverPicUrl = packageDocument.data()?["cover_pic_url"] as? String else {
-            let error = NSError(
-                domain: "AppErrorDomain",
-                code: -1,
-                userInfo: [
-                    NSLocalizedDescriptionKey: "Unable to retrieve cover_pic_url from snapshot \(packageDocument)"
-                ]
-            )
-            errorPointer?.pointee = error
-            return nil
-        }
-        
-        guard let countMovers = ((packageDocument.data()! as [String: Any])["count"] as! [String: Int])["movers"] else {
-            let error = NSError(
-                domain: "AppErrorDomain",
-                code: -1,
-                userInfo: [
-                    NSLocalizedDescriptionKey: "Unable to retrieve movers from snapshot \(packageDocument)"
-                ]
-            )
-            errorPointer?.pointee = error
-            return nil
-        }
-        
-        guard let status = packageDocument.data()?["status"] as? String else {
-            let error = NSError(
-                domain: "AppErrorDomain",
-                code: -1,
-                userInfo: [
-                    NSLocalizedDescriptionKey: "Unable to retrieve status from snapshot \(packageDocument)"
-                ]
-            )
-            errorPointer?.pointee = error
-            return nil
-        }
-        
-        guard let geoloc = packageDocument.data()?["_geoloc"] as? GeoPoint else {
-            let error = NSError(
-                domain: "AppErrorDomain",
-                code: -1,
-                userInfo: [
-                    NSLocalizedDescriptionKey: "Unable to retrieve _geoloc from snapshot \(packageDocument)"
-                ]
-            )
-            errorPointer?.pointee = error
-            return nil
-        }
-        
-        transaction.setData(
-            [
-                "package_reference": packageReference,
-                "tag": tag,
-                "headline": headline,
-                "cover_pic_url": coverPicUrl,
-                "followed_date": Timestamp(date: Date()),
-                "count": [
-                    "followers": newCountFollowers,
-                    "movers": countMovers
-                ],
-                "updatesCount": [
-                    "progress_events": 0,
-                    "unread_progress_events": 0,
-                    "posts_events": 0,
-                    "unread_posts_events": 0
-                ],
-                "status": status,
-                "_geoloc": geoloc,
-                ],
-            forDocument: userReference.collection("packages_following").document(packageReference.documentID)
-        )
         return nil
     }) { (object, error) in
         if let error = error {
@@ -897,8 +720,9 @@ func followPackageWithRef(packageReference: DocumentReference, userReference: Do
     }
 }
 
-func unfollowPackageWithRef(packageReference: DocumentReference, userReference: DocumentReference, completion: @escaping (Bool) -> ()) {
+func unfollowPackage(with packageReference: DocumentReference, userReference: DocumentReference, completion: @escaping (Bool) -> ()) {
     Firestore.firestore().runTransaction({ (transaction, errorPointer) -> Any? in
+        // update package count followers and remove user from package followers
         let packageDocument: DocumentSnapshot
         do {
             try packageDocument = transaction.getDocument(packageReference)
@@ -915,7 +739,7 @@ func unfollowPackageWithRef(packageReference: DocumentReference, userReference: 
             return nil
         }
         
-        guard let oldCountFollowers = ((packageDocument.data()! as [String: Any])["count"] as! [String: Int])["followers"] else {
+        guard let oldCountFollowers = ((packageDocument.data()!["relations"] as! [String: Any])["count"] as! [String: Int])["followers"] else {
             let error = NSError(
                 domain: "AppErrorDomain",
                 code: -1,
@@ -926,9 +750,14 @@ func unfollowPackageWithRef(packageReference: DocumentReference, userReference: 
             errorPointer?.pointee = error
             return nil
         }
-        let newCountFollowers = oldCountFollowers + -1
-        transaction.updateData(["count.followers": newCountFollowers, "followers.\(userReference.documentID)": 0], forDocument: packageReference)
         
+        let newCountFollowers = oldCountFollowers - 1
+        
+        transaction.updateData(["relations.count.followers": newCountFollowers, "relations.followers.\(userReference.documentID)": FieldValue.delete()], forDocument: packageReference)
+        
+        // remove packageID: Date from user's private profile's packages following dict
+        // update user's public profile's count packages_following
+
         guard let oldCountPackagesFollowing = (((userDocument.data()! as [String: Any])["public_profile"] as! [String: Any])["count"] as! [String: Int])["packages_following"] else {
             let error = NSError(
                 domain: "AppErrorDomain",
@@ -940,10 +769,10 @@ func unfollowPackageWithRef(packageReference: DocumentReference, userReference: 
             errorPointer?.pointee = error
             return nil
         }
-        let newCountPackagesFollowing = oldCountPackagesFollowing + -1
-        transaction.updateData(["public_profile.count.packages_following": newCountPackagesFollowing], forDocument: userReference)
         
-        transaction.deleteDocument(userReference.collection("packages_following").document(packageReference.documentID))
+        let newCountPackagesFollowing = oldCountPackagesFollowing - 1
+        
+        transaction.updateData(["public_profile.count.packages_following": newCountPackagesFollowing, "private_profile.packages_following.\(packageReference.documentID)": FieldValue.delete()], forDocument: userReference)
         
         return nil
     }) { (object, error) in
@@ -957,21 +786,13 @@ func unfollowPackageWithRef(packageReference: DocumentReference, userReference: 
     }
 }
 
-func pickupPackageWithRef(packageReference: DocumentReference, userReference: DocumentReference, completion: @escaping (Bool) -> ()) {
+func pickupPackage(with packageReference: DocumentReference, userReference: DocumentReference, completion: @escaping (Bool) -> ()) {
     
     // FOLLOW PACKAGE IF NOT ALREADY FOLLOWING
     LocationManager.shared.desiredAccuracy = kCLLocationAccuracyBestForNavigation
     LocationManager.shared.requestLocation()
     
     Firestore.firestore().runTransaction({ (transaction, errorPointer) -> Any? in
-        let userDocument: DocumentSnapshot
-        do {
-            try userDocument = transaction.getDocument(userReference)
-        } catch let fetchError as NSError {
-            errorPointer?.pointee = fetchError
-            return nil
-        }
-        
         let packageDocument: DocumentSnapshot
         do {
             try packageDocument = transaction.getDocument(packageReference)
@@ -980,77 +801,51 @@ func pickupPackageWithRef(packageReference: DocumentReference, userReference: Do
             return nil
         }
         
-        let packageFollowingDocument: DocumentSnapshot?
-        do {
-            try packageFollowingDocument = transaction.getDocument(userReference.collection("packages_following").document(packageReference.documentID))
-        } catch _ as NSError {
-//            errorPointer?.pointee = fetchError
-            packageFollowingDocument = nil
-        }
-        
-        if packageFollowingDocument == nil {
-            // follow
-            do {
-            try internalFollow(with: transaction, packageDocument: packageDocument, packageReference: packageReference, userReference: userReference, userDocument: userDocument, errorPointer: errorPointer)
-            } catch {
-                return nil
-            }
-        } else {
-            transaction.updateData([:], forDocument: userReference.collection("packages_following").document(packageReference.documentID))
-        }
+        let packageContent = (packageDocument.data()!["content"] as! [String: Any])
+        let packageLogistics = (packageDocument.data()!["logistics"] as! [String: Any])
+        let packageRelations = (packageDocument.data()!["relations"] as! [String: Any])
         
         
-        // PACKAGE
-        // add in_transit_by to package
-        // update package status to transit
-        // update package _geoloc/current location
-        
-        guard let name = ((userDocument.data()! as [String: Any])["public_profile"] as! [String: Any])["display_name"] as? String else {
-            let error = NSError(
-                domain: "AppErrorDomain",
-                code: -1,
-                userInfo: [
-                    NSLocalizedDescriptionKey: "Unable to retrieve display_name from snapshot \(userDocument)"
-                ]
+        // if user is not following already
+        if UserManager.shared.userDocument!.privateProfile.packagesFollowing?[packageReference.documentID] == nil {
+            // update packageDocument relations followers
+            // update packageDocument relations.count.followers
+            // update userDocument public_profile.count.packages_following
+            // update userDocument by adding package to private_profile.packages_following as String: TimeInterval
+
+            transaction.updateData(
+                [
+                    "relations.count.followers": (packageRelations["count"] as! [String: Int])["followers"]! + 1,
+                    "relations.followers.\(UserManager.shared.userDocument!.reference.documentID)": Date()
+                ],
+                forDocument: packageReference
             )
-            errorPointer?.pointee = error
-            return nil
-        }
-        
-        guard let picUrl = ((userDocument.data()! as [String: Any])["public_profile"] as! [String: Any])["pic_url"] as? String else {
-            let error = NSError(
-                domain: "AppErrorDomain",
-                code: -1,
-                userInfo: [
-                    NSLocalizedDescriptionKey: "Unable to retrieve pic_url from snapshot \(userDocument)"
-                ]
+            
+            transaction.updateData([
+                    "public_profile.count.packages_following": UserManager.shared.userDocument!.publicProfile.count.packagesFollowing + 1,
+                    "private_profile.packages_following.\(packageReference.documentID)": Date(),
+                    "private_profile.current_package": packageReference
+                ],
+               forDocument: userReference
             )
-            errorPointer?.pointee = error
-            return nil
         }
         
+        // update packageDocument logistics.status to transit
+        // update packageDocument logistics.in_transit_by
+
         let location = GeoPoint(latitude: LocationManager.shared.location!.coordinate.latitude, longitude: LocationManager.shared.location!.coordinate.longitude)
         
         transaction.updateData(
             [
-                "in_transit_by": [
-                    "name": name,
-                    "pic_url": picUrl,
-                    "reference": userReference
+                "logistics.in_transit_by": [
+                    "name": UserManager.shared.userDocument!.publicProfile.displayName,
+                    "pic_url": UserManager.shared.userDocument!.publicProfile.picUrl ?? "",
+                    "reference": userReference,
                 ],
-                "status": "transit",
-                "_geoloc": location
+                "logistics.status": getStringForStatusEnum(statusEnum: .transit),
+                "logistics.current_location": location,
             ],
             forDocument: packageReference
-        )
-        
-        // USER_DOCUMENT
-        // add private_profile.current_package
-        
-        transaction.updateData([
-            "private_profile.current_package": packageReference
-            ],
-                               forDocument: userReference
         )
         
         // TRANSIT_RECORD
@@ -1068,103 +863,9 @@ func pickupPackageWithRef(packageReference: DocumentReference, userReference: Do
             forDocument: packageReference.collection("transit_records").document(userReference.documentID)
         )
         
-        // Add package to packages_moved
-//        guard let tag = packageDocument.data()?["tag"] as? [String: Any] else {
-//            let error = NSError(
-//                domain: "AppErrorDomain",
-//                code: -1,
-//                userInfo: [
-//                    NSLocalizedDescriptionKey: "Unable to retrieve tag from snapshot \(packageDocument)"
-//                ]
-//            )
-//            errorPointer?.pointee = error
-//            return nil
-//        }
-        
-//        guard let headline = packageDocument.data()?["headline"] as? String else {
-//            let error = NSError(
-//                domain: "AppErrorDomain",
-//                code: -1,
-//                userInfo: [
-//                    NSLocalizedDescriptionKey: "Unable to retrieve headline from snapshot \(packageDocument)"
-//                ]
-//            )
-//            errorPointer?.pointee = error
-//            return nil
-//        }
-//
-//        guard let coverPicUrl = packageDocument.data()?["cover_pic_url"] as? String else {
-//            let error = NSError(
-//                domain: "AppErrorDomain",
-//                code: -1,
-//                userInfo: [
-//                    NSLocalizedDescriptionKey: "Unable to retrieve cover_pic_url from snapshot \(packageDocument)"
-//                ]
-//            )
-//            errorPointer?.pointee = error
-//            return nil
-//        }
-        
-//        guard let countFollowers = ((packageDocument.data()! as [String: Any])["count"] as! [String: Int])["followers"] else {
-//            let error = NSError(
-//                domain: "AppErrorDomain",
-//                code: -1,
-//                userInfo: [
-//                    NSLocalizedDescriptionKey: "Unable to retrieve followers from snapshot \(packageDocument)"
-//                ]
-//            )
-//            errorPointer?.pointee = error
-//            return nil
-//        }
-//        
-//        guard let countMovers = ((packageDocument.data()! as [String: Any])["count"] as! [String: Int])["movers"] else {
-//            let error = NSError(
-//                domain: "AppErrorDomain",
-//                code: -1,
-//                userInfo: [
-//                    NSLocalizedDescriptionKey: "Unable to retrieve movers from snapshot \(packageDocument)"
-//                ]
-//            )
-//            errorPointer?.pointee = error
-//            return nil
-//        }
-//
-//
-//        guard let status = packageDocument.data()?["status"] as? String else {
-//            let error = NSError(
-//                domain: "AppErrorDomain",
-//                code: -1,
-//                userInfo: [
-//                    NSLocalizedDescriptionKey: "Unable to retrieve status from snapshot \(packageDocument)"
-//                ]
-//            )
-//            errorPointer?.pointee = error
-//            return nil
-//        }
-//
-//        guard let geoloc = packageDocument.data()?["_geoloc"] as? GeoPoint else {
-//            let error = NSError(
-//                domain: "AppErrorDomain",
-//                code: -1,
-//                userInfo: [
-//                    NSLocalizedDescriptionKey: "Unable to retrieve _geoloc from snapshot \(packageDocument)"
-//                ]
-//            )
-//            errorPointer?.pointee = error
-//            return nil
-//        }
-        
-        var followers: [String: Double] = packageDocument["followers"] as? [String: Double] ?? [:]
-        
-        for entry in followers {
-            if entry.value > 0 {
-                followers[entry.key] = Date().timeIntervalSince1970
-            }
-        }
-        
         let pickupPublicActivitySupplements: [String: Any] = [
-            "recipient": packageDocument.data()?["recipient"] as! [String: Any],
-            "destination": packageDocument.data()?["destination"] as! [String: Any],
+            "recipient": packageContent["recipient"] as! [String: Any],
+            "destination": packageContent["destination"] as! [String: Any],
             "pickup_location": location,
         ]
 
@@ -1176,8 +877,8 @@ func pickupPackageWithRef(packageReference: DocumentReference, userReference: Do
             "actor_reference": userReference,
             "object_reference": packageReference,
             "object_type": getStringForObjectTypeEnum(type: .package),
-            "object_name": packageDocument.data()?["headline"] as! String,
-            "followers": followers,
+            "object_name": packageContent["headline"] as! String,
+            "followers": packageLogistics["followers"] as! [String: TimeInterval],
             "supplements": pickupPublicActivitySupplements,
             "supplements_type": getStringForActivitySupplementsType(type: .pickup)
         ]
@@ -1195,7 +896,7 @@ func pickupPackageWithRef(packageReference: DocumentReference, userReference: Do
     }
 }
 
-func dropoffPackageWithRef(packageReference: DocumentReference, userReference: DocumentReference, completion: @escaping (Bool, [String: Any]?, UIAlertController?) -> ()) {
+func dropoffPackage(with packageReference: DocumentReference, userReference: DocumentReference, completion: @escaping (Bool, [String: Any]?, UIAlertController?) -> ()) {
     
     LocationManager.shared.desiredAccuracy = kCLLocationAccuracyBestForNavigation
     LocationManager.shared.requestLocation()
@@ -1217,12 +918,91 @@ func dropoffPackageWithRef(packageReference: DocumentReference, userReference: D
             return nil
         }
         
+        let packageContent = (packageDocument.data()!)["content"] as! [String: Any]
+        let packageLogistics = (packageDocument.data()!)["logistics"] as! [String: Any]
+        let packageRelations = (packageDocument.data()!)["relations"] as! [String: Any]
+        
         let transitRecordDocument: DocumentSnapshot
         do {
             try transitRecordDocument = transaction.getDocument(packageReference.collection("transit_records").document(Auth.auth().currentUser!.uid))
         } catch let fetchError as NSError {
             errorPointer?.pointee = fetchError
             return nil
+        }
+        
+        let topicReference = ((packageContent["topic"] as! [String: Any])["reference"] as! DocumentReference)
+        let topicName = ((packageContent["topic"] as! [String: Any])["name"] as! String)
+
+        
+        if let subscribedTopics = (userDocument["private_profile"] as! [String:Any])["subscripbed_topics"] as? [String: Double] {
+            if subscribedTopics[topicReference.documentID] != nil {
+                // user already subscribed to the topic
+                let subscribedTopicDocument: DocumentSnapshot?
+                do {
+                try subscribedTopicDocument = transaction.getDocument(userReference.collection("subscribed_topic").document(topicReference.documentID))
+                } catch let fetchError as NSError {
+                    errorPointer?.pointee = fetchError
+                    return nil
+                }
+                // update packagesMoved and count
+                let oldPackagesMovedCount = (subscribedTopicDocument!["count"] as! [String:Int])["packages_moved"]!
+                
+                transaction.updateData(
+                    [
+                        "count.packages_moved": oldPackagesMovedCount + 1,
+                        "packages_moved.\(packageReference.documentID)": [
+                                "name": packageContent["headline"] as! String,
+                                "reference": packageReference,
+                                "type": getStringForCommunityType(type: .package)
+                        ]
+                    ],
+                    forDocument: subscribedTopicDocument!.reference
+                )
+            } else {
+                // user hasn't subscribed to the topic
+                transaction.setData(
+                    [
+                        "name": topicName,
+                        "reference": topicReference,
+                        "count": [
+                            "packages_moved": 1,
+                            "local_conversations": 0,
+                            "private_conversations": 0,
+                        ],
+                        "communities": [
+                            packageReference.documentID: [
+                                "name": packageContent["headline"] as! String,
+                                "reference": packageReference,
+                                "type": getStringForCommunityType(type: .package)
+                            ]
+                        ],
+                    ],
+                    forDocument: userReference.collection("subscribed_topics").document(topicReference.documentID)
+                )
+                transaction.updateData(["private_profile.subscribed_topics.\(topicReference.documentID)": Date()], forDocument: userReference)
+            }
+        } else {
+            // user hasn't subscribed to any topic
+            transaction.setData(
+                [
+                    "name": topicName,
+                    "reference": topicReference,
+                    "count": [
+                        "packages_moved": 1,
+                        "local_conversations": 0,
+                        "private_conversations": 0,
+                    ],
+                    "communities": [
+                        packageReference.documentID: [
+                            "name": packageContent["headline"] as! String,
+                            "reference": packageReference,
+                            "type": getStringForCommunityType(type: .package)
+                        ]
+                    ]
+                ],
+                forDocument: userReference.collection("subscribed_topics").document(topicReference.documentID)
+            )
+            transaction.updateData(["private_profile.subscribed_topics":[topicReference.documentID: Date()]], forDocument: userReference)
         }
         
         
@@ -1233,19 +1013,22 @@ func dropoffPackageWithRef(packageReference: DocumentReference, userReference: D
         // update package status to pending or delivered
         // update package _geoloc/current location
         
+        
         let destinationCL = CLLocation(
-            latitude: (((packageDocument.data()!)["destination"] as! [String: Any])["geo_point"] as! GeoPoint).latitude,
-            longitude: (((packageDocument.data()!)["destination"] as! [String: Any])["geo_point"] as! GeoPoint).longitude)
+            latitude: ((packageContent["destination"] as! [String: Any])["geo_point"] as! GeoPoint).latitude,
+            longitude: ((packageContent["destination"] as! [String: Any])["geo_point"] as! GeoPoint).longitude
+        )
         
         let originCL = CLLocation(
-            latitude: (((packageDocument.data()!)["origin"] as! [String: Any])["geo_point"] as! GeoPoint).latitude,
-            longitude: (((packageDocument.data()!)["origin"] as! [String: Any])["geo_point"] as! GeoPoint).longitude)
-
+            latitude: ((packageLogistics["origin"] as! [String: Any])["geo_point"] as! GeoPoint).latitude,
+            longitude: ((packageLogistics["origin"] as! [String: Any])["geo_point"] as! GeoPoint).longitude
+        )
         
         let pickupLocationCL = CLLocation(
-            latitude: ((packageDocument.data()!)["_geoloc"] as! GeoPoint).latitude,
-            longitude: ((packageDocument.data()!)["_geoloc"] as! GeoPoint).longitude)
-        
+            latitude: (packageLogistics["current_location"] as! GeoPoint).latitude,
+            longitude: (packageLogistics["current_location"] as! GeoPoint).longitude
+        )
+
         let delivered = locationCL.distance(from: destinationCL) < ACTIONABLE_DISTANCE
         let deliveryBonus: Double = delivered ? 10 : 0
 //        let delivered = true
@@ -1253,7 +1036,7 @@ func dropoffPackageWithRef(packageReference: DocumentReference, userReference: D
         var newBalance: Double?
         if destinationCL.distance(from: pickupLocationCL) > destinationCL.distance(from: locationCL) {
             // eligible to dropoff
-            guard let oldCountMovers = ((packageDocument.data()! as [String: Any])["count"] as! [String: Int])["movers"] else {
+            guard let oldCountMovers = (packageRelations["count"] as! [String: Int])["movers"] else {
                 let error = NSError(
                     domain: "AppErrorDomain",
                     code: -1,
@@ -1267,10 +1050,10 @@ func dropoffPackageWithRef(packageReference: DocumentReference, userReference: D
             let newCountMovers = oldCountMovers + 1
 
             transaction.updateData([
-                "in_transit_by": FieldValue.delete(),
-                "status": delivered ? "delivered" : "pending",
-                "_geoloc": location,
-                "count.movers": newCountMovers
+                "logistics.in_transit_by": FieldValue.delete(),
+                "logistics.status": delivered ? "delivered" : "pending",
+                "logistics.current_location": location,
+                "relations.count.movers": newCountMovers
                 ], forDocument: packageReference)
             
             // TRANSIT RECORD
@@ -1286,20 +1069,10 @@ func dropoffPackageWithRef(packageReference: DocumentReference, userReference: D
                 forDocument: packageReference.collection("transit_records").document(userReference.documentID)
             )
             
-            transaction.setData(
-                [
-                    "package_reference": packageReference,
-                    "tag": (packageDocument.data()?["tag"] as! [String : Any]),
-                    "categories": (packageDocument.data()?["categories"] as! [String : Any]),
-                    "headline": packageDocument.data()?["headline"] as! String,
-                    "cover_pic_url": packageDocument.data()?["cover_pic_url"] as! String,
-                    "moved_date": Timestamp(date: Date()),
-                    "count": [
-                        "unread_total": 0,
-                    ],
-                    "status": packageDocument.data()?["status"] as! String,
-                ],
-                forDocument: userReference.collection("packages_moved").document(packageReference.documentID)
+            // add to packages_moved under private_profile as String: TimeInterval
+            transaction.updateData(
+                ["private_profile.packages_moved.\(packageReference.documentID)": Date()],
+                forDocument: userReference
             )
 
             let distanceMoved = destinationCL.distance(from: pickupLocationCL) - destinationCL.distance(from: locationCL)
@@ -1321,14 +1094,15 @@ func dropoffPackageWithRef(packageReference: DocumentReference, userReference: D
             creditsEarned = (timeElapsed / 60 / 2 + min((distanceMoved / 1000 * speedFactor), 60)).rounded()
 
             
-            let oldBalance = ((userDocument.data()!)["private_profile"] as! [String: Any])["time_bank_balance"] as! Double
+            let oldBalance = ((userDocument.data()!)["private_profile"] as! [String: Any])["points_balance"] as! Double
             newBalance = oldBalance + deliveryBonus + creditsEarned!
             // USER_DOCUMENT
             // add private_profile.current_package
             
             transaction.updateData([
+                "public_profile.count.packages_moved": UserManager.shared.userDocument!.publicProfile.count.packagesMoved + 1,
                 "private_profile.current_package": FieldValue.delete(),
-                "private_profile.time_bank_balance": newBalance!
+                "private_profile.points_balance": newBalance!
                 ],
                                    forDocument: userReference
             )
@@ -1336,7 +1110,7 @@ func dropoffPackageWithRef(packageReference: DocumentReference, userReference: D
                 "date": Date(),
                 "object_reference": packageReference,
                 "object_type": getStringForObjectTypeEnum(type: .package),
-                "object_name": packageDocument.data()?["headline"] as! String,
+                "object_name": packageContent["headline"] as! String,
                 "type": getStringForActivityTypeEnum(type: .packageDropoff),
                 "actor_name": Auth.auth().currentUser!.displayName!,
                 "actor_pic": Auth.auth().currentUser!.photoURL?.absoluteString ?? "",
@@ -1345,21 +1119,16 @@ func dropoffPackageWithRef(packageReference: DocumentReference, userReference: D
             ]
             transaction.setData(dropoffAccountActivity, forDocument: userReference.collection("account_activities").document())
             
-            var followers: [String: Double] = packageDocument["followers"] as? [String: Double] ?? [:]
-            for entry in followers {
-                if entry.value > 0 {
-                    followers[entry.key] = Date().timeIntervalSince1970
-                }
-            }
+            let followers: [String: Timestamp] = packageRelations["followers"] as? [String: Timestamp] ?? [:]
             
             if delivered {
                 let deliveryPublicActivitySupplements: [String: Any] = [
-                    "recipient": packageDocument.data()?["recipient"] as! [String: Any],
-                    "destination": packageDocument.data()?["destination"] as! [String: Any],
+                    "recipient": packageContent["recipient"] as! [String: Any],
+                    "destination": packageContent["destination"] as! [String: Any],
                     "distance_total": originCL.distance(from: destinationCL),
                     "delivery_date": Date(),
-                    "package_created_date": packageDocument.data()?["created_date"] as! Timestamp,
-                    "movers_count": (packageDocument.data()?["count"] as! [String: Int])["movers"]!
+                    "package_created_date": packageLogistics["created_date"] as! Timestamp,
+                    "movers_count": (packageRelations["count"] as! [String: Int])["movers"]!
                 ]
 
                 let deliveryPublicActivity: [String: Any] = [
@@ -1370,7 +1139,7 @@ func dropoffPackageWithRef(packageReference: DocumentReference, userReference: D
                     "actor_reference": userReference,
                     "object_reference": packageReference,
                     "object_type": getStringForObjectTypeEnum(type: .package),
-                    "object_name": packageDocument.data()?["headline"] as! String,
+                    "object_name": packageContent["headline"] as! String,
                     "followers": followers,
                     "supplements": deliveryPublicActivitySupplements,
                     "supplements_type": getStringForActivitySupplementsType(type: .delivery)
@@ -1381,7 +1150,7 @@ func dropoffPackageWithRef(packageReference: DocumentReference, userReference: D
                     "date": Date(),
                     "object_reference": packageReference,
                     "object_type": getStringForObjectTypeEnum(type: .package),
-                    "object_name": packageDocument.data()?["headline"] as! String,
+                    "object_name": packageContent["headline"] as! String,
                     "type": getStringForActivityTypeEnum(type: .packageDelivery),
                     "actor_name": Auth.auth().currentUser!.displayName!,
                     "actor_pic": Auth.auth().currentUser!.photoURL?.absoluteString ?? "",
@@ -1391,10 +1160,10 @@ func dropoffPackageWithRef(packageReference: DocumentReference, userReference: D
                 transaction.setData(deliveryAccountActivity, forDocument: userReference.collection("account_activities").document())
             } else {
                 let dropoffPublicActivitySupplements: [String: Any] = [
-                    "recipient": packageDocument.data()?["recipient"] as! [String: Any],
-                    "destination": packageDocument.data()?["destination"] as! [String: Any],
+                    "recipient": packageContent["recipient"] as! [String: Any],
+                    "destination": packageContent["destination"] as! [String: Any],
                     "distance_traveled": distanceMoved,
-                    "due_date": (packageDocument.data()?["due_date"] as! [String: Timestamp])["end"]!,
+                    "due_date": (packageContent["due_date"] as! Timestamp),
                     "dropoff_location": location,
                     ]
                 
@@ -1406,7 +1175,7 @@ func dropoffPackageWithRef(packageReference: DocumentReference, userReference: D
                     "actor_reference": userReference,
                     "object_reference": packageReference,
                     "object_type": getStringForObjectTypeEnum(type: .package),
-                    "object_name": packageDocument.data()?["headline"] as! String,
+                    "object_name": packageContent["headline"] as! String,
                     "followers": followers,
                     "supplements": dropoffPublicActivitySupplements,
                     "supplements_type": getStringForActivitySupplementsType(type: .dropoff)
@@ -1454,137 +1223,4 @@ func dropoffPackageWithRef(packageReference: DocumentReference, userReference: D
             completion(true, object as? [String: Any], nil)
         }
     }
-}
-
-func internalFollow(with transaction: Transaction, packageDocument: DocumentSnapshot, packageReference: DocumentReference, userReference: DocumentReference, userDocument: DocumentSnapshot, errorPointer: NSErrorPointer) throws {
-    guard let oldCountFollowers = (packageDocument.data()!["count"] as! [String: Int])["followers"] else {
-        let error = NSError(
-            domain: "AppErrorDomain",
-            code: -1,
-            userInfo: [
-                NSLocalizedDescriptionKey: "Unable to retrieve followers from snapshot \(packageDocument)"
-            ]
-        )
-        errorPointer?.pointee = error
-        print(error)
-        throw error
-    }
-    let newCountFollowers = oldCountFollowers + 1
-    transaction.updateData(["count.followers": newCountFollowers, "followers.\(userReference.documentID)": Date().timeIntervalSince1970], forDocument: packageReference)
-    
-    guard let oldCountPackagesFollowing = (((userDocument.data()! as [String: Any])["public_profile"] as! [String: Any])["count"] as! [String: Int])["packages_following"] else {
-        let error = NSError(
-            domain: "AppErrorDomain",
-            code: -1,
-            userInfo: [
-                NSLocalizedDescriptionKey: "Unable to retrieve packages_following from snapshot \(userDocument)"
-            ]
-        )
-        errorPointer?.pointee = error
-        print(error)
-        throw error
-    }
-    let newCountPackagesFollowing = oldCountPackagesFollowing + 1
-    transaction.updateData(["public_profile.count.packages_following": newCountPackagesFollowing], forDocument: userReference)
-    
-    guard let tag = packageDocument.data()?["tag"] as? [String: Any] else {
-        let error = NSError(
-            domain: "AppErrorDomain",
-            code: -1,
-            userInfo: [
-                NSLocalizedDescriptionKey: "Unable to retrieve tag from snapshot \(packageDocument)"
-            ]
-        )
-        errorPointer?.pointee = error
-        print(error)
-        throw error
-    }
-    
-    guard let headline = packageDocument.data()?["headline"] as? String else {
-        let error = NSError(
-            domain: "AppErrorDomain",
-            code: -1,
-            userInfo: [
-                NSLocalizedDescriptionKey: "Unable to retrieve headline from snapshot \(packageDocument)"
-            ]
-        )
-        errorPointer?.pointee = error
-        print(error)
-        throw error
-    }
-    
-    guard let coverPicUrl = packageDocument.data()?["cover_pic_url"] as? String else {
-        let error = NSError(
-            domain: "AppErrorDomain",
-            code: -1,
-            userInfo: [
-                NSLocalizedDescriptionKey: "Unable to retrieve cover_pic_url from snapshot \(packageDocument)"
-            ]
-        )
-        errorPointer?.pointee = error
-        print(error)
-        throw error
-    }
-    
-    guard let countMovers = ((packageDocument.data()! as [String: Any])["count"] as! [String: Int])["movers"] else {
-        let error = NSError(
-            domain: "AppErrorDomain",
-            code: -1,
-            userInfo: [
-                NSLocalizedDescriptionKey: "Unable to retrieve movers from snapshot \(packageDocument)"
-            ]
-        )
-        errorPointer?.pointee = error
-        print(error)
-        throw error
-    }
-    
-    guard let status = packageDocument.data()?["status"] as? String else {
-        let error = NSError(
-            domain: "AppErrorDomain",
-            code: -1,
-            userInfo: [
-                NSLocalizedDescriptionKey: "Unable to retrieve status from snapshot \(packageDocument)"
-            ]
-        )
-        errorPointer?.pointee = error
-        print(error)
-        throw error
-    }
-    
-    guard let geoloc = packageDocument.data()?["_geoloc"] as? GeoPoint else {
-        let error = NSError(
-            domain: "AppErrorDomain",
-            code: -1,
-            userInfo: [
-                NSLocalizedDescriptionKey: "Unable to retrieve _geoloc from snapshot \(packageDocument)"
-            ]
-        )
-        errorPointer?.pointee = error
-        print(error)
-        throw error
-    }
-    
-    transaction.setData(
-        [
-            "package_reference": packageReference,
-            "tag": tag,
-            "headline": headline,
-            "cover_pic_url": coverPicUrl,
-            "followed_date": Timestamp(date: Date()),
-            "count": [
-                "followers": newCountFollowers,
-                "movers": countMovers
-            ],
-            "updatesCount": [
-                "progress_events": 0,
-                "unread_progress_events": 0,
-                "posts_events": 0,
-                "unread_posts_events": 0
-            ],
-            "status": status,
-            "_geoloc": geoloc,
-            ],
-        forDocument: userReference.collection("packages_following").document(packageReference.documentID)
-    )
 }

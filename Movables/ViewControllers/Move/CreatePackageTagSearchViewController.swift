@@ -1,5 +1,5 @@
 //
-//  CreatePackageTagSearchViewController.swift
+//  CreatePackageTopicSearchViewController.swift
 //  Movables
 //
 //  MIT License
@@ -27,30 +27,40 @@
 import UIKit
 import AlgoliaSearch
 import NVActivityIndicatorView
+import class Firebase.Firestore
 
-struct PackageTagResultItem {
-    var tag: String
+struct PackageTopicResultItem {
+    var name: String
     var templatesCount: Int?
     var packagesCount: Int?
+    var documentID: String
     
-    init(tag: String, templatesCount: Int?, packagesCount: Int?) {
-        self.tag = tag
+    init(name: String, templatesCount: Int?, packagesCount: Int?, documentID: String) {
+        self.name = name
         self.templatesCount = templatesCount
         self.packagesCount = packagesCount
+        self.documentID = documentID
+    }
+    
+    init(hit: [String: Any]) {
+        self.name = hit["name"] as! String
+        self.templatesCount = (hit["count"] as! [String: Int])["templates"]
+        self.packagesCount = (hit["count"] as! [String: Int])["packages"]
+        self.documentID = hit["objectID"] as! String
     }
 }
 
-class CreatePackageTagSearchViewController: UIViewController {
+class CreatePackageTopicSearchViewController: UIViewController {
     
     let CONTENT_INSET_TOP: CGFloat = UIApplication.shared.keyWindow!.safeAreaInsets.top != 0 ? UIApplication.shared.keyWindow!.safeAreaInsets.top + 39.5 + 12 : 45.5 + 39.5 + 12
     let CONTENT_INSET_BOTTOM: CGFloat = UIApplication.shared.keyWindow!.safeAreaInsets.bottom != 0 ? UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 30 + 10 : 34 + 30 + 28
     
     var createPackageCoordinator: CreatePackageCoordinator!
-    var tag: PackageTag?
+    var topic: Topic?
     var textField: UITextField!
     var textFieldContainer: MCCard!
     var tableView: UITableView!
-    var results:[PackageTagResultItem] = []
+    var results:[PackageTopicResultItem] = []
     
     var instructionLabel: MCPill!
     var floatingButtonsContainerView: UIView!
@@ -132,8 +142,8 @@ class CreatePackageTagSearchViewController: UIViewController {
         let apiClient = Client(appID: (UIApplication.shared.delegate as! AppDelegate).algoliaClientId!, apiKey: (UIApplication.shared.delegate as! AppDelegate).algoliaAPIKey!)
         topicsIndex = apiClient.index(withName: "topics")
         query.hitsPerPage = 15
-        query.attributesToRetrieve = ["tag", "templatesCount", "packagesCount"]
-        query.attributesToHighlight = ["tag"]
+        query.attributesToRetrieve = ["name", "count", "objectID"]
+        query.attributesToHighlight = ["name"]
     }
     
     private func setupFAB() {
@@ -189,7 +199,7 @@ class CreatePackageTagSearchViewController: UIViewController {
         tableView.backgroundColor = Theme().backgroundShade
         tableView.contentInset.top = CONTENT_INSET_TOP
         tableView.contentInset.bottom = CONTENT_INSET_BOTTOM
-        tableView.register(LargeTitleWithSubtitleTableViewCell.self, forCellReuseIdentifier: "tagResultItem")
+        tableView.register(LargeTitleWithSubtitleTableViewCell.self, forCellReuseIdentifier: "topicResultItem")
         tableView.separatorStyle = .none
         view.addSubview(tableView)
         
@@ -220,7 +230,7 @@ class CreatePackageTagSearchViewController: UIViewController {
         
         textField = UITextField(frame: .zero)
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = String(NSLocalizedString("label.searchTags", comment: "label text for search tags"))
+        textField.placeholder = String(NSLocalizedString("label.searchTopics", comment: "label text for search topics"))
         textField.textColor = Theme().textColor
         textField.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         textField.returnKeyType = .done
@@ -261,7 +271,7 @@ class CreatePackageTagSearchViewController: UIViewController {
     }
 }
 
-extension CreatePackageTagSearchViewController: UITableViewDataSource {
+extension CreatePackageTopicSearchViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
@@ -281,17 +291,17 @@ extension CreatePackageTagSearchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 1 {
             let resultItem = self.results[indexPath.row]
-            let cell = tableView.dequeueReusableCell(withIdentifier: "tagResultItem") as! LargeTitleWithSubtitleTableViewCell
-            cell.largeTitleLabel.text = "#\(resultItem.tag)"
+            let cell = tableView.dequeueReusableCell(withIdentifier: "topicResultItem") as! LargeTitleWithSubtitleTableViewCell
+            cell.largeTitleLabel.text = "#\(resultItem.name)"
             let templatesCountString: String = resultItem.templatesCount == nil || resultItem.templatesCount == 0 ? "" : (resultItem.templatesCount! == 1 ? String(format: NSLocalizedString("label.templateCount", comment: "label text for singular template count"), resultItem.templatesCount!) : String(format: NSLocalizedString("label.templatesCount", comment: "label text for plural template count"), resultItem.templatesCount!))
             let packagesCountString: String = resultItem.packagesCount == nil || resultItem.packagesCount! == 0 ? "" : (resultItem.packagesCount! == 1 ? String(format: NSLocalizedString("label.packageCount", comment: "label text for singular package count"), resultItem.packagesCount!) : String(format: NSLocalizedString("label.packagesCount", comment: "label text for plural packages count"), resultItem.packagesCount!))
             cell.subtitleLabel.text = "\(templatesCountString)\(packagesCountString)"
             cell.subtitleLabel.textColor = Theme().textColor
             return cell
         } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "tagResultItem") as! LargeTitleWithSubtitleTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "topicResultItem") as! LargeTitleWithSubtitleTableViewCell
             cell.largeTitleLabel.text = "#\(self.textField.text!)"
-            cell.subtitleLabel.text = "Tap to create new tag"
+            cell.subtitleLabel.text = "Tap to create new topic"
             cell.subtitleLabel.textColor = Theme().keyTint
             return cell
         }
@@ -315,7 +325,7 @@ extension CreatePackageTagSearchViewController: UITableViewDataSource {
             self.results.removeAll()
             print(hits.count)
             for hit in hits {
-                self.results.append(PackageTagResultItem(tag: hit["tag"] as! String, templatesCount: hit["templatesCount"] as? Int, packagesCount: hit["packagesCount"] as? Int))
+                self.results.append(PackageTopicResultItem(hit: hit))
             }
             DispatchQueue.main.async {
                 self.tableView.separatorStyle = .singleLine
@@ -328,26 +338,26 @@ extension CreatePackageTagSearchViewController: UITableViewDataSource {
     }
 }
 
-extension CreatePackageTagSearchViewController: UITableViewDelegate {
+extension CreatePackageTopicSearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("selected \(indexPath)")
         if results.count > 0 {
-            createPackageCoordinator.tagResultItem = self.results[indexPath.row]
-            if createPackageCoordinator.tagResultItem!.templatesCount! == 0 {
+            createPackageCoordinator.topicResultItem = self.results[indexPath.row]
+            if createPackageCoordinator.topicResultItem!.templatesCount! == 0 {
                 createPackageCoordinator.pushToCategory()
             } else {
                 createPackageCoordinator.pushToTemplates()
             }
         } else {
-            // create new tag w/ text in textfield
-            let tag = textField.text
-            createPackageCoordinator.tagResultItem = PackageTagResultItem(tag: tag!, templatesCount: nil, packagesCount: nil)
+            // create new topic w/ text in textfield
+            let topic = textField.text
+            createPackageCoordinator.topicResultItem = PackageTopicResultItem(name: topic!, templatesCount: nil, packagesCount: nil, documentID: Firestore.firestore().collection("topics").document().documentID)
             createPackageCoordinator.pushToCategory()
         }
     }
 }
 
-extension CreatePackageTagSearchViewController: UITextFieldDelegate {
+extension CreatePackageTopicSearchViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return false

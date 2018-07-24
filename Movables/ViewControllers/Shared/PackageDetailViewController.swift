@@ -41,16 +41,12 @@ class PackageDetailViewController: UIViewController {
     let ACTIONABLE_DISTANCE = 100.0
     let TOO_FAR_DISTANCE = 50000.0
     
-    var packagePreview:PackagePreview!
     var headline: String!
-    var tagName: String!
+    var topicName: String!
     var packageDocumentId: String!
     
-    var package: Package? {
-        didSet {
-            self.listenToTransitRecords()
-        }
-    }
+    var package: Package?
+    
     var posts: [Post]? {
         didSet {
             if package != nil {
@@ -58,8 +54,6 @@ class PackageDetailViewController: UIViewController {
             }
         }
     }
-    
-    var packagesFollowing: [PackageFollowing] = []
     
     var delegate: PackageDetailViewControllerDelegate?
     var navBarIsTransparent: Bool = true
@@ -80,7 +74,7 @@ class PackageDetailViewController: UIViewController {
             if posts != nil {
                 reloadCollectionView()
             }
-            self.newUpdatePackageActionButton(with: LocationManager.shared.location)
+            self.updatePackageActionButton(with: LocationManager.shared.location)
         }
     }
     var userAlreadyMovedPackage: Bool?
@@ -109,7 +103,7 @@ class PackageDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.titleView = TitleView(frame: .zero, title: self.headline, subtitle: "#\(self.tagName!)")
+        navigationItem.titleView = TitleView(frame: .zero, title: self.headline, subtitle: "#\(self.topicName!)")
         navigationItem.titleView?.isHidden = true
         
         buttonDistanceLeftformatter.unitStyle = .short
@@ -235,7 +229,7 @@ class PackageDetailViewController: UIViewController {
         collectionView.alwaysBounceVertical = true
         collectionView.backgroundColor = UIColor(red: 0.97, green: 0.97, blue: 0.97, alpha: 1)
         collectionView.contentInsetAdjustmentBehavior = .never
-        collectionView.contentInset.bottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 50 + (UIDevice.isIphoneX ? 10 : 28)
+        collectionView.contentInset.bottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 50 + 10 + (UIDevice.isIphoneX ? 10 : 28)
         collectionView.scrollIndicatorInsets.bottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 50 + (UIDevice.isIphoneX ? 10 : 28)
         
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
@@ -249,17 +243,25 @@ class PackageDetailViewController: UIViewController {
         updateNavigationBarAppearance(withTransparency: true)
         
         LocationManager.shared.delegate = self
-        
+        LocationManager.shared.requestLocation()
         checkAlreadyMoving()
-        fetchPackage(with: self.packageDocumentId)
+        if package == nil {
+            fetchPackage(with: self.packageDocumentId)
+        } else {
+            self.updateFollowButton()
+            self.packageActionButton.setBackgroundColor(color: getTintForCategory(category: self.package!.category), forUIControlState: .normal)
+            self.packageActionButton.setBackgroundColor(color: getTintForCategory(category: self.package!.category).withAlphaComponent(0.85), forUIControlState: .highlighted)
+            self.listenToTransitRecords()
+            fetchPackage(with: self.package!.reference.documentID)
+        }
+
         fetchPosts()
-        listenForFollowStatus()
     }
     
     private func checkAlreadyMoving() {
         if UserManager.shared.userDocument != nil {
             self.alreadyMoving = UserManager.shared.userDocument!.privateProfile.currentPackage != nil
-            self.newUpdatePackageActionButton(with: LocationManager.shared.location!)
+            self.updatePackageActionButton(with: LocationManager.shared.location!)
         }
     }
     
@@ -292,66 +294,28 @@ class PackageDetailViewController: UIViewController {
     }
     
     private func checkUserIsFollowingPackage() -> Bool {
-        if self.packagesFollowing.index(where: {$0.reference.documentID == package?.reference.documentID}) != nil {
-            // user is following
-            return true
-        } else {
-            return false
-        }
+        print("followers: \(self.package!.followers)")
+        return self.package!.followers != nil && self.package!.followers![UserManager.shared.userDocument!.reference.documentID] != nil
     }
     
     private func updateFollowButton() {
         DispatchQueue.main.async {
-            self.followButtonActivityIndicatorView.isHidden = true
-            self.followButtonActivityIndicatorView.stopAnimating()
             if self.checkUserIsFollowingPackage() {
                 print("is following")
-                self.followButton.setTitle(String(NSLocalizedString("button.tracking", comment: "button title for Following")), for: .normal)
+                self.followButtonActivityIndicatorView.isHidden = true
+                self.followButtonActivityIndicatorView.stopAnimating()
+                 self.followButton.setTitle(String(NSLocalizedString("button.tracking", comment: "button title for Following")), for: .normal)
             } else {
                 print("is not following")
+                self.followButtonActivityIndicatorView.isHidden = true
+                self.followButtonActivityIndicatorView.stopAnimating()
+
                 self.followButton.setTitle(String(NSLocalizedString("button.track", comment: "button title for Follow")), for: .normal)
             }
             self.followButton.isEnabled = true
         }
     }
     
-    func listenForFollowStatus() {
-        self.followStatusListener = Firestore.firestore().document("users/\(Auth.auth().currentUser!.uid)").collection("packages_following").addSnapshotListener({ (querySnapshot, error) in
-            guard let snapshot = querySnapshot else {
-                print("Error fetching snapshots: \(error!)")
-                return
-            }
-            var newPackagesFollowing:[PackageFollowing] = []
-            snapshot.documentChanges.forEach { diff in
-                if (diff.type == .added) {
-                    if self.packagesFollowing.index(where: { $0.reference.documentID == (diff.document.data()["package_reference"] as! DocumentReference).documentID }) != nil {
-                    } else {
-                        newPackagesFollowing.append(PackageFollowing(dict: diff.document.data()))
-                    }
-                    print("added")
-                }
-                if (diff.type == .modified) {
-                    if let index = self.packagesFollowing.index(where: { $0.reference.documentID == (diff.document.data()["package_reference"] as! DocumentReference).documentID }) {
-                        self.packagesFollowing[index] = PackageFollowing(dict: diff.document.data())
-                        print("Modified")
-                    }
-                }
-                if (diff.type == .removed) {
-                    if let index = self.packagesFollowing.index(where: { $0.reference.documentID == (diff.document.data()["package_reference"] as! DocumentReference).documentID }) {
-                        self.packagesFollowing.remove(at: index)
-                        print("Removed")
-                    }
-                }
-            }
-            self.packagesFollowing.insert(contentsOf: newPackagesFollowing, at: 0)
-            if self.package != nil {
-                DispatchQueue.main.async {
-                    self.updateFollowButton()
-                }
-            }
-        })
-    }
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -363,7 +327,7 @@ class PackageDetailViewController: UIViewController {
     
     @objc private func didTapShareButton(sender: UIBarButtonItem) {
         // text to share
-        let text = "I'm tracking a package for #\(self.package!.tag.name): \(self.package!.headline). Join me on Movables at movables.co."
+        let text = "I'm tracking a package for #\(self.package!.topic.name): \(self.package!.headline). Join me on Movables at movables.co."
         
         // set up activity view controller
         let textToShare = [ text ]
@@ -383,7 +347,7 @@ class PackageDetailViewController: UIViewController {
             sender.isEnabled = false
             self.packageActionButton.setTitleColor(.white, for: .normal)
             self.packageActionButtonActivityIndicatorView.startAnimating()
-            pickupPackageWithRef(packageReference: self.package!.reference, userReference: Firestore.firestore().collection("users").document(Auth.auth().currentUser!.uid), completion: { (success) in
+            pickupPackage(with: self.package!.reference, userReference: Firestore.firestore().collection("users").document(Auth.auth().currentUser!.uid), completion: { (success) in
                 self.packageActionButtonActivityIndicatorView.stopAnimating()
                 sender.isEnabled = true
                 if success {
@@ -398,7 +362,7 @@ class PackageDetailViewController: UIViewController {
             let packageTemp = self.package!
             self.packageActionButton.setTitleColor(.white, for: .normal)
             self.packageActionButtonActivityIndicatorView.startAnimating()
-            dropoffPackageWithRef(packageReference: self.package!.reference, userReference: Firestore.firestore().collection("users").document(Auth.auth().currentUser!.uid), completion: { (success, response, alertVC) in
+            dropoffPackage(with: self.package!.reference, userReference: Firestore.firestore().collection("users").document(Auth.auth().currentUser!.uid), completion: { (success, response, alertVC) in
                 self.packageActionButtonActivityIndicatorView.stopAnimating()
                 sender.isEnabled = true
                 if success {
@@ -449,8 +413,8 @@ extension PackageDetailViewController: UICollectionViewDataSource {
         if self.package != nil {
             if item == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "headerLabelCell", for: indexPath) as! HeaderLabelCollectionViewCell
-                if self.package!.templateBy != nil {
-                    cell.label.text = String(format: NSLocalizedString("label.templateBy", comment: "label text for template by"), self.package!.templateBy!.displayName)
+                if self.package!.contentTemplateBy != nil {
+                    cell.label.text = String(format: NSLocalizedString("label.templateBy", comment: "label text for template by"), self.package!.contentTemplateBy!.displayName)
                 } else {
                     cell.label.text = String(format: NSLocalizedString("label.by", comment: "label text for authored by") , self.package!.sender.displayName)
                 }
@@ -460,8 +424,8 @@ extension PackageDetailViewController: UICollectionViewDataSource {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "expandableTextCell", for: indexPath) as! ExpandableTextCollectionViewCell
                 cell.label.text = package?.description.replacingOccurrences(of: "\\n", with: "\n")
                 cell.label.numberOfLines = showAllDescription ? 0 : 5
-                cell.button.setTitleColor(self.categoryTint!, for: .normal)
-                cell.button.setTitleColor(self.categoryTint!.withAlphaComponent(0.85), for: .highlighted)
+                cell.button.setTitleColor(getTintForCategory(category: self.package!.category), for: .normal)
+                cell.button.setTitleColor(getTintForCategory(category: self.package!.category).withAlphaComponent(0.85), for: .highlighted)
                 if !showAllDescription && cell.label.calculateMaxLines(width: UIScreen.main.bounds.width - 36) > 5 {
                     cell.button.addTarget(self, action: #selector(showAllDescription(sender:)), for: .touchUpInside)
                 } else {
@@ -473,10 +437,10 @@ extension PackageDetailViewController: UICollectionViewDataSource {
                 return cell
             } else if item == 2 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "deliveryLogisticsCell", for: indexPath) as! DeliveryLogisticsCollectionViewCell
-                cell.cardView.layer.borderColor = self.categoryTint!.withAlphaComponent(0.3).cgColor
-                cell.originCoordinate = packagePreview.originCoordinate
-                cell.currentLocationCoordinate = packagePreview.coordinate
-                cell.destinationCoordinate = packagePreview.destinationCoordinate
+                cell.cardView.layer.borderColor = getTintForCategory(category: self.package!.category).withAlphaComponent(0.3).cgColor
+                cell.originCoordinate = coordinate(from: self.package!.origin.geoPoint)
+                cell.currentLocationCoordinate = self.package!.currentLocation.coordinate
+                cell.destinationCoordinate = coordinate(from: self.package!.destination.geoPoint)
                 cell.presentingVC = self
                 if !deliveryRouteDrawn  {
                     cell.activateMapView()
@@ -524,22 +488,22 @@ extension PackageDetailViewController: UICollectionViewDataSource {
                 return cell
             } else if item == 3 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "headerLabelCell", for: indexPath) as! HeaderLabelCollectionViewCell
-                cell.label.text = String(NSLocalizedString("headerCollectionCell.conversation", comment: "collection view cell title for Conversation"))
+                cell.label.text = String(NSLocalizedString("headerCollectionCell.public_conversation", comment: "collection view cell title for Conversation"))
                 return cell
             } else if item == 4{
                 // posts stack with view more button
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "postsPreviewCell", for: indexPath) as! PostsPreviewCollectionViewCell
                 cell.button.addTarget(self, action: #selector(didTapViewPostsButton(sender:)), for: .touchUpInside)
                 cell.button.isHidden = self.posts?.count == 0
-                cell.button.setTitle("View all posts", for: .normal)
+                cell.button.setTitle("View all comments", for: .normal)
                 cell.posts = self.posts
-                cell.button.setTitleColor(self.categoryTint!, for: .normal)
-                cell.button.setTitleColor(self.categoryTint!.withAlphaComponent(0.85), for: .highlighted)
-                cell.cardView.layer.borderColor = self.categoryTint!.withAlphaComponent(0.3).cgColor
+                cell.button.setTitleColor(getTintForCategory(category: self.package!.category), for: .normal)
+                cell.button.setTitleColor(getTintForCategory(category: self.package!.category).withAlphaComponent(0.85), for: .highlighted)
+                cell.cardView.layer.borderColor = getTintForCategory(category: self.package!.category).withAlphaComponent(0.3).cgColor
                 cell.activateStackView()
                 if cell.posts.count == 0 {
-                    cell.emptyStateButton?.setBackgroundColor(color: self.categoryTint!, forUIControlState: .normal)
-                    cell.emptyStateButton?.setBackgroundColor(color: self.categoryTint!.withAlphaComponent(0.85), forUIControlState: .highlighted)
+                    cell.emptyStateButton?.setBackgroundColor(color: getTintForCategory(category: self.package!.category), forUIControlState: .normal)
+                    cell.emptyStateButton?.setBackgroundColor(color: getTintForCategory(category: self.package!.category).withAlphaComponent(0.85), forUIControlState: .highlighted)
                     cell.emptyStateButton?.addTarget(self, action: #selector(didTapViewPostsButton(sender:)), for: .touchUpInside)
                 }
                 return cell
@@ -562,16 +526,14 @@ extension PackageDetailViewController: UICollectionViewDataSource {
                     print(error!)
                 }
             }
+            view.topicPill.characterLabel.text = getEmojiForCategory(category: self.package!.category)
+            view.topicPill.pillContainerView.backgroundColor = getTintForCategory(category: self.package!.category)
+            view.topicPill.bodyLabel.text = self.package!.topic.name
+            view.topicPill.isHidden = false
+        } else {
+            view.topicPill.isHidden = true
         }
             view.titleLabel.text = self.headline!
-        if self.packagePreview != nil {
-            view.tagPill.characterLabel.text = getEmojiForCategory(category: self.packagePreview.categories.first!)
-            view.tagPill.pillContainerView.backgroundColor = getTintForCategory(category: self.packagePreview.categories.first!)
-            view.tagPill.bodyLabel.text = self.package!.tag.name
-            view.tagPill.isHidden = false
-        } else {
-            view.tagPill.isHidden = true
-        }
             return view
     }
     
@@ -582,69 +544,72 @@ extension PackageDetailViewController: UICollectionViewDataSource {
     
     func fetchPackage(with documentId: String){
         let db = Firestore.firestore()
+        print("attach listener now")
         self.packageDataListener = db.collection("packages").document(self.packageDocumentId).addSnapshotListener({ (documentSnapshot, error) in
             guard documentSnapshot != nil else {
                 print("Error fetching snapshots: \(error!)")
                 return
             }
             let snapshotPackage = Package(snapshot: documentSnapshot!)
-            if self.package == nil || (self.package != nil && self.package != snapshotPackage) {
-                self.package = snapshotPackage
-                self.packagePreview = PackagePreview(package: self.package!)
-                self.categoryTint = getTintForCategory(category: self.package!.categories.first!)
-                self.packageActionButton.setBackgroundColor(color: self.categoryTint!, forUIControlState: .normal)
-                self.packageActionButton.setBackgroundColor(color: self.categoryTint!.withAlphaComponent(0.85), forUIControlState: .highlighted)
-                (self.navigationItem.titleView as! TitleView).subtitleLabel.text = "#\(self.package!.tag.name)"
-
-            }
+            self.package = snapshotPackage
+            print("saved new package \(snapshotPackage)")
+            self.updateFollowButton()
+            
+            self.categoryTint = getTintForCategory(category: self.package!.category)
+            self.packageActionButton.setBackgroundColor(color: getTintForCategory(category: self.package!.category), forUIControlState: .normal)
+            self.packageActionButton.setBackgroundColor(color: getTintForCategory(category: self.package!.category).withAlphaComponent(0.85), forUIControlState: .highlighted)
+            (self.navigationItem.titleView as! TitleView).subtitleLabel.text = "#\(self.package!.topic.name)"
             print("finished attacing package listener")
+            self.listenToTransitRecords()
         })
     }
     
     private func listenToTransitRecords() {
-        self.packageTransitRecordsListener =  self.package!.reference.collection("transit_records").addSnapshotListener({ (querySnapshot, error) in
-            guard let snapshot = querySnapshot else {
-                print("Error fetching snapshots: \(error!)")
-                return
-            }
-            var newTransitRecords:[TransitRecord] = []
-            snapshot.documentChanges.forEach { diff in
-                if (diff.type == .added) {
-                    if (self.transitRecords?.index(where: { $0.reference == diff.document.reference})) != nil {
-                    } else {
-                        newTransitRecords.append(TransitRecord(dict: diff.document.data(), reference: diff.document.reference))
-                    }
-                    print("added")
+        if self.packageTransitRecordsListener == nil {
+            self.packageTransitRecordsListener =  self.package!.reference.collection("transit_records").addSnapshotListener({ (querySnapshot, error) in
+                guard let snapshot = querySnapshot else {
+                    print("Error fetching snapshots: \(error!)")
+                    return
                 }
-                if (diff.type == .modified) {
-                    if let index = self.transitRecords?.index(where: { $0.reference == diff.document.reference}) {
-                        self.transitRecords?[index] = TransitRecord(dict: diff.document.data(), reference: diff.document.reference)
-                        print("Modified")
+                var newTransitRecords:[TransitRecord] = []
+                snapshot.documentChanges.forEach { diff in
+                    if (diff.type == .added) {
+                        if (self.transitRecords?.index(where: { $0.reference == diff.document.reference})) != nil {
+                        } else {
+                            newTransitRecords.append(TransitRecord(dict: diff.document.data(), reference: diff.document.reference))
+                        }
+                        print("added")
+                    }
+                    if (diff.type == .modified) {
+                        if let index = self.transitRecords?.index(where: { $0.reference == diff.document.reference}) {
+                            self.transitRecords?[index] = TransitRecord(dict: diff.document.data(), reference: diff.document.reference)
+                            print("Modified")
+                        }
+                    }
+                    if (diff.type == .removed) {
+                        if let index = self.transitRecords?.index(where: { $0.reference == diff.document.reference}) {
+                            self.transitRecords?.remove(at: index)
+                            print("Removed")
+                        }
                     }
                 }
-                if (diff.type == .removed) {
-                    if let index = self.transitRecords?.index(where: { $0.reference == diff.document.reference}) {
-                        self.transitRecords?.remove(at: index)
-                        print("Removed")
-                    }
+                if self.transitRecords != nil {
+                    self.transitRecords?.insert(contentsOf: newTransitRecords, at: 0)
+                } else {
+                    self.transitRecords = newTransitRecords
                 }
-            }
-            if self.transitRecords != nil {
-                self.transitRecords?.insert(contentsOf: newTransitRecords, at: 0)
-            } else {
-                self.transitRecords = newTransitRecords
-            }
-            self.setupFAB()
-            LocationManager.shared.startUpdatingLocation()
-        })
+                self.setupFAB()
+                LocationManager.shared.startUpdatingLocation()
+            })
+        }
     }
     
     func generateLogisticsRowsForPackage(package: Package) -> [LogisticsRow] {
         var rows:[LogisticsRow] = []
         // recipient
         var recipientActions:[Action] = []
-        if package.recipient.twitter_handle != nil {
-            recipientActions.append(Action(type: .Tweet, dictionary: ["handle": package.recipient.twitter_handle!]))
+        if package.recipient.twitter != nil {
+            recipientActions.append(Action(type: .Tweet, dictionary: ["handle": package.recipient.twitter!]))
         }
         if package.recipient.phone != nil {
             recipientActions.append(Action(type: .Call, dictionary: ["phone": package.recipient.phone!]))
@@ -655,7 +620,7 @@ extension PackageDetailViewController: UICollectionViewDataSource {
             circleSubscript: nil,
             titleText: package.recipient.displayName,
             subtitleText: String(NSLocalizedString("label.recipient", comment: "label title for recipient")),
-            tint: getTintForCategory(category: package.categories.first!),
+            tint: getTintForCategory(category: package.category),
             actions: recipientActions,
             type: .Person
         )
@@ -669,8 +634,10 @@ extension PackageDetailViewController: UICollectionViewDataSource {
         timeLeftformatter.includesTimeRemainingPhrase = false
         timeLeftformatter.allowedUnits = [.day, .hour, .minute]
         
+        let timeLeft = self.package!.dueDate.timeIntervalSinceReferenceDate - Date.timeIntervalSinceReferenceDate
+
         // Use the configured formatter to generate the string.
-        let timeLeftString = packagePreview.timeLeft > 0 ? timeLeftformatter.string(from: packagePreview.timeLeft)! : String(NSLocalizedString("label.pastDue", comment: "label title for package past due state"))
+        let timeLeftString = timeLeft > 0 ? timeLeftformatter.string(from: timeLeft)! : String(NSLocalizedString("label.pastDue", comment: "label title for package past due state"))
 
         let timeRow = LogisticsRow(
             circleImageUrl: nil,
@@ -678,7 +645,7 @@ extension PackageDetailViewController: UICollectionViewDataSource {
             circleSubscript: nil,
             titleText: "\(timeLeftString)",
             subtitleText: String(NSLocalizedString("label.time", comment: "label title for time")),
-            tint: getTintForCategory(category: package.categories.first!),
+            tint: getTintForCategory(category: package.category),
             actions: nil,
             type: .Time
         )
@@ -690,24 +657,33 @@ extension PackageDetailViewController: UICollectionViewDataSource {
         distanceLeftformatter.unitOptions = .naturalScale
         distanceLeftformatter.numberFormatter.maximumFractionDigits = 2
         
-        let distanceLeft = Measurement(value: packagePreview.distanceLeft, unit: UnitLength.meters)
-        let distanceLeftString = distanceLeftformatter.string(from: distanceLeft)
+        let currentLocation = package.currentLocation
+        
+        let destination = CLLocation(latitude: package.destination.geoPoint.latitude, longitude: package.destination.geoPoint.longitude)
+        
+        let origin = CLLocation(latitude: package.origin.geoPoint.latitude, longitude: package.origin.geoPoint.longitude)
+        let distanceTotal = destination.distance(from: origin)
+        let distanceLeft = destination.distance(from: currentLocation)
+
+        
+        let distanceLeftMeasurement = Measurement(value: distanceLeft, unit: UnitLength.meters)
+        let distanceLeftString = distanceLeftformatter.string(from: distanceLeftMeasurement)
         
         let totalDistanceformatter = MeasurementFormatter()
         totalDistanceformatter.unitStyle = .long
         totalDistanceformatter.unitOptions = .naturalScale
         totalDistanceformatter.numberFormatter.maximumFractionDigits = 2
         
-        let totalDistance = Measurement(value: packagePreview.distanceTotal, unit: UnitLength.meters)
+        let totalDistance = Measurement(value: distanceTotal, unit: UnitLength.meters)
         let totalDistanceLeftString = totalDistanceformatter.string(from: totalDistance)
 
         let distanceRow = LogisticsRow(
             circleImageUrl: nil,
             circleText: nil,
             circleSubscript: nil,
-            titleText: packagePreview.packageStatus != .delivered ? "\(distanceLeftString) / \(totalDistanceLeftString)" : String(NSLocalizedString("label.delivered", comment: "label text for delivered")),
+            titleText: package.status != .delivered ? "\(distanceLeftString) / \(totalDistanceLeftString)" : String(NSLocalizedString("label.delivered", comment: "label text for delivered")),
             subtitleText: String(NSLocalizedString("label.distance", comment: "label title for distance")),
-            tint: getTintForCategory(category: package.categories.first!),
+            tint: getTintForCategory(category: package.category),
             actions: nil,
             type: .Directions
         )
@@ -720,7 +696,7 @@ extension PackageDetailViewController: UICollectionViewDataSource {
             circleSubscript: nil,
             titleText: package.sender.displayName,
             subtitleText: String(NSLocalizedString("label.sender", comment: "label title for sender")),
-            tint: getTintForCategory(category: package.categories.first!),
+            tint: getTintForCategory(category: package.category),
             actions: nil,
             type: .Person
         )
@@ -745,7 +721,7 @@ extension PackageDetailViewController: UICollectionViewDelegate {
     
     private func fetchPosts() {
         let db = Firestore.firestore()
-        db.collection("packages/\(self.packageDocumentId!)/public_comments").order(by: "created_date", descending: true).limit(to: 3).getDocuments { (snapshot, error) in
+        db.collection("packages/\(self.packageDocumentId!)/open_comments").order(by: "created_date", descending: true).limit(to: 3).getDocuments { (snapshot, error) in
             if error != nil {
                 print(error!)
             } else {
@@ -772,7 +748,7 @@ extension PackageDetailViewController: UICollectionViewDelegate {
     
     @objc private func didTapTweetButton(sender: UIButton) {
         print("tweet")
-        let twitterHandle = self.package!.recipient.twitter_handle!
+        let twitterHandle = self.package!.recipient.twitter!
         let twUrl = URL(string: "twitter://user?screen_name=\(twitterHandle)")!
         let twUrlWeb = URL(string: "https://www.twitter.com/\(twitterHandle)")!
         if UIApplication.shared.canOpenURL(twUrl){
@@ -792,21 +768,25 @@ extension PackageDetailViewController: UICollectionViewDelegate {
         self.followButtonActivityIndicatorView.isHidden = false
         if checkUserIsFollowingPackage() {
             print("unfollow")
-            unfollowPackageWithRef(packageReference: package!.reference, userReference: Firestore.firestore().collection("users").document(Auth.auth().currentUser!.uid)) { (success) in
+            unfollowPackage(with: package!.reference, userReference: Firestore.firestore().collection("users").document(Auth.auth().currentUser!.uid)) { (success) in
                 if success {
                     print("unfollow success")
+                    self.updateFollowButton()
                 } else {
                     print("unfollow failure")
+                    self.updateFollowButton()
                 }
             }
         } else {
             print("follow")
-            followPackageWithRef(packageReference: package!.reference, userReference: Firestore.firestore().collection("users").document(Auth.auth().currentUser!.uid)) { (success) in
+            followPackage(with: package!.reference, userReference: Firestore.firestore().collection("users").document(Auth.auth().currentUser!.uid)) { (success) in
                 self.followButton.isEnabled = true
                 if success {
                     print("follow success")
+                    self.updateFollowButton()
                 } else {
                     print("follow failure")
+                    self.updateFollowButton()
                 }
             }
         }
@@ -843,20 +823,20 @@ extension PackageDetailViewController: CLLocationManagerDelegate {
         return false
     }
     
-    func newUpdatePackageActionButton(with location: CLLocation?) {
+    func updatePackageActionButton(with location: CLLocation?) {
         DispatchQueue.main.async {
             if self.package != nil {
                 if self.packageInTransitByCurrentUser() {
                     // current user is moving the package
                     if location != nil {
                         // if current location is available
-                        applyEnabledStyleToButton(button: self.packageActionButton, withTint: self.categoryTint!)
+                        applyEnabledStyleToButton(button: self.packageActionButton, withTint: getTintForCategory(category: self.package!.category))
                         if location!.distance(from: CLLocation(latitude: self.package!.destination.geoPoint.latitude, longitude: self.package!.destination.geoPoint.longitude)) < self.ACTIONABLE_DISTANCE {
                             // if current location is within actionable distance from destination
-                            self.packageActionButton.setTitle("Deliver", for: .normal)
+                            self.packageActionButton.setTitle(String(NSLocalizedString("button.deliver", comment: "button title for deliver action")), for: .normal)
                         } else {
                             // if current location is outside actionable distance from destination
-                            self.packageActionButton.setTitle("Dropoff", for: .normal)
+                            self.packageActionButton.setTitle(String(NSLocalizedString("button.dropoff", comment: "button title for dropoff action")), for: .normal)
                         }
                     } else {
                         // if current location is not available
@@ -885,7 +865,7 @@ extension PackageDetailViewController: CLLocationManagerDelegate {
                                 if distanceFromPickup < self.ACTIONABLE_DISTANCE  {
                                     // if current location is with actionable distance from package location
                                     self.packageActionButton.setTitle(String(NSLocalizedString("button.pickup", comment: "button title for pickup")), for: .normal)
-                                    applyEnabledStyleToButton(button: self.packageActionButton, withTint: self.categoryTint!)
+                                    applyEnabledStyleToButton(button: self.packageActionButton, withTint: getTintForCategory(category: self.package!.category))
                                 } else if distanceFromPickup >= self.ACTIONABLE_DISTANCE {
                                     if distanceFromPickup > self.TOO_FAR_DISTANCE {
                                         // if current location is beyond too far away distance from package location
@@ -946,7 +926,7 @@ extension PackageDetailViewController: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        newUpdatePackageActionButton(with: locations.first)
+        updatePackageActionButton(with: locations.first)
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {

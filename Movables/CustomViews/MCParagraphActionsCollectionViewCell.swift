@@ -180,7 +180,7 @@ class MCParagraphActionsCollectionViewCell: UICollectionViewCell {
                 
                 let subtitleLabel = UILabel(frame: .zero)
                 subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
-                subtitleLabel.font = UIFont.systemFont(ofSize: 10, weight: .medium)
+                subtitleLabel.font = UIFont.systemFont(ofSize: 11, weight: .medium)
                 subtitleLabel.text = getStringForExternalAction(type: action.type!).uppercased()
                 subtitleLabel.textColor = Theme().grayTextColor
                 subtitleLabel.numberOfLines = 1

@@ -41,11 +41,12 @@ class ExploreCoordinator: Coordinator {
 }
 
 extension ExploreCoordinator: ExploreViewControllerDelegate {
-    func showPackageDetail(with packagePreview: PackagePreview) {
+    func showPackageDetail(with package: Package) {
         packageDetailVC = PackageDetailViewController()
-        packageDetailVC?.headline = packagePreview.headline
-        packageDetailVC?.tagName = packagePreview.tagName
-        packageDetailVC?.packageDocumentId = packagePreview.packageDocumentId
+        packageDetailVC?.headline = package.headline
+        packageDetailVC?.topicName = package.topic.name
+        packageDetailVC?.packageDocumentId = package.reference.documentID
+        packageDetailVC?.package = package
         packageDetailVC?.delegate = self
         let packageDetailNC = UINavigationController(rootViewController: packageDetailVC!)
         self.rootViewController.present(packageDetailNC, animated: true) {
@@ -67,6 +68,7 @@ extension ExploreCoordinator: PackageDetailViewControllerDelegate {
         let postsVC = PostsViewController(collectionViewLayout: UICollectionViewFlowLayout())
         postsVC!.reference = packageDetailVC?.package?.reference
         postsVC!.referenceType = .package
+        postsVC!.isOpen = true
         packageDetailVC?.navigationController?.show(postsVC!, sender: packageDetailVC)
     }
     

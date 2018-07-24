@@ -56,20 +56,11 @@ class MoveViewController: UIViewController {
     
     var userDocument: UserDocument? {
         didSet {
-            if userDocument?.privateProfile.currentPackage != nil {
-                self.listenToPackage()
-            } else {
-                self.moveCardView.isHidden = true
-                self.emptyStateCardView.isHidden = false
-                self.mapView.removeOverlays(self.mapView.overlays)
-                self.mapView.removeAnnotations(self.mapView.annotations)
-                self.progress = nil
-                self.currentPackage = nil
-                self.currentTransitRecord = nil
-            }
+            refreshCardState()
         }
     }
     
+    var moveLocationManager: CLLocationManager = CLLocationManager()
     
     var currentPackage: Package? {
         didSet {
@@ -78,6 +69,8 @@ class MoveViewController: UIViewController {
                 self.routeToDestinationDrawn = false
                 self.progress = nil
             } else {
+                self.currentPackageListener?.remove()
+                self.currentTransitRecordListener?.remove()
                 self.moveCardView.isHidden = true
                 self.emptyStateCardView.isHidden = false
                 self.mapView.removeOverlays(self.mapView.overlays)
@@ -91,13 +84,10 @@ class MoveViewController: UIViewController {
             if currentTransitRecord != nil {
                 self.moveCardView.isHidden = false
                 if self.currentPackage != nil {
-                    self.moveCardView.pillView.pillContainerView.backgroundColor = getTintForCategory(category: self.currentPackage!.categories.first!)
+                    self.moveCardView.pillView.pillContainerView.backgroundColor = getTintForCategory(category: self.currentPackage!.category)
                 }
                 self.emptyStateCardView.isHidden = true
-                self.mapView.removeOverlays(self.mapView.overlays)
-                self.routeToDestinationDrawn = false
                 self.progress = nil
-                self.fetchMovements()
             } else {
                 self.moveCardView.isHidden = true
                 self.emptyStateCardView.isHidden = false
@@ -119,16 +109,14 @@ class MoveViewController: UIViewController {
         navigationItem.title = "Go"
         navigationController?.setNavigationBarHidden(true, animated: false)
         
-        LocationManager.shared.delegate = self
-        LocationManager.shared.activityType = .fitness
+        moveLocationManager.delegate = self
+        moveLocationManager.activityType = .fitness
         
         mapView.tintColor = Theme().keyTint
         mapView.showsUserLocation = true
         mapView.mapType = .mutedStandard
         mapView.showsPointsOfInterest = false
         mapView.showsCompass = false
-        mapView.isPitchEnabled = false
-        mapView.isRotateEnabled = false
         mapView.isScrollEnabled = false
         mapView.isZoomEnabled = true
         mapView.delegate = self
@@ -173,8 +161,24 @@ class MoveViewController: UIViewController {
     }
     
     @objc private func userDocumentUpdated(notification: Notification) {
-        self.userDocument = (notification.object as! [String: Any])["userDocument"] as? UserDocument
+        self.userDocument = (notification.userInfo as! [String: Any])["userDocument"] as? UserDocument
         print("received notification and set userDocument")
+    }
+    
+    func refreshCardState() {
+        if userDocument?.privateProfile.currentPackage != nil {
+            self.routeToDestinationDrawn = false
+            self.progress = nil
+            self.listenToPackage()
+        } else {
+            self.moveCardView.isHidden = true
+            self.emptyStateCardView.isHidden = false
+            self.mapView.removeOverlays(self.mapView.overlays)
+            self.mapView.removeAnnotations(self.mapView.annotations)
+            self.progress = nil
+            self.currentPackage = nil
+            self.currentTransitRecord = nil
+        }
     }
         
     override func viewWillAppear(_ animated: Bool) {
@@ -215,13 +219,14 @@ class MoveViewController: UIViewController {
         self.currentPackageListener = userDocument?.privateProfile.currentPackage?.addSnapshotListener({ (documentSnapshot, error) in
             guard let snapshot = documentSnapshot else {
                 print("error fetching document: \(error!)")
-                LocationManager.shared.stopUpdatingHeading()
-                LocationManager.shared.stopUpdatingLocation()
+                self.moveLocationManager.stopUpdatingHeading()
+                self.moveLocationManager.stopUpdatingLocation()
+                self.currentPackage = nil
                 return
             }
-            LocationManager.shared.requestLocation()
-            LocationManager.shared.startUpdatingHeading()
-            LocationManager.shared.startUpdatingLocation()
+            self.moveLocationManager.startUpdatingHeading()
+            self.moveLocationManager.startUpdatingLocation()
+            self.moveLocationManager.requestLocation()
             if self.currentPackage != nil {
                 let snapshotPackage = Package(snapshot: snapshot)
                 if snapshotPackage == self.currentPackage! {
@@ -231,7 +236,13 @@ class MoveViewController: UIViewController {
                     self.currentPackage = snapshotPackage
                 }
             } else {
-                self.currentPackage = Package(snapshot: snapshot)
+                if self.userDocument?.privateProfile.currentPackage != nil {
+                    print("set new current package")
+                    self.currentPackage = Package(snapshot: snapshot)
+                } else {
+                    print("clear current package")
+                    self.currentPackage = nil
+                }
             }
         })
     }
@@ -239,12 +250,12 @@ class MoveViewController: UIViewController {
     private func updateGoCard() {
         if self.currentPackage != nil {
             self.moveCardView.headlineLabel.text = self.currentPackage?.headline
-            self.moveCardView.pillView.bodyLabel.text = self.currentPackage?.tag.name
-            self.moveCardView.pillView.characterLabel.text = getEmojiForCategory(category: self.currentPackage!.categories.first!)
+            self.moveCardView.pillView.bodyLabel.text = self.currentPackage?.topic.name
+            self.moveCardView.pillView.characterLabel.text = getEmojiForCategory(category: self.currentPackage!.category)
             self.moveCardView.countdownLabelView.keyLabel.text = String(NSLocalizedString("label.timeRemaining", comment: "label text for time remaining"))
             self.moveCardView.countdownLabelView.valueLabel.setCountDownDate(targetDate: self.currentTransitRecord!.pickupDate!.add(1.hours) as NSDate)
             self.moveCardView.countdownLabelView.valueLabel.start()
-            self.moveCardView.distanceLabelView.keyLabel.text = "Distance Left"
+            self.moveCardView.distanceLabelView.keyLabel.text = String(NSLocalizedString("label.distanceRemaining", comment: "label text for distance left"))
             let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapDetailsButton(sender:)))
             self.moveCardView.addGestureRecognizer(tapGestureRecognizer)
             self.moveCardView.dropoffButton.addTarget(self, action: #selector(didTapDropoffButton(sender:)), for: .touchUpInside)
@@ -255,10 +266,14 @@ class MoveViewController: UIViewController {
         self.currentTransitRecordListener = self.currentPackage?.reference.collection("transit_records").document(userDocument!.publicProfile.uid).addSnapshotListener({ (documentSnapshot, error) in
             guard documentSnapshot != nil else {
                 print("Error fetching transit record: \(error!)")
+                self.currentTransitRecord = nil
                 return
             }
-            self.currentTransitRecord = TransitRecord(dict: documentSnapshot!.data()!, reference: documentSnapshot!.reference)
-            self.updateGoCard()
+            if self.userDocument?.privateProfile.currentPackage != nil {
+                self.currentTransitRecord = TransitRecord(dict: documentSnapshot!.data()!, reference: documentSnapshot!.reference)
+                self.fetchMovements()
+                self.updateGoCard()
+            }
         })
     }
     
@@ -271,7 +286,7 @@ class MoveViewController: UIViewController {
         print("dropoff button tapped")
         sender.isEnabled = false
         let packageTemp = self.currentPackage!
-        dropoffPackageWithRef(packageReference: self.currentPackage!.reference, userReference: self.userDocument!.reference) { (success, response, alertVC) in
+        dropoffPackage(with: self.currentPackage!.reference, userReference: self.userDocument!.reference) { (success, response, alertVC) in
             if alertVC != nil {
                 self.present(alertVC!, animated: true, completion: {
                     print("presented alert")
@@ -378,44 +393,12 @@ extension MoveViewController: CLLocationManagerDelegate {
                 
                 self.moveCardView.distanceLabelView.valueLabel.text = distanceLeftString
                 if self.progress != nil {
-                    // This is the first time we're getting a location update, so create
-                    // the CrumbPath and add it to the map.
-                    //
-                    
-                    
-                    // default -boundingMapRect size is 1km^2 centered on coord
-                    //                let region = self.coordinateRegionWithCenter(newCoordinate, approximateRadiusInMeters: 2500)
-                    //
-                    //                self.mapView.setRegion(region, animated: true)
-                    // This is a subsequent location update.
-                    //
-                    // If the crumbs MKOverlay model object determines that the current location has moved
-                    // far enough from the previous location, use the returned updateRect to redraw just
-                    // the changed area.
-                    //
-                    // note: cell-based devices will locate you using the triangulation of the cell towers.
-                    // so you may experience spikes in location data (in small time intervals)
-                    // due to cell tower triangulation.
-                    //
                     var boundingMapRectChanged = false
                     var updateRect = self.progress!.addCoordinate(newLocation.coordinate, boundingMapRectChanged: &boundingMapRectChanged)
                     if boundingMapRectChanged {
-                        // MKMapView expects an overlay's boundingMapRect to never change (it's a readonly @property).
-                        // So for the MapView to recognize the overlay's size has changed, we remove it, then add it again.
                         self.mapView.remove(self.progress! as MKOverlay)
                         self.progressPathRenderer = nil
                         self.mapView.add(self.progress!, level: .aboveLabels)
-//                        let r = self.progress!.boundingMapRect
-//                        var pts: [MKMapPoint] = [
-//                            MKMapPointMake(MKMapRectGetMinX(r), MKMapRectGetMinY(r)),
-//                            MKMapPointMake(MKMapRectGetMinX(r), MKMapRectGetMaxY(r)),
-//                            MKMapPointMake(MKMapRectGetMaxX(r), MKMapRectGetMaxY(r)),
-//                            MKMapPointMake(MKMapRectGetMaxX(r), MKMapRectGetMinY(r)),
-//                            ]
-//                        let count = pts.count
-//                        let boundingMapRectOverlay = MKPolygon(points: &pts, count: count)
-//                        self.mapView.add(boundingMapRectOverlay, level: .aboveLabels)
-                        print("added boundingMapRectOverlay")
                     }
                     if !MKMapRectIsNull(updateRect) {
                         // There is a non null update rect.
@@ -436,71 +419,61 @@ extension MoveViewController: CLLocationManagerDelegate {
     
     private func fetchMovements() {
         print("fetch movements now")
-        self.currentTransitRecord?.reference.collection("movements").order(by: "date", descending: false).getDocuments(completion: { (querySnapshot, error) in
-            guard let snapshot = querySnapshot else {
-                print(error!)
-                return
-            }
-            var movementsTemp:[TransitMovement] = []
-            for document in snapshot.documents {
-                movementsTemp.append(TransitMovement(dict: document.data()))
-            }
-            self.movements = movementsTemp
-            if self.movements!.isEmpty {
-                self.progress = ProgressPath(center: CLLocationCoordinate2D(latitude: self.currentTransitRecord!.pickupGeoPoint!.latitude, longitude: self.currentTransitRecord!.pickupGeoPoint!.longitude))
-                self.recordMovement(at: CLLocation(latitude: self.currentTransitRecord!.pickupGeoPoint!.latitude, longitude: self.currentTransitRecord!.pickupGeoPoint!.longitude))
-            } else {
-                for (index, movement) in self.movements!.enumerated() {
-                    if index == 0 {
-                        self.progress = ProgressPath(center: CLLocationCoordinate2D(latitude: movement.geoPoint.latitude, longitude: movement.geoPoint.longitude))
-                        self.mapView.remove(self.progress as! MKOverlay)
-                        self.progressPathRenderer = nil
-                        self.mapView.add(self.progress!, level: .aboveLabels)
+        let movementsTemp:[TransitMovement] = currentTransitRecord?.movements ?? []
+        self.movements = movementsTemp
+        if self.movements!.isEmpty {
+            self.progress = ProgressPath(center: CLLocationCoordinate2D(latitude: self.currentTransitRecord!.pickupGeoPoint!.latitude, longitude: self.currentTransitRecord!.pickupGeoPoint!.longitude))
+            self.recordMovement(at: CLLocation(latitude: self.currentTransitRecord!.pickupGeoPoint!.latitude, longitude: self.currentTransitRecord!.pickupGeoPoint!.longitude))
+        } else {
+            for (index, movement) in self.movements!.enumerated() {
+                if index == 0 {
+                    self.progress = ProgressPath(center: CLLocationCoordinate2D(latitude: movement.geoPoint.latitude, longitude: movement.geoPoint.longitude))
+                    self.mapView.remove(self.progress as! MKOverlay)
+                    self.progressPathRenderer = nil
+                    self.mapView.add(self.progress!, level: .aboveLabels)
+                    
+                    let r = self.progress!.boundingMapRect
+                    var pts: [MKMapPoint] = [
+                        MKMapPointMake(MKMapRectGetMinX(r), MKMapRectGetMinY(r)),
+                        MKMapPointMake(MKMapRectGetMinX(r), MKMapRectGetMaxY(r)),
+                        MKMapPointMake(MKMapRectGetMaxX(r), MKMapRectGetMaxY(r)),
+                        MKMapPointMake(MKMapRectGetMaxX(r), MKMapRectGetMinY(r)),
+                        ]
+                    let count = pts.count
+                    let boundingMapRectOverlay = MKPolygon(points: &pts, count: count)
+                    self.mapView.add(boundingMapRectOverlay, level: .aboveLabels)
+                } else {
+                    var boundingMapRectChanged = false
+                    let newCoordinate = CLLocationCoordinate2D(latitude: movement.geoPoint.latitude, longitude: movement.geoPoint.longitude)
+                    var updateRect = self.progress!.addCoordinate(newCoordinate, boundingMapRectChanged: &boundingMapRectChanged)
+                    if boundingMapRectChanged {
                         
-                        let r = self.progress!.boundingMapRect
-                        var pts: [MKMapPoint] = [
-                            MKMapPointMake(MKMapRectGetMinX(r), MKMapRectGetMinY(r)),
-                            MKMapPointMake(MKMapRectGetMinX(r), MKMapRectGetMaxY(r)),
-                            MKMapPointMake(MKMapRectGetMaxX(r), MKMapRectGetMaxY(r)),
-                            MKMapPointMake(MKMapRectGetMaxX(r), MKMapRectGetMinY(r)),
-                            ]
-                        let count = pts.count
-                        let boundingMapRectOverlay = MKPolygon(points: &pts, count: count)
-                        self.mapView.add(boundingMapRectOverlay, level: .aboveLabels)
-                    } else {
-                        var boundingMapRectChanged = false
-                        let newCoordinate = CLLocationCoordinate2D(latitude: movement.geoPoint.latitude, longitude: movement.geoPoint.longitude)
-                        var updateRect = self.progress!.addCoordinate(newCoordinate, boundingMapRectChanged: &boundingMapRectChanged)
-                        if boundingMapRectChanged {
-                            
-                        } else if !MKMapRectIsNull(updateRect) {
-                            // There is a non null update rect.
-                            // Compute the currently visible map zoom scale
-                            let currentZoomScale = MKZoomScale(self.mapView.bounds.size.width / CGFloat(self.mapView.visibleMapRect.size.width))
-                            // Find out the line width at this zoom scale and outset the updateRect by that amount
-                            let lineWidth = MKRoadWidthAtZoomScale(currentZoomScale)
-                            updateRect = MKMapRectInset(updateRect, Double(-lineWidth), Double(-lineWidth))
-                            // Ask the overlay view to update just the changed area.
-                            self.progressPathRenderer?.setNeedsDisplayIn(updateRect)
-                        }
+                    } else if !MKMapRectIsNull(updateRect) {
+                        // There is a non null update rect.
+                        // Compute the currently visible map zoom scale
+                        let currentZoomScale = MKZoomScale(self.mapView.bounds.size.width / CGFloat(self.mapView.visibleMapRect.size.width))
+                        // Find out the line width at this zoom scale and outset the updateRect by that amount
+                        let lineWidth = MKRoadWidthAtZoomScale(currentZoomScale)
+                        updateRect = MKMapRectInset(updateRect, Double(-lineWidth), Double(-lineWidth))
+                        // Ask the overlay view to update just the changed area.
+                        self.progressPathRenderer?.setNeedsDisplayIn(updateRect)
                     }
                 }
             }
-        })
+        }
     }
+
     
     private func recordMovement(at location: CLLocation) {
-        self.currentTransitRecord?.reference.collection("movements").addDocument(data: [
-                "date": Date(),
-                "geo_point": GeoPoint(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-            ]
-        )
+        let dateString = String(Date().timeIntervalSince1970).components(separatedBy: ".").first!
+        print("movements.\(dateString)")
+        self.currentTransitRecord?.reference.updateData(["movements.\(dateString)": GeoPoint(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)])
     }
     
     func drawRouteToDestination() {
         if self.currentPackage != nil && self.currentTransitRecord != nil  {
             let request = MKDirectionsRequest()
-            request.source = MKMapItem(placemark: MKPlacemark(coordinate: LocationManager.shared.location!.coordinate))
+            request.source = MKMapItem(placemark: MKPlacemark(coordinate: moveLocationManager.location!.coordinate))
             request.destination = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: self.currentPackage!.destination.geoPoint.latitude, longitude: self.currentPackage!.destination.geoPoint.longitude)))
             request.requestsAlternateRoutes = false
             
@@ -510,7 +483,7 @@ extension MoveViewController: CLLocationManagerDelegate {
                 
                 if error != nil {
                     print("Error getting directions")
-                    self.mapView.setUserTrackingMode(.followWithHeading, animated: true)
+                    self.mapView.setUserTrackingMode(.follow, animated: true)
                     self.routeToDestinationDrawn = true
                 } else {
                     self.drawMoveRoutesAndStamps(with: response!.routes)
@@ -532,7 +505,7 @@ extension MoveViewController: CLLocationManagerDelegate {
                              level: MKOverlayLevel.aboveLabels)
             print("draw route")
         }
-        self.mapView.setUserTrackingMode(.followWithHeading, animated: true)
+        self.mapView.setUserTrackingMode(.follow, animated: true)
         self.routeToDestinationDrawn = true
     }
 }

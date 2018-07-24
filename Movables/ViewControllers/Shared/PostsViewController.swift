@@ -32,9 +32,11 @@ class PostsViewController: SLKTextViewController {
     
     var reference: DocumentReference!
     var referenceType: CommunityType!
+    var isOpen: Bool = false
     var posts: [Post]?
     var listener: ListenerRegistration?
     var emptyStateView: EmptyStateView!
+    var commentsReference: CollectionReference?
     
     required init?(coder decoder: NSCoder) {
         super.init(coder: decoder)
@@ -49,7 +51,7 @@ class PostsViewController: SLKTextViewController {
         
         navigationController?.setNavigationBarHidden(false, animated: false)
         
-        title = String(NSLocalizedString("navBar.conversation", comment: "navigation bar title for conversation"))
+        title = isOpen ? String(NSLocalizedString("headerCollectionCell.public_conversation", comment: "navigation bar title for public conversation")) : String(NSLocalizedString("navBar.conversation", comment: "navigation bar title for conversation"))
         
         collectionView?.dataSource = self
         collectionView?.delegate = self
@@ -93,6 +95,8 @@ class PostsViewController: SLKTextViewController {
                 ])
         
         // attach listener on public comments
+        self.commentsReference = isOpen ? self.reference.collection("open_comments") : reference.collection("comments")
+
         listenToPosts()
     }
     
@@ -111,7 +115,7 @@ class PostsViewController: SLKTextViewController {
     }
     
     private func listenToPosts() {
-        reference.collection("public_comments").order(by: "created_date", descending: true).getDocuments { (querySnapshot, error) in
+        self.commentsReference!.order(by: "created_date", descending: true).getDocuments { (querySnapshot, error) in
             guard let snapshot = querySnapshot else {
                 print("Error fetching snapshots: \(error!)")
                 return
@@ -131,7 +135,7 @@ class PostsViewController: SLKTextViewController {
                     }
                 })
             }
-            self.listener = self.reference.collection("public_comments").order(by: "created_date", descending: true).addSnapshotListener { (querySnapshot, error) in
+            self.listener = self.commentsReference!.order(by: "created_date", descending: true).addSnapshotListener { (querySnapshot, error) in
                 guard let snapshot = querySnapshot else {
                     print("Error fetching snapshots: \(error!)")
                     return
@@ -187,7 +191,7 @@ class PostsViewController: SLKTextViewController {
             "created_date": Date()
         ]
         self.textView.text = ""
-        reference.collection("public_comments").addDocument(data: postData) { (error) in
+        self.commentsReference!.addDocument(data: postData) { (error) in
             if let error = error {
                 print(error)
             } else {
@@ -195,7 +199,7 @@ class PostsViewController: SLKTextViewController {
             }
         }
         reference.updateData([
-                "participants.\(Auth.auth().currentUser!.uid)": Date().timeIntervalSince1970
+                "participants.\(Auth.auth().currentUser!.uid)": Date()
             ]) { (error) in
             if let error = error {
                 print(error)

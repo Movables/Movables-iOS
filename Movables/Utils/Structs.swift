@@ -66,12 +66,14 @@ struct UserPublicCount {
 }
 
 struct UserPrivateProfile {
-    var timeBankBalance: CGFloat
+    var pointsBalance: CGFloat
     var currentPackage: DocumentReference?
     var interests: [PackageCategory]
+    var packagesFollowing: [String: Date]?
+    var packagesMoved: [String: Date]?
     
     init(with dict: [String: Any]) {
-        self.timeBankBalance = dict["time_bank_balance"] as! CGFloat
+        self.pointsBalance = dict["points_balance"] as! CGFloat
         self.currentPackage = dict["current_package"] as? DocumentReference
         self.interests = []
         if let interestDict = dict["interests"] as? [String: Bool] {
@@ -81,40 +83,105 @@ struct UserPrivateProfile {
                 }
             }
         }
+        if let packagesFollowingDict = dict["packages_following"] as? [String: TimeInterval] {
+            packagesFollowing = [:]
+            for (key, value) in packagesFollowingDict {
+                packagesFollowing?.updateValue(Date(timeIntervalSince1970: value), forKey: key)
+            }
+        }
+        
+        if let packagesMovedDict = dict["packages_moved"] as? [String: TimeInterval] {
+            packagesMoved = [:]
+            for (key, value) in packagesMovedDict {
+                packagesMoved?.updateValue(Date(timeIntervalSince1970: value), forKey: key)
+            }
+        }
     }
 }
 
 struct TopicResultItem {
-    var tag: String
+    var name: String
     var objectID: String
     init(with dict:[String: Any]) {
-        self.tag = dict["tag"] as! String
+        self.name = dict["name"] as! String
         self.objectID = dict["objectID"] as! String
     }
 }
 
 struct Topic {
-    var count: TopicCount
-    var tag: String
+    var count: TopicCount?
+    var name: String
     var description: String?
     var reference: DocumentReference
     
     init(with dict: [String: Any], reference: DocumentReference) {
-        self.count = TopicCount(with: dict["count"] as! [String: Int])
-        self.tag = dict["tag"] as! String
+        self.count = TopicCount(with: dict["count"] as? [String: Int])
+        self.name = dict["name"] as! String
         self.description = dict["description"] as? String
         self.reference = reference
     }
     
+    init(hitTopic: [String: Any]) {
+        self.count = TopicCount(with: hitTopic["count"] as? [String: Int])
+        self.name = hitTopic["name"] as! String
+        self.description = hitTopic["description"] as? String
+        self.reference = Firestore.firestore().collection("topics").document(hitTopic["documentID"] as! String)
+    }
+    
+    static func == (lhs: Topic, rhs: Topic) -> Bool {
+        return lhs.reference == rhs.reference
+    }
+
+    
 }
 
 struct TopicCount {
-    var packages: Int
-    var templates: Int
+    var packages: Int?
+    var templates: Int?
     
-    init(with dict: [String: Int]) {
-        self.packages = dict["packages"]!
-        self.templates = dict["templates"]!
+    init(with dict: [String: Int]?) {
+        self.packages = dict?["packages"]
+        self.templates = dict?["templates"]
+    }
+}
+
+struct TopicSubscribed {
+    var topicName: String
+    var topicReference: DocumentReference
+    var count: TopicSubscribedCount
+    var communities: [Community]
+    
+    init(with dict: [String: Any]) {
+        self.topicName = dict["name"] as! String
+        self.topicReference = dict["reference"] as! DocumentReference
+        let count = dict["count"] as! [String: Any]
+        self.count = TopicSubscribedCount(packagesMoved: count["packages_moved"] as! Int, localConversations: count["local_conversations"] as! Int, privateConversations: count["private_conversations"] as! Int)
+        let communitiesDict = dict["communities"] as! [String: [String: Any]]
+        self.communities = []
+        for (_, value) in communitiesDict {
+            let communityType = getEnumForCommunityType(with: value["type"] as! String)
+            let communityReference: DocumentReference?
+            switch communityType {
+            case .package:
+                let packageReference = (value["reference"] as! DocumentReference)
+                communityReference = packageReference.collection("conversations").document(packageReference.documentID)
+            default:
+                communityReference = (value["reference"] as! DocumentReference)
+            }
+            self.communities.append(Community(name: value["name"] as! String, type: getEnumForCommunityType(with: value["type"] as! String), reference: communityReference!))
+        }
+    }
+}
+
+struct TopicSubscribedCount {
+    var packagesMoved: Int
+    var localConversations: Int
+    var privateConversations: Int
+    
+    init(packagesMoved: Int, localConversations: Int, privateConversations: Int) {
+        self.packagesMoved = packagesMoved
+        self.localConversations = localConversations
+        self.privateConversations = privateConversations
     }
 }
 
@@ -216,16 +283,45 @@ enum CommunityType {
     case package
     case location
     case group
+    case open
 }
 
 func getStringForCommunityType(type: CommunityType) -> String {
     switch type {
     case .location:
+        return "location"
+    case .package:
+        return "package"
+    case .group:
+        return "group"
+    case .open:
+        return "open"
+    }
+}
+
+func getReadableForCommunityType(type: CommunityType) -> String {
+    switch type {
+    case .location:
         return String(NSLocalizedString("label.conversationTypeLocal", comment: "label text for local conversation"))
     case .package:
         return String(NSLocalizedString("label.conversationTypePackage", comment: "label text for package conversation"))
+    case .open:
+        return String(NSLocalizedString("label.conversationTypeOpen", comment: "label text for open conversation"))
     default:
         return String(NSLocalizedString("label.conversationTypePrivate", comment: "label text for private conversation"))
+    }
+}
+
+func getEnumForCommunityType(with string: String) -> CommunityType {
+    switch string {
+    case "group":
+        return .group
+    case "location":
+        return .location
+    case "open":
+        return .open
+    default:
+        return .package
     }
 }
 
@@ -235,6 +331,8 @@ func getDescriptionForCommunityType(type: CommunityType) -> String {
         return String(NSLocalizedString("label.conversationTypeLocalDesc", comment: "label text for conversation type local description"))
     case .package:
         return String(NSLocalizedString("label.conversationTypePackageDesc", comment: "label text for conversation type package description"))
+    case .open:
+        return String(NSLocalizedString("label.conversationTypeOpenDesc", comment: "label text for conversation type open description"))
     default:
         return String(NSLocalizedString("label.conversationTypePrivateDesc", comment: "label text for conversation type private description"))
     }
@@ -332,6 +430,43 @@ func getStringForStatusEnum(statusEnum: PackageStatus) -> String {
         return "unknown"
     }
 }
+
+enum RecipientType {
+    case politician
+    case politicalOrganization
+    case individual
+    case corporation
+}
+
+func getStringForRecipientTypeEnum(recipientTypeEnum: RecipientType) -> String {
+    switch recipientTypeEnum {
+    case .politician:
+        return "politician"
+    case .politicalOrganization:
+        return "political_organization"
+    case .corporation:
+        return "corporation"
+    case .individual:
+        return "individual"
+    }
+}
+
+func getEnumForRecipientTypeString(recipientTypeString: String?) -> RecipientType? {
+    switch recipientTypeString {
+    case "politician":
+        return .politician
+    case "political_party":
+        return .politicalOrganization
+    case "corporation":
+        return .corporation
+    case "individual":
+        return .individual
+    default:
+        return nil
+    }
+}
+
+
 
 
 func getEnumForStatusReadable(readableString: String) -> PackageStatus {

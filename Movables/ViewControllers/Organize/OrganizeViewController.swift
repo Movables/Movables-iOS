@@ -28,22 +28,8 @@ import UIKit
 import Firebase
 import NVActivityIndicatorView
 
-struct OrganizeTopic {
-    var tag: String
-    var packagesMoved: [PackageMoved]
-    var unreadTotal: Int
-    var lastActivity: Date
-    
-    init(tag: String, packagesMoved: [PackageMoved], unreadTotal: Int, lastActivity: Date) {
-        self.tag = tag
-        self.packagesMoved = packagesMoved
-        self.unreadTotal = unreadTotal
-        self.lastActivity = lastActivity
-    }
-}
-
 protocol OrganizeViewControllerDelegate {
-    func showOrganizeDetailVC(for organizeTopic: OrganizeTopic)
+    func showSubscribedTopicDetailVC(for subscribedTopic: TopicSubscribed)
 }
 
 class OrganizeViewController: UIViewController {
@@ -56,19 +42,7 @@ class OrganizeViewController: UIViewController {
     var refreshControl: UIRefreshControl!
     var activityIndicatorView: NVActivityIndicatorView!
     
-    var packagesMoved: [PackageMoved]?
-    var organizeTopics: [OrganizeTopic]? {
-        didSet {
-            self.activityIndicatorView.stopAnimating()
-            self.refreshControl.endRefreshing()
-            if organizeTopics!.count == 0 {
-                emptyStateView.isHidden = false
-            } else {
-                emptyStateView.isHidden = true
-            }
-            self.tableView.reloadData()
-        }
-    }
+    var topicsSubscribed: [TopicSubscribed]?
     
     var emptyStateView: EmptyStateView!
     
@@ -79,7 +53,7 @@ class OrganizeViewController: UIViewController {
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         
         setupTableView()
-        fetchpackagesMoved()
+        fetchTopicsSubscribed()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -118,8 +92,8 @@ class OrganizeViewController: UIViewController {
         
         emptyStateView = EmptyStateView(frame: .zero)
         emptyStateView.translatesAutoresizingMaskIntoConstraints = false
-        emptyStateView.titleLabel.text = "Wanna organize?"
-        emptyStateView.subtitleLabel.text = "Move a package first."
+        emptyStateView.titleLabel.text = String(NSLocalizedString("copy.wannaOrgnize", comment: "Organize tab empty state title"))
+        emptyStateView.subtitleLabel.text = String(NSLocalizedString("copy.wannaOrgnizeBody", comment: "Organize tab empty state body"))
         emptyStateView.actionButton.isHidden = true
         emptyStateView.isHidden = true
         view.addSubview(emptyStateView)
@@ -140,80 +114,58 @@ class OrganizeViewController: UIViewController {
     
     @objc private func refreshTableView(sender: UIRefreshControl) {
         sender.beginRefreshing()
-        fetchpackagesMoved()
+        fetchTopicsSubscribed()
     }
     
-    private func fetchpackagesMoved() {
-        let db = Firestore.firestore()
-        db.collection("users").document("\(Auth.auth().currentUser!.uid)").collection("packages_moved").getDocuments { (querySnapshot, error) in
+    private func fetchTopicsSubscribed() {
+        UserManager.shared.userDocument!.reference.collection("subscribed_topics").getDocuments { (querySnapshot, error) in
             if let error = error {
                 print(error)
             } else {
                 if let snapshot = querySnapshot {
-                    var packagesMovedTemp: [PackageMoved] = []
+                    var topicsSubscribedTemp: [TopicSubscribed] = []
                     snapshot.documents.forEach({ (docSnapshot) in
-                        packagesMovedTemp.append(PackageMoved(dict: docSnapshot.data()))
+                        topicsSubscribedTemp.append(TopicSubscribed(with: docSnapshot.data()))
                     })
-                    self.packagesMoved = packagesMovedTemp
-                    self.processPackagesMoved()
+                    self.topicsSubscribed = topicsSubscribedTemp
+                    self.activityIndicatorView.stopAnimating()
+                    self.refreshControl.endRefreshing()
+                    if self.topicsSubscribed!.count == 0 {
+                        self.emptyStateView.isHidden = false
+                    } else {
+                        self.emptyStateView.isHidden = true
+                    }
+                    self.tableView.reloadData()
                 } else {
                     print("snapshot is nil")
                 }
             }
         }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-    
-    private func processPackagesMoved() {
-        guard let packagesMoved = self.packagesMoved else { return }
-        // sort into dict by tag name first
-        var packagesByTagTemp:[String: [PackageMoved]] = [:]
-        for package in packagesMoved {
-            if let packages = packagesByTagTemp[package.tag.name] {
-                // key already exists
-                var newPackages: [PackageMoved] = []
-                newPackages.append(contentsOf: packages)
-                newPackages.append(package)
-                packagesByTagTemp[package.tag.name] = newPackages
-            } else {
-                // key doesn't exist
-                packagesByTagTemp.updateValue([package], forKey: package.tag.name)
-            }
-        }
-        var organizeTopicsTemp:[OrganizeTopic] = []
-        for taggedPackages in packagesByTagTemp {
-            var unreadTotal = 0
-            var lastActivity = Date(timeIntervalSince1970: 0)
-            for packageMoved in taggedPackages.value {
-               unreadTotal += packageMoved.packageMovedCount.unreadTotal
-                if packageMoved.movedDate > lastActivity {
-                    lastActivity = packageMoved.movedDate
-                }
-            }
-            organizeTopicsTemp.append(OrganizeTopic(tag: taggedPackages.key, packagesMoved: taggedPackages.value, unreadTotal: unreadTotal, lastActivity: lastActivity))
-        }
-        self.organizeTopics = organizeTopicsTemp.sorted(by: { $0.unreadTotal > $1.unreadTotal })
     }
 }
 
 extension OrganizeViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.organizeTopics?.count ?? 0
+        return self.topicsSubscribed?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "packageMoved") as! OrganizePackageMovedTableViewCell
-        let organizeTopic = self.organizeTopics![indexPath.row]
+        let subscribedTopic = self.topicsSubscribed![indexPath.row]
         
-        cell.topicLabel.text = "#\(organizeTopic.tag)"
-        cell.packageCountLabel.text = String(format: NSLocalizedString(organizeTopic.packagesMoved.count == 1 ? "label.packageMoved" : "label.packagesMovedPlural", comment: "label text for packages moved"), organizeTopic.packagesMoved.count)
-        cell.supplementLabel.text = "\(organizeTopic.unreadTotal)"
+        cell.topicLabel.text = "#\(subscribedTopic.topicName)"
+        cell.packageCountLabel.text = String(format: NSLocalizedString(subscribedTopic.count.packagesMoved == 1 ? "label.packageMoved" : "label.packagesMovedPlural", comment: "label text for packages moved"), subscribedTopic.count.packagesMoved)
+        let unreadTotal = subscribedTopic.count.packagesMoved + subscribedTopic.count.localConversations + subscribedTopic.count.privateConversations
+        cell.supplementLabel.text = "\(unreadTotal)"
         cell.supplementLabelContainerView.backgroundColor = Theme().mapStampTint
-        if organizeTopic.unreadTotal <= 0 {
+        if unreadTotal > 0 {
+            cell.supplementLabelContainerView.isHidden = false
+        } else {
             cell.supplementLabelContainerView.isHidden = true
         }
         return cell
@@ -223,6 +175,6 @@ extension OrganizeViewController: UITableViewDataSource {
 extension OrganizeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("did select \(indexPath.row)")
-        self.delegate?.showOrganizeDetailVC(for: self.organizeTopics![indexPath.row])
+        self.delegate?.showSubscribedTopicDetailVC(for: self.topicsSubscribed![indexPath.row])
     }
 }

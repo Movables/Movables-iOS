@@ -1,5 +1,5 @@
 //
-//  OrganizeDetailViewController.swift
+//  SubscribedTopicDetailViewController.swift
 //  Movables
 //
 //  MIT License
@@ -30,22 +30,22 @@ import NVActivityIndicatorView
 import CoreLocation
 import AlgoliaSearch
 
-protocol OrganizeDetailViewControllerDelegate {
-    func dismissOrganizeDetailVC()
+protocol SubscribedTopicDetailViewControllerDelegate {
+    func dismissSubscribedTopicDetailVC()
     func showPostsVC(for reference: DocumentReference, referenceType: CommunityType)
 }
 
-class OrganizeDetailViewController: UIViewController {
+class SubscribedTopicDetailViewController: UIViewController {
 
     let apiClient = Client(appID: (UIApplication.shared.delegate as! AppDelegate).algoliaClientId!, apiKey: (UIApplication.shared.delegate as! AppDelegate).algoliaAPIKey!)
     
-    var delegate: OrganizeDetailViewControllerDelegate?
+    var delegate: SubscribedTopicDetailViewControllerDelegate?
     
     var navBarIsTransparent: Bool = true
     
     var tableView: UITableView!
     
-    var organizeTopic: OrganizeTopic!
+    var subscribedTopic: TopicSubscribed!
     var favoriteCommunities: [Community]? {
         didSet {
             if nearbyCommunities != nil && topic != nil {
@@ -113,7 +113,7 @@ class OrganizeDetailViewController: UIViewController {
     
     private func fetchTopicDetail() {
         let db = Firestore.firestore()
-        db.collection("topics").whereField("tag", isEqualTo: organizeTopic.tag).limit(to: 1).getDocuments { (querySnapshot, error) in
+        db.collection("topics").whereField("name", isEqualTo: subscribedTopic.topicName).limit(to: 1).getDocuments { (querySnapshot, error) in
             guard let snapshot = querySnapshot else { return }
             snapshot.documents.forEach({ (docSnapshot) in
                 self.topic = Topic(with: docSnapshot.data(), reference: docSnapshot.reference)
@@ -123,7 +123,7 @@ class OrganizeDetailViewController: UIViewController {
     }
     
     func loadMyConversations() {
-        topic!.reference.collection("conversations").whereField("participants.\(Auth.auth().currentUser!.uid)", isGreaterThan: 0).getDocuments { (querySnapshot, error) in
+        topic!.reference.collection("conversations").whereField("participants.\(Auth.auth().currentUser!.uid)", isGreaterThan: Date(timeIntervalSince1970: 0)).getDocuments { (querySnapshot, error) in
             if let error = error {
                 print(error)
                 return
@@ -135,8 +135,8 @@ class OrganizeDetailViewController: UIViewController {
                         let legislativeAreaString = legislativeArea.first!.value
                         tempMyLegislativeAreaConversations.append(Community(name: legislativeAreaString, type: .location, reference: docSnapshot.reference))
                     })
-                    for package in self.organizeTopic.packagesMoved {
-                        tempMyLegislativeAreaConversations.append(Community(name: package.headline, type: .package, reference: package.reference))
+                    for community in self.subscribedTopic.communities {
+                        tempMyLegislativeAreaConversations.append(community)
                     }
                     self.favoriteCommunities = tempMyLegislativeAreaConversations
                     self.loadNearByConversations()
@@ -154,7 +154,7 @@ class OrganizeDetailViewController: UIViewController {
                 return
             } else {
                 if let placemark = placemarks?.first {
-                    let index = self.apiClient.index(withName: "topicConversations")
+                    let index = self.apiClient.index(withName: "conversations")
                     let query = Query(query: "")
                     query.attributesToRetrieve = ["country", "administrative_area", "sub_administrative_area", "locality", "sub_locality", "objectID"]
                     
@@ -221,9 +221,7 @@ class OrganizeDetailViewController: UIViewController {
         tableView.estimatedSectionHeaderHeight = 40
         tableView.contentInset.bottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom
         tableView.register(OrganizeDetailTableHeaderViewCell.self, forCellReuseIdentifier: "organizeDetailHeader")
-        tableView.register(UnderlineTableViewHeaderView.self, forHeaderFooterViewReuseIdentifier: "underlineHeader")
         tableView.register(SectionHeaderTableViewHeaderView.self, forHeaderFooterViewReuseIdentifier: "sectionHeader")
-        tableView.register(ParagraphTableViewCell.self, forCellReuseIdentifier: "paragraphCell")
         tableView.register(CommunityTableViewCell.self, forCellReuseIdentifier: "communityCell")
         tableView.backgroundColor = .white
         view.addSubview(tableView)
@@ -247,7 +245,7 @@ class OrganizeDetailViewController: UIViewController {
     
     
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
-        delegate?.dismissOrganizeDetailVC()
+        delegate?.dismissSubscribedTopicDetailVC()
     }
     
     @objc private func didTapAddButton(sender: UIBarButtonItem) {
@@ -262,12 +260,12 @@ class OrganizeDetailViewController: UIViewController {
         self.navBarIsTransparent = !self.navBarIsTransparent
         self.navigationController?.navigationBar.setBackgroundImage(withTransparency ? UIImage() : nil, for: .default)
         self.navigationController?.navigationBar.shadowImage = withTransparency ? UIImage() : nil
-        self.navigationItem.title = withTransparency ? "" : "#\(organizeTopic.tag)"
+        self.navigationItem.title = withTransparency ? "" : "#\(subscribedTopic.topicName)"
         self.navigationController?.navigationBar.tintColor = withTransparency ? Theme().textColor : Theme().textColor
     }
 }
 
-extension OrganizeDetailViewController: UITableViewDelegate {
+extension SubscribedTopicDetailViewController: UITableViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView == tableView {
             if scrollView.contentOffset.y > (20 + UIApplication.shared.keyWindow!.safeAreaInsets.top)  && navBarIsTransparent == true {
@@ -302,7 +300,7 @@ extension OrganizeDetailViewController: UITableViewDelegate {
     }
 }
 
-extension OrganizeDetailViewController: UITableViewDataSource {
+extension SubscribedTopicDetailViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return self.topic != nil ? 3 : 0
     }
@@ -322,7 +320,7 @@ extension OrganizeDetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "organizeDetailHeader") as! OrganizeDetailTableHeaderViewCell
-            cell.tagLabel.text = "#\(organizeTopic.tag)"
+            cell.topicLabel.text = "#\(subscribedTopic.topicName)"
             cell.descriptionLabel.text = self.topic?.description ?? ""
             return cell
         } else {
@@ -369,6 +367,8 @@ func getDescriptionForCommunity(community: Community) -> String {
         return String(NSLocalizedString("label.conversationTypeLocal", comment: "label string for local conversation"))
     case .package:
         return String(NSLocalizedString("label.conversationTypePackage", comment: "label string for package conversation"))
+    case .open:
+        return String(NSLocalizedString("label.conversationTypeOpen", comment: "label string for open conversation"))
     default:
         return String(NSLocalizedString("label.conversationTypePrivate", comment: "label string for private conversation"))
     }
@@ -379,6 +379,8 @@ func getImageForCommunityType(type: CommunityType) -> UIImage {
     case .location:
         return UIImage(named: "location_glyph_40pt")!
     case .package:
+        return UIImage(named: "package_glyph_40pt")!
+    case .open:
         return UIImage(named: "package_glyph_40pt")!
     default:
         return UIImage(named: "people_glyph_40pt")!

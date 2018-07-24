@@ -64,8 +64,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, FBSDKL
         }
         if let dict = myDict {
         // Use your dict here
-            algoliaClientId = dict["algoliaClientId"] as? String
-            algoliaAPIKey = dict["algoliaAPIKey"] as? String
+            #if DEBUG
+            self.algoliaClientId = dict["DevAlgoliaClientId"] as? String
+            self.algoliaAPIKey = dict["DevAlgoliaAPIKey"] as? String
+            #elseif RELEASE
+            self.algoliaClientId = dict["ProdAlgoliaClientId"] as? String
+            self.algoliaAPIKey = dict["ProdAlgoliaAPIKey"] as? String
+            #endif
         }
     }
     
@@ -91,6 +96,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, FBSDKL
                 print(error)
                 return
             } else if authDataResult?.additionalUserInfo != nil && authDataResult!.additionalUserInfo!.isNewUser {
+                UserManager.shared.startListening()
                 self.createUserProfile(authDataResult: authDataResult!) { (success) in
                     if success {
                         self.appCoordinator?.authCoordinator.showNewUserOnboarding()
@@ -99,6 +105,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, FBSDKL
                     }
                 }
             } else {
+                UserManager.shared.startListening()
                 self.appCoordinator?.showMain()
             }
         }
@@ -128,12 +135,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, FBSDKL
             } else if authDataResult?.additionalUserInfo != nil && authDataResult!.additionalUserInfo!.isNewUser {
                 self.createUserProfile(authDataResult: authDataResult!) { (success) in
                     if success {
+                        UserManager.shared.startListening()
                         self.appCoordinator?.authCoordinator.showNewUserOnboarding()
                     } else {
                         print("something happened")
                     }
                 }
             } else {
+                UserManager.shared.startListening()
                 self.appCoordinator?.showMain()
             }
         }
@@ -142,6 +151,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, FBSDKL
     func loginButtonDidLogOut(_ loginButton: FBSDKLoginButton!) {
         do {
             try Auth.auth().signOut()
+            UserManager.shared.stopListening()
             self.appCoordinator?.showLogin()
         } catch let error{
             print(error)
@@ -175,7 +185,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, FBSDKL
                     "count": ["packages_following": 0, "packages_moved": 0],
                     "created_date": Date()
                 ],
-                "private_profile": ["time_bank_balance": 100.0],
+                "private_profile": ["points_balance": 100.0],
             ]
         ) { (error) in
             if let error = error {

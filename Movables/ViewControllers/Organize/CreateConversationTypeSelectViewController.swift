@@ -154,7 +154,7 @@ extension CreateConversationTypeSelectViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "typeItem") as! LargeTitleWithSubtitleTableViewCell
         let type = availableTypes[indexPath.row]
-        cell.largeTitleLabel.text = getStringForCommunityType(type: type)
+        cell.largeTitleLabel.text = getReadableForCommunityType(type: type)
         cell.subtitleLabel.text = getDescriptionForCommunityType(type: type)
         return cell
     }

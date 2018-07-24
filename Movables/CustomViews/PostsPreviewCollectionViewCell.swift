@@ -49,8 +49,11 @@ struct Post {
             displayName: authorDict["name"] as! String,
             photoUrl: authorDict["pic_url"] as? String,
             reference: authorDict["reference"] as? DocumentReference,
-            twitter_handle: nil,
-            phone: nil
+            twitter: nil,
+            facebook: nil,
+            phone: nil,
+            isEligibleToReceive: authorDict["type"] != nil,
+            recipientType: getEnumForRecipientTypeString(recipientTypeString: authorDict["type"] as? String)
         )
         self.content = PostContent(
             dictionary: dictionary["content"] as! [String: Any]

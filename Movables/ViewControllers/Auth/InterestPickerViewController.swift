@@ -44,6 +44,16 @@ class InterestPickerViewController: UIViewController {
     
     var categories: [PackageCategory] = []
     
+    var userDocument: UserDocument? {
+        didSet {
+            if userDocument != nil {
+                setButton.isEnabled = true
+            } else {
+                setButton.isEnabled = false
+            }
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -55,8 +65,15 @@ class InterestPickerViewController: UIViewController {
         navigationController?.interactivePopGestureRecognizer?.delegate = self
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
         
+        userDocument = UserManager.shared.userDocument
+        NotificationCenter.default.addObserver(self, selector: #selector(userDocumentUpdated(notification:)), name: Notification.Name.currentUserDocumentUpdated, object: nil)
     }
     
+    @objc private func userDocumentUpdated(notification: Notification) {
+        self.userDocument = (notification.userInfo as! [String: Any])["userDocument"] as? UserDocument
+        print("received notification and set userDocument")
+    }
+
     private func setupFAB() {
         floatingButtonsContainerView = UIView(frame: .zero)
         floatingButtonsContainerView.translatesAutoresizingMaskIntoConstraints = false
@@ -80,7 +97,7 @@ class InterestPickerViewController: UIViewController {
         setButton.layer.cornerRadius = 25
         setButton.clipsToBounds = true
         setButton.addTarget(self, action: #selector(didTapSetButton(sender:)), for: .touchUpInside)
-        setButton.isEnabled = true
+        setButton.isEnabled = false
         setButtonBaseView.addSubview(setButton)
         
         let backHConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[setButton(50)]|", options: .directionLeadingToTrailing, metrics: nil, views: ["setButton": setButton])
@@ -188,6 +205,7 @@ extension InterestPickerViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        print("deselected \(indexPath)")
         let category = packageCategoriesEnumArray[indexPath.row]
         if categories.contains(category) {
             categories.remove(at: categories.index(of: category)!)

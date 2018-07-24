@@ -78,7 +78,7 @@ class ProfileViewController: UIViewController {
     }
     
     @objc private func userDocumentUpdated(notification: Notification) {
-        self.userDocument = (notification.object as! [String: Any])["userDocument"] as? UserDocument
+        self.userDocument = (notification.userInfo as! [String: Any])["userDocument"] as? UserDocument
         print("received notification and set userDocument")
     }
 
@@ -112,7 +112,6 @@ class ProfileViewController: UIViewController {
         tableView.estimatedRowHeight = 250
         tableView.separatorStyle = .none
         tableView.register(ProfileFaceTableViewCell.self, forCellReuseIdentifier: "profileFace")
-        tableView.register(RowButtonTableViewCell.self, forCellReuseIdentifier: "buttonRow")
         tableView.register(EventActivityTableViewCell.self, forCellReuseIdentifier: "eventActivity")
         tableView.dataSource = self
         view.addSubview(tableView)
@@ -156,11 +155,12 @@ extension ProfileViewController: UITableViewDataSource {
             cell.secondaryButton.setImage(UIImage(named: "profile_edit"), for: .normal)
             cell.accessoryButton.addTarget(self, action: #selector(didTapOnSettings(sender:)), for: .touchUpInside)
             cell.secondaryButton.addTarget(self, action: #selector(didTapOnEdit(sender:)), for: .touchUpInside)
-            cell.balanceLabel.text = "\(Int(userDocument!.privateProfile.timeBankBalance))"
+            cell.balanceLabel.text = "\(Int(userDocument!.privateProfile.pointsBalance))"
             let dateFormatter = DateFormatter()
             dateFormatter.dateStyle = .long
             cell.journeyLabel.text = String(format: NSLocalizedString("label.sinceDate", comment: "label text for since date"), dateFormatter.string(from: userDocument!.publicProfile.createdDate))
             var interestsString: String = ""
+            print(userDocument)
             for interest in userDocument!.privateProfile.interests {
                interestsString += getEmojiForCategory(category: interest)
             }
@@ -229,6 +229,7 @@ extension ProfileViewController: UITableViewDataSource {
             alertVC.addAction(UIAlertAction(title: String(NSLocalizedString("button.signout", comment: "button title for signout")), style: .default, handler: { (action) in
                 do {
                     try Auth.auth().signOut()
+                    UserManager.shared.stopListening()
                     GIDSignIn.sharedInstance().signOut()
                     FBSDKLoginManager().logOut()
                     

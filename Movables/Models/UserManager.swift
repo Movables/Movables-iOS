@@ -46,4 +46,9 @@ class UserManager {
             NotificationCenter.default.post(name: Notification.Name.currentUserDocumentUpdated, object: self, userInfo: ["userDocument": self.userDocument as Any])
         })
     }
+    
+    func stopListening() {
+        listener?.remove()
+        userDocument = nil
+    }
 }

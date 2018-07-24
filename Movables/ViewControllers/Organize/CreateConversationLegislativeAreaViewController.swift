@@ -247,14 +247,14 @@ extension CreateConversationLegislativeAreaViewController: UITableViewDataSource
                         let newConversationData:[String: Any] = [
                             "legislative_area": [self.createConversationCoordinator.legislativeArea!.0: self.createConversationCoordinator.legislativeArea!.1],
                             "participants": [
-                                Auth.auth().currentUser!.uid: Date().timeIntervalSince1970
+                                Auth.auth().currentUser!.uid: Date()
                             ]
                         ]
                         transaction.setData(newConversationData, forDocument: newConversationRef)
                         return nil
                     }) { (object, error) in
                         if let error = error {
-                            print("Error saving transaction package with error: \(error)")
+                            print("Error saving transaction conversation with error: \(error)")
                         }
                         // conversation created, dismiss this createConversationm, reload favorites community and then push to new conversation vc
                         self.createConversationCoordinator.cancelConversationCreation(created: true)

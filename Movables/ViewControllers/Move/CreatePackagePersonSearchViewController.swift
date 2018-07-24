@@ -32,11 +32,21 @@ struct RecipientResultItem {
     var name: String
     var picUrl: String?
     var position: String?
+    var twitter: String?
+    var facebook: String?
+    var phone: String?
+    var documentID: String
+    var type: RecipientType?
     
-    init(name: String, picUrl: String?, position: String?) {
+    init(name: String, picUrl: String?, position: String?, twitter: String?, facebook: String?, phone: String?, documentID: String, type: RecipientType?) {
         self.name = name
         self.picUrl = picUrl
         self.position = position
+        self.twitter = twitter
+        self.facebook = facebook
+        self.phone = phone
+        self.documentID = documentID
+        self.type = type
     }
 }
 
@@ -132,9 +142,9 @@ class CreatePackagePersonSearchViewController: UIViewController {
     private func setupQuery() {
         let apiClient = Client(appID: (UIApplication.shared.delegate as! AppDelegate).algoliaClientId!, apiKey: (UIApplication.shared.delegate as! AppDelegate).algoliaAPIKey!)
         
-        peopleIndex = apiClient.index(withName: "people")
+        peopleIndex = apiClient.index(withName: "recipients")
         query.hitsPerPage = 15
-        query.attributesToRetrieve = ["name", "picUrl", "position"]
+        query.attributesToRetrieve = ["name", "picUrl", "position", "twitter", "facebook", "phone", "documentID"]
         query.attributesToHighlight = ["name"]
     }
     
@@ -305,7 +315,7 @@ extension CreatePackagePersonSearchViewController: UITableViewDataSource {
             self.results.removeAll()
             print(hits.count)
             for hit in hits {
-                self.results.append(RecipientResultItem(name: hit["name"] as! String, picUrl: hit["picUrl"] as? String, position: hit["position"] as? String))
+                self.results.append(RecipientResultItem(name: hit["name"] as! String, picUrl: hit["picUrl"] as? String, position: hit["position"] as? String, twitter: hit["twitter"] as? String, facebook: hit["facebook"] as? String, phone: hit["phone"] as? String, documentID: hit["documentID"] as! String, type: getEnumForRecipientTypeString(recipientTypeString: hit["type"] as? String)))
             }
             DispatchQueue.main.async {
                 self.tableView.separatorStyle = .singleLine

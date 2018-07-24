@@ -52,7 +52,7 @@ class MCMoveCardView: UIView {
             NSLayoutConstraint.constraints(withVisualFormat: "V:|[cardView]|", options: .directionLeadingToTrailing, metrics: nil, views: ["cardView": cardView])
         )
         
-        pillView = MCPill(frame: .zero, character: "#", image: nil, body: "tagName", color: Theme().keyTint)
+        pillView = MCPill(frame: .zero, character: "#", image: nil, body: "topicName", color: Theme().keyTint)
         pillView.translatesAutoresizingMaskIntoConstraints = false
         cardView.addSubview(pillView)
         

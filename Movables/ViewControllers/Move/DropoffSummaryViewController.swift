@@ -67,11 +67,10 @@ class DropoffSummaryViewController: UIViewController {
         collectionView.contentInset.top = UIApplication.shared.keyWindow!.safeAreaInsets.top + 20
         collectionView.alwaysBounceVertical = true
         collectionView.contentInsetAdjustmentBehavior = .never
-        collectionView.contentInset.bottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 50 + (UIDevice.isIphoneX ? 10 : 28)
+        collectionView.contentInset.bottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 50 + 10 + (UIDevice.isIphoneX ? 10 : 28)
         collectionView.scrollIndicatorInsets.bottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 50 + (UIDevice.isIphoneX ? 10 : 28)
         collectionView.register(HeaderLabelCollectionViewCell.self, forCellWithReuseIdentifier: "headerLabelCell")
         collectionView.register(MCRouteSummaryCollectionViewCell.self, forCellWithReuseIdentifier: "routeSummaryCell")
-        collectionView.register(MCHeroStatusCollectionViewCell.self, forCellWithReuseIdentifier: "heroStatusCell")
         collectionView.register(MCParagraphActionsCollectionViewCell.self, forCellWithReuseIdentifier: "paragraphActionsCell")
         view.addSubview(collectionView)
         
@@ -101,8 +100,8 @@ class DropoffSummaryViewController: UIViewController {
         doneButton.setTitle("Done", for: .normal)
         doneButton.setTitleColor(.white, for: .normal)
         doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        doneButton.setBackgroundColor(color: getTintForCategory(category: self.package.categories.first!), forUIControlState: .normal)
-        doneButton.setBackgroundColor(color: getTintForCategory(category: self.package.categories.first!).withAlphaComponent(0.85), forUIControlState: .highlighted)
+        doneButton.setBackgroundColor(color: getTintForCategory(category: self.package.category), forUIControlState: .normal)
+        doneButton.setBackgroundColor(color: getTintForCategory(category: self.package.category).withAlphaComponent(0.85), forUIControlState: .highlighted)
         doneButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         doneButton.layer.cornerRadius = 25
         doneButton.clipsToBounds = true
@@ -154,13 +153,14 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.item == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "headerLabelCell", for: indexPath) as! HeaderLabelCollectionViewCell
-            cell.label.text = "Dropoff Summary"
+            cell.label.text = String(NSLocalizedString("copy.dropoffSummary", comment: "label text for dropoff summary"))
             cell.label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
             return cell
         } else if indexPath.item == 1 {
             // optional dropoff action
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "paragraphActionsCell", for: indexPath) as! MCParagraphActionsCollectionViewCell
             cell.paragraphLabel.text = package.dropoffMessage ?? ""
+            cell.cardView.layer.borderColor = getTintForCategory(category: package.category).withAlphaComponent(0.3).cgColor
             cell.actions = self.actions
             cell.activateStackView()
             for row in cell.actionsStackView.arrangedSubviews {
@@ -170,8 +170,8 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
                         button = subview as! UIButton
                     }
                 }
-                button.setBackgroundColor(color: getTintForCategory(category: self.package.categories.first!), forUIControlState: .normal)
-                button.setBackgroundColor(color: getTintForCategory(category: self.package.categories.first!).withAlphaComponent(0.85), forUIControlState: .highlighted)
+                button.setBackgroundColor(color: getTintForCategory(category: self.package.category), forUIControlState: .normal)
+                button.setBackgroundColor(color: getTintForCategory(category: self.package.category).withAlphaComponent(0.85), forUIControlState: .highlighted)
                 button.addTarget(self, action: #selector(didTapOnExternalLinkButton(sender:)), for: .touchUpInside)
             }
             return cell
@@ -187,6 +187,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
                 cell.units = units
                 cell.activateStackView()
             }
+            cell.cardView.layer.borderColor = getTintForCategory(category: package.category).withAlphaComponent(0.3).cgColor
             // route map without user location, showing pickup & dropoff/deliver, and routes with all movements
             return cell
         } else if indexPath.item == 3 {
@@ -206,6 +207,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
         print("action tapped is \(self.actions[sender.tag])")
         let action = self.actions[sender.tag]
         let safariVC = SFSafariViewController(url: URL(string: action.webLink!)!)
+        safariVC.preferredControlTintColor = getTintForCategory(category: self.package.category)
         navigationController?.present(safariVC, animated: true, completion: nil)
     }
     
@@ -238,7 +240,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
         let distanceMovedMeters = Measurement(value: distanceMoved, unit: UnitLength.meters)
         let distanceMovedString = distanceMovedformatter.string(from: distanceMovedMeters)
 
-        let distanceMovedRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: distanceMovedString, subtitleText: "Distance Moved".uppercased(), tint: getTintForCategory(category: self.package.categories.first!), actions: nil, type: .Directions)
+        let distanceMovedRow = LogisticsRow(circleImageUrl: nil, circleText: nil, circleSubscript: nil, titleText: distanceMovedString, subtitleText: String(NSLocalizedString("label.distanceMoved", comment: "label text for distance moved")), tint: getTintForCategory(category: self.package.category), actions: nil, type: .Directions)
         
         rows.append(distanceMovedRow)
         
@@ -259,7 +261,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
             circleSubscript: nil,
             titleText: "\(timeLeftString)",
             subtitleText: String(NSLocalizedString("label.timeElapsed", comment: "label text for time elapsed")),
-            tint: getTintForCategory(category: self.package.categories.first!),
+            tint: getTintForCategory(category: self.package.category),
             actions: nil,
             type: .Time
         )
@@ -270,7 +272,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
             circleSubscript: nil,
             titleText: "\(response["credits_earned"] as! Double)",
             subtitleText: String(NSLocalizedString("label.creditsEarned", comment: "label text for credits earned")),
-            tint: getTintForCategory(category: self.package.categories.first!),
+            tint: getTintForCategory(category: self.package.category),
             actions: nil,
             type: .Award
         )
@@ -284,7 +286,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
                 circleSubscript: nil,
                 titleText: "\(response["delivery_bonus"] as! Double)",
                 subtitleText: String(NSLocalizedString("label.deliveryBonus", comment: "label text for delivery bonus")),
-                tint: getTintForCategory(category: self.package.categories.first!),
+                tint: getTintForCategory(category: self.package.category),
                 actions: nil,
                 type: .Award
             )
@@ -297,8 +299,8 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
             circleText: nil,
             circleSubscript: nil,
             titleText: "\(response["new_balance"] as! Double)",
-            subtitleText: String(NSLocalizedString("creditsTotal", comment: "label text for credits total")),
-            tint: getTintForCategory(category: self.package.categories.first!),
+            subtitleText: String(NSLocalizedString("label.creditsTotal", comment: "label text for credits total")),
+            tint: getTintForCategory(category: self.package.category),
             actions: nil,
             type: .Balance
         )
@@ -315,48 +317,15 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
                 return
             }
             self.transitRecord = TransitRecord(dict: documentSnapshot!.data()!, reference: documentSnapshot!.reference)
-            self.fetchMovements()
+            // update views
+            if self.transitRecord?.dropoffDate != nil {
+                self.actions = self.package.externalActions ?? []
+                self.collectionView.reloadData()
+                self.bottomConstraintFAB.constant = -(self.view.safeAreaInsets.bottom + 50 + (UIDevice.isIphoneX ? 0 : 18))
+                self.view.layoutIfNeeded()
+            }
         }
     }
-    
-    func fetchMovements() {
-        self.transitRecord?.reference.collection("movements").getDocuments(source: .default, completion: { (querySnapshot, error) in
-            if let error = error {
-                print(error)
-            } else {
-                if querySnapshot != nil {
-                    var movements: [TransitMovement] = []
-                    querySnapshot!.documents.forEach({ (snapshot) in
-                        let dict = snapshot.data()
-                        movements.append(TransitMovement(date: (dict["date"] as! Timestamp).dateValue(), geoPoint: dict["geo_point"] as! GeoPoint))
-                    })
-                    self.transitRecord?.movements = movements
-                }
-                // update views
-                if self.transitRecord?.dropoffDate != nil {
-                    self.package.reference.collection("external_actions").getDocuments(completion: { (querySnapshot, error) in
-                        if let error = error {
-                            print(error)
-                        } else {
-                            guard let snapshot = querySnapshot else {
-                                return
-                            }
-                            var actions: [ExternalAction] = []
-                            snapshot.documents.forEach({ (docSnapshot) in
-                                actions.append(ExternalAction(dict: docSnapshot.data()))
-                            })
-                            self.actions = actions
-                            self.collectionView.reloadData()
-//                            UIView.animate(withDuration: 0.35) {
-                                self.bottomConstraintFAB.constant = -(self.view.safeAreaInsets.bottom + 50 + (UIDevice.isIphoneX ? 0 : 18))
-                                self.view.layoutIfNeeded()
-//                            }
-                        }
-                    })
-                }
-            }
-        })
-    }    
 }
 
 extension DropoffSummaryViewController: UICollectionViewDelegate {

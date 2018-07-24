@@ -47,7 +47,7 @@ class CreatePackageReviewViewController: UIViewController {
     var sender: Person!
     var recipient: Person!
     var packageHeadline: String!
-    var packageTagName: String!
+    var packageTopicName: String!
     var packageDescription: String!
     var originCoordinate: CLLocationCoordinate2D!
     var destinationCoordinate: CLLocationCoordinate2D!
@@ -100,14 +100,13 @@ class CreatePackageReviewViewController: UIViewController {
         collectionView.register(HeaderLabelCollectionViewCell.self, forCellWithReuseIdentifier: "headerLabelCell")
         
         collectionView.register(DeliveryLogisticsCollectionViewCell.self, forCellWithReuseIdentifier: "deliveryLogisticsCell")
-        collectionView.register(ActivityIndicatorCollectionViewCell.self, forCellWithReuseIdentifier: "activityViewCell")
         collectionView.register(MCParagraphActionsCollectionViewCell.self, forCellWithReuseIdentifier: "paragraphActionsCell")
         
         collectionView.dataSource = self
         collectionView.alwaysBounceVertical = true
         collectionView.backgroundColor = UIColor(red: 0.97, green: 0.97, blue: 0.97, alpha: 1)
         collectionView.contentInsetAdjustmentBehavior = .never
-        collectionView.contentInset.bottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 50 + (UIDevice.isIphoneX ? 10 : 28)
+        collectionView.contentInset.bottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 50 + 10 + (UIDevice.isIphoneX ? 10 : 28)
         collectionView.scrollIndicatorInsets.bottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 50 + (UIDevice.isIphoneX ? 10 : 28)
 
     }
@@ -196,7 +195,7 @@ class CreatePackageReviewViewController: UIViewController {
     @objc private func didTapNavigateButton(sender: UIButton) {
         self.backButton.isEnabled = false
         sender.isEnabled = false
-        createPackageCoordinator.savePackageAndDismiss(coverImageUrl: self.coverImageUrl, completion: { (success) in
+        createPackageCoordinator.beginSavingPackage { (success) in
             if success {
                 self.dismiss(animated: true, completion: {
                     print("get ready to start movn'")
@@ -205,8 +204,8 @@ class CreatePackageReviewViewController: UIViewController {
                 sender.isEnabled = true
                 self.backButton.isEnabled = true
             }
-        })
-        print("navigate now")
+
+        }
     }
     
 }
@@ -230,7 +229,11 @@ extension CreatePackageReviewViewController: UICollectionViewDataSource {
         let item = indexPath.item
         if item == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "headerLabelCell", for: indexPath) as! HeaderLabelCollectionViewCell
-            cell.label.text = "By \(sender.displayName)"
+            if createPackageCoordinator.usingTemplate {
+                cell.label.text = String(format: NSLocalizedString("label.templateBy", comment: "label text for template by"), createPackageCoordinator.template!.author!.displayName)
+            } else {
+                cell.label.text = String(format: NSLocalizedString("label.by", comment: "label text for authored by") , sender.displayName)
+            }
             return cell
         }
         else if item == 1 {
@@ -325,9 +328,9 @@ extension CreatePackageReviewViewController: UICollectionViewDataSource {
             }
         }
         view.titleLabel.text = packageHeadline
-        view.tagPill.bodyLabel.text = packageTagName
-        view.tagPill.characterLabel.text = getEmojiForCategory(category: category)
-        view.tagPill.pillContainerView.backgroundColor = getTintForCategory(category: category)
+        view.topicPill.bodyLabel.text = packageTopicName
+        view.topicPill.characterLabel.text = getEmojiForCategory(category: category)
+        view.topicPill.pillContainerView.backgroundColor = getTintForCategory(category: category)
         return view
     }
     
@@ -335,8 +338,8 @@ extension CreatePackageReviewViewController: UICollectionViewDataSource {
         var rows:[LogisticsRow] = []
         // recipient
         var recipientActions:[Action] = []
-        if recipient.twitter_handle != nil {
-            recipientActions.append(Action(type: .Tweet, dictionary: ["handle": recipient.twitter_handle!]))
+        if recipient.twitter != nil {
+            recipientActions.append(Action(type: .Tweet, dictionary: ["handle": recipient.twitter!]))
         }
         if recipient.phone != nil {
             recipientActions.append(Action(type: .Call, dictionary: ["phone": recipient.phone!]))
@@ -421,10 +424,19 @@ extension CreatePackageReviewViewController: UICollectionViewDataSource {
     
     @objc private func didTapCallButton(sender: UIButton) {
         print("call")
+        self.recipient.phone!.makeAColl()
     }
     
     @objc private func didTapTweetButton(sender: UIButton) {
         print("tweet")
+        let twitterHandle = self.recipient.twitter!
+        let twUrl = URL(string: "twitter://user?screen_name=\(twitterHandle)")!
+        let twUrlWeb = URL(string: "https://www.twitter.com/\(twitterHandle)")!
+        if UIApplication.shared.canOpenURL(twUrl){
+            UIApplication.shared.open(twUrl, options: [:],completionHandler: nil)
+        }else{
+            UIApplication.shared.open(twUrlWeb, options: [:], completionHandler: nil)
+        }
     }
     
     @objc private func didTapMoreButton(sender: UIButton) {
