@@ -111,7 +111,7 @@ class PostsViewController: SLKTextViewController {
     }
     
     private func listenToPosts() {
-        reference.collection("public_comments").order(by: "created_date", descending: true).getDocuments { (querySnapshot, error) in
+        reference.collection("comments").order(by: "created_date", descending: true).getDocuments { (querySnapshot, error) in
             guard let snapshot = querySnapshot else {
                 print("Error fetching snapshots: \(error!)")
                 return
@@ -131,7 +131,7 @@ class PostsViewController: SLKTextViewController {
                     }
                 })
             }
-            self.listener = self.reference.collection("public_comments").order(by: "created_date", descending: true).addSnapshotListener { (querySnapshot, error) in
+            self.listener = self.reference.collection("comments").order(by: "created_date", descending: true).addSnapshotListener { (querySnapshot, error) in
                 guard let snapshot = querySnapshot else {
                     print("Error fetching snapshots: \(error!)")
                     return
@@ -187,7 +187,7 @@ class PostsViewController: SLKTextViewController {
             "created_date": Date()
         ]
         self.textView.text = ""
-        reference.collection("public_comments").addDocument(data: postData) { (error) in
+        reference.collection("comments").addDocument(data: postData) { (error) in
             if let error = error {
                 print(error)
             } else {

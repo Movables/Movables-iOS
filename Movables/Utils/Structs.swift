@@ -159,7 +159,16 @@ struct TopicSubscribed {
         let communitiesDict = dict["communities"] as! [String: [String: Any]]
         self.communities = []
         for (_, value) in communitiesDict {
-            self.communities.append(Community(name: value["name"] as! String, type: getEnumForCommunityType(with: value["type"] as! String), reference: value["reference"] as! DocumentReference))
+            let communityType = getEnumForCommunityType(with: value["type"] as! String)
+            let communityReference: DocumentReference?
+            switch communityType {
+            case .package:
+                let packageReference = (value["reference"] as! DocumentReference)
+                communityReference = packageReference.collection("conversations").document(packageReference.documentID)
+            default:
+                communityReference = (value["reference"] as! DocumentReference)
+            }
+            self.communities.append(Community(name: value["name"] as! String, type: getEnumForCommunityType(with: value["type"] as! String), reference: communityReference!))
         }
     }
 }

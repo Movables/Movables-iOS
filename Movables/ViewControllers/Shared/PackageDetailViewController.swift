@@ -721,7 +721,7 @@ extension PackageDetailViewController: UICollectionViewDelegate {
     
     private func fetchPosts() {
         let db = Firestore.firestore()
-        db.collection("packages/\(self.packageDocumentId!)/public_comments").order(by: "created_date", descending: true).limit(to: 3).getDocuments { (snapshot, error) in
+        db.collection("packages/\(self.packageDocumentId!)/comments").order(by: "created_date", descending: true).limit(to: 3).getDocuments { (snapshot, error) in
             if error != nil {
                 print(error!)
             } else {
