@@ -54,7 +54,11 @@ class MoveViewController: UIViewController {
     var moveCardView: MCMoveCardView!
     var emptyStateCardView: MCEmptyStateCardView!
     
-    var userDocument: UserDocument?
+    var userDocument: UserDocument? {
+        didSet {
+            refreshCardState()
+        }
+    }
     
     var moveLocationManager: CLLocationManager = CLLocationManager()
     
@@ -65,6 +69,8 @@ class MoveViewController: UIViewController {
                 self.routeToDestinationDrawn = false
                 self.progress = nil
             } else {
+                self.currentPackageListener?.remove()
+                self.currentTransitRecordListener?.remove()
                 self.moveCardView.isHidden = true
                 self.emptyStateCardView.isHidden = false
                 self.mapView.removeOverlays(self.mapView.overlays)
@@ -81,7 +87,6 @@ class MoveViewController: UIViewController {
                     self.moveCardView.pillView.pillContainerView.backgroundColor = getTintForCategory(category: self.currentPackage!.category)
                 }
                 self.emptyStateCardView.isHidden = true
-                self.mapView.removeOverlays(self.mapView.overlays)
                 self.progress = nil
             } else {
                 self.moveCardView.isHidden = true
@@ -151,7 +156,6 @@ class MoveViewController: UIViewController {
         mapView.layoutMargins = UIEdgeInsets(top: view.safeAreaInsets.top + 94, left: 20, bottom: (self.view.frame.height - (self.view.safeAreaInsets.top + self.view.safeAreaInsets.bottom)) / 3 + 66, right: 20)
 
         self.userDocument = UserManager.shared.userDocument
-        refreshCardState()
         
         NotificationCenter.default.addObserver(self, selector: #selector(userDocumentUpdated(notification:)), name: Notification.Name.currentUserDocumentUpdated, object: nil)
     }
@@ -159,11 +163,12 @@ class MoveViewController: UIViewController {
     @objc private func userDocumentUpdated(notification: Notification) {
         self.userDocument = (notification.userInfo as! [String: Any])["userDocument"] as? UserDocument
         print("received notification and set userDocument")
-        refreshCardState()
     }
     
     func refreshCardState() {
         if userDocument?.privateProfile.currentPackage != nil {
+            self.routeToDestinationDrawn = false
+            self.progress = nil
             self.listenToPackage()
         } else {
             self.moveCardView.isHidden = true
@@ -231,7 +236,13 @@ class MoveViewController: UIViewController {
                     self.currentPackage = snapshotPackage
                 }
             } else {
-                self.currentPackage = Package(snapshot: snapshot)
+                if self.userDocument?.privateProfile.currentPackage != nil {
+                    print("set new current package")
+                    self.currentPackage = Package(snapshot: snapshot)
+                } else {
+                    print("clear current package")
+                    self.currentPackage = nil
+                }
             }
         })
     }
@@ -258,9 +269,11 @@ class MoveViewController: UIViewController {
                 self.currentTransitRecord = nil
                 return
             }
-            self.currentTransitRecord = TransitRecord(dict: documentSnapshot!.data()!, reference: documentSnapshot!.reference)
-            self.fetchMovements()
-            self.updateGoCard()
+            if self.userDocument?.privateProfile.currentPackage != nil {
+                self.currentTransitRecord = TransitRecord(dict: documentSnapshot!.data()!, reference: documentSnapshot!.reference)
+                self.fetchMovements()
+                self.updateGoCard()
+            }
         })
     }
     

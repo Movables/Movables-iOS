@@ -392,6 +392,8 @@ class CreatePackageCoordinator: Coordinator {
             var oldAuthorBalance = (authorDocument!.data()!["private_profile"] as! [String: Any])["points_balance"] as! Int
             
             var topicDocument: DocumentSnapshot? = nil
+            
+            let oldPackagesFollowing = ((authorDocument!.data()!["public_profile"] as! [String: Any])["count"] as! [String: Int])["packages_following"]
 
             if topic == nil {
                 // increment packages count on the template
@@ -516,7 +518,11 @@ class CreatePackageCoordinator: Coordinator {
             transaction.setData(package, forDocument: packageReference)
             
             // update current_package in private_profile of the author
-            transaction.updateData(["private_profile.current_package": packageReference, "private_profile.points_balance": oldAuthorBalance - 100], forDocument: authorReference)
+            transaction.updateData([
+                "private_profile.current_package": packageReference,
+                "private_profile.points_balance": oldAuthorBalance - 100,
+                "public_profile.count.packages_following": oldPackagesFollowing! + 1
+            ], forDocument: authorReference)
             
             return nil
         }) { (object, error) in

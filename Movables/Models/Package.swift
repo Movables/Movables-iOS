@@ -1058,7 +1058,7 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
         let topicName = ((packageContent["topic"] as! [String: Any])["name"] as! String)
 
         
-        if let subscribedTopics = userDocument["subscripbed_topics"] as? [String: Double] {
+        if let subscribedTopics = (userDocument["private_profile"] as! [String:Any])["subscripbed_topics"] as? [String: Double] {
             if subscribedTopics[topicReference.documentID] != nil {
                 // user already subscribed to the topic
                 let subscribedTopicDocument: DocumentSnapshot?
@@ -1103,6 +1103,7 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
                     ],
                     forDocument: userReference.collection("subscribed_topics").document(topicReference.documentID)
                 )
+                transaction.updateData(["private_profile.subscribed_topics.\(topicReference.documentID)": Date()], forDocument: userReference)
             }
         } else {
             // user hasn't subscribed to any topic
@@ -1125,6 +1126,7 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
                 ],
                 forDocument: userReference.collection("subscribed_topics").document(topicReference.documentID)
             )
+            transaction.updateData(["private_profile.subscribed_topics":[topicReference.documentID: Date()]], forDocument: userReference)
         }
         
         

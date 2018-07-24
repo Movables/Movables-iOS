@@ -16,28 +16,28 @@ PODS:
   - CountdownLabel (3.0.0)
   - Crashlytics (3.10.5):
     - Fabric (~> 1.7.9)
-  - CropViewController (2.3.6)
+  - CropViewController (2.3.7)
   - DateToolsSwift (4.0.0)
   - Fabric (1.7.9)
   - FBSDKCoreKit (4.34.0):
     - Bolts (~> 1.7)
   - FBSDKLoginKit (4.34.0):
     - FBSDKCoreKit
-  - Firebase/Auth (5.4.0):
+  - Firebase/Auth (5.4.1):
     - Firebase/CoreOnly
     - FirebaseAuth (= 5.0.2)
-  - Firebase/Core (5.4.0):
+  - Firebase/Core (5.4.1):
     - Firebase/CoreOnly
     - FirebaseAnalytics (= 5.0.1)
-  - Firebase/CoreOnly (5.4.0):
-    - FirebaseCore (= 5.0.5)
-  - Firebase/Firestore (5.4.0):
+  - Firebase/CoreOnly (5.4.1):
+    - FirebaseCore (= 5.0.6)
+  - Firebase/Firestore (5.4.1):
     - Firebase/CoreOnly
-    - FirebaseFirestore (= 0.12.5)
-  - Firebase/Functions (5.4.0):
+    - FirebaseFirestore (= 0.12.6)
+  - Firebase/Functions (5.4.1):
     - Firebase/CoreOnly
     - FirebaseFunctions (= 2.1.0)
-  - Firebase/Storage (5.4.0):
+  - Firebase/Storage (5.4.1):
     - Firebase/CoreOnly
     - FirebaseStorage (= 3.0.0)
   - FirebaseAnalytics (5.0.1):
@@ -48,16 +48,16 @@ PODS:
   - FirebaseAuth (5.0.2):
     - FirebaseCore (~> 5.0)
     - GTMSessionFetcher/Core (~> 1.1)
-  - FirebaseCore (5.0.5):
+  - FirebaseCore (5.0.6):
     - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
-  - FirebaseFirestore (0.12.5):
+  - FirebaseFirestore (0.12.6):
     - FirebaseCore (~> 5.0)
-    - FirebaseFirestore/abseil-cpp (= 0.12.5)
+    - FirebaseFirestore/abseil-cpp (= 0.12.6)
     - gRPC-ProtoRPC (~> 1.0)
     - leveldb-library (~> 1.18)
     - nanopb (~> 0.3.8)
     - Protobuf (~> 3.1)
-  - FirebaseFirestore/abseil-cpp (0.12.5):
+  - FirebaseFirestore/abseil-cpp (0.12.6):
     - FirebaseCore (~> 5.0)
     - gRPC-ProtoRPC (~> 1.0)
     - leveldb-library (~> 1.18)
@@ -212,16 +212,16 @@ SPEC CHECKSUMS:
   BoringSSL: cf3f1793eb6e3c445c4d150456341f149c268a35
   CountdownLabel: 4534a68892b1deb73fda18702dfdc2c8444cec08
   Crashlytics: 7f2e38d302d9da96475b3d64d86fb29e31a542b7
-  CropViewController: e6d4bd512d15a1709e9ddf71fe7d98ffd05dda0f
+  CropViewController: a9d579b526926c4e1caf754a89a9ac1c20aaa8eb
   DateToolsSwift: 875d97ff9e3a5d54abdd67a269b3f51c757b71ab
   Fabric: a2917d3895e4c1569b9c3170de7320ea1b1e6661
   FBSDKCoreKit: 0ff57f093b85c8c9d5aba697d3edf68a8960ce78
   FBSDKLoginKit: 8c78f57a145afb756e4755e69195ebe08a42466e
-  Firebase: d66f4f29c23f22d96808d9abc174d81d8eee968f
+  Firebase: 355bd535bfdacaa82a7fe8d9784115edefd6fc03
   FirebaseAnalytics: b3628aea54c50464c32c393fb2ea032566e7ecc2
   FirebaseAuth: 096e457cdd4274412a66c4a35874787e411f5a03
-  FirebaseCore: 42b3267233bd21a5abd54117ccc38ca3dd0f8e83
-  FirebaseFirestore: b041e4a94601e18e82a863e0dcfa9d3e55cc2031
+  FirebaseCore: 4c28e3b9708ba48a765e76515f913a71596eb5dd
+  FirebaseFirestore: d4a3a7787624e612298a320da95935b8dc036c1d
   FirebaseFunctions: 0cb3bc0bbeac1daf6fea378a1064ff7f484e4c4e
   FirebaseInstanceID: f3f0657372592ecdfdfe2cac604a5a75758376a6
   FirebaseStorage: 7ca4bb7b58a25fa647b04f524033fc7cb7eb272b
