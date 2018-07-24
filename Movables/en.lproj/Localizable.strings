@@ -30,7 +30,7 @@
 "tabBar.organize" = "Organize";
 "tabBar.profile" = "Profile";
 "navBar.conversation" = "Conversation";
-"headerCollectionCell.conversation" = "Conversation";
+"headerCollectionCell.public_conversation" = "Recent Comments";
 "button.pickup" = "Pickup";
 "button.pickupAway" = "Pickup %@ away";
 "button.dropoff" = "Dropoff";
@@ -39,7 +39,7 @@
 "button.tracking" = "Following";
 "button.inTransit" = "In Transit";
 "button.delivered" = "Delivered";
-"button.participate" = "Participate";
+"button.participate" = "Comment";
 "button.moved" = "Moved";
 "button.loading" =  "Loading";
 "button.pending" = "Pending";
@@ -97,9 +97,11 @@
 "label.conversationTypeLocal" = "Local";
 "label.conversationTypePackage" = "Package";
 "label.conversationTypePrivate" = "Private";
+"label.conversationTypeOpen" = "Package (Open)";
 "label.conversationTypeLocalDesc" = "Converse with your local community. Choose from a list of legislative areas.";
 "label.conversationTypePackageDesc" = "Converse with those that have moved the same package as you.";
 "label.conversationTypePrivateDesc" = "Converse with a private group of your choosing.";
+"label.conversationTypeOpenDesc" = "Converse with anyone about a package.";
 "label.by" = "By %@";
 "label.sinceDate" = "Since %@";
 "label.selectConversationType" = "Select Conversation Type";

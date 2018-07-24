@@ -367,6 +367,8 @@ func getDescriptionForCommunity(community: Community) -> String {
         return String(NSLocalizedString("label.conversationTypeLocal", comment: "label string for local conversation"))
     case .package:
         return String(NSLocalizedString("label.conversationTypePackage", comment: "label string for package conversation"))
+    case .open:
+        return String(NSLocalizedString("label.conversationTypeOpen", comment: "label string for open conversation"))
     default:
         return String(NSLocalizedString("label.conversationTypePrivate", comment: "label string for private conversation"))
     }
@@ -377,6 +379,8 @@ func getImageForCommunityType(type: CommunityType) -> UIImage {
     case .location:
         return UIImage(named: "location_glyph_40pt")!
     case .package:
+        return UIImage(named: "package_glyph_40pt")!
+    case .open:
         return UIImage(named: "package_glyph_40pt")!
     default:
         return UIImage(named: "people_glyph_40pt")!

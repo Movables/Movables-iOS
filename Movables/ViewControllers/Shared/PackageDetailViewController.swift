@@ -488,14 +488,14 @@ extension PackageDetailViewController: UICollectionViewDataSource {
                 return cell
             } else if item == 3 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "headerLabelCell", for: indexPath) as! HeaderLabelCollectionViewCell
-                cell.label.text = String(NSLocalizedString("headerCollectionCell.conversation", comment: "collection view cell title for Conversation"))
+                cell.label.text = String(NSLocalizedString("headerCollectionCell.public_conversation", comment: "collection view cell title for Conversation"))
                 return cell
             } else if item == 4{
                 // posts stack with view more button
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "postsPreviewCell", for: indexPath) as! PostsPreviewCollectionViewCell
                 cell.button.addTarget(self, action: #selector(didTapViewPostsButton(sender:)), for: .touchUpInside)
                 cell.button.isHidden = self.posts?.count == 0
-                cell.button.setTitle("View all posts", for: .normal)
+                cell.button.setTitle("View all comments", for: .normal)
                 cell.posts = self.posts
                 cell.button.setTitleColor(getTintForCategory(category: self.package!.category), for: .normal)
                 cell.button.setTitleColor(getTintForCategory(category: self.package!.category).withAlphaComponent(0.85), for: .highlighted)
@@ -721,7 +721,7 @@ extension PackageDetailViewController: UICollectionViewDelegate {
     
     private func fetchPosts() {
         let db = Firestore.firestore()
-        db.collection("packages/\(self.packageDocumentId!)/comments").order(by: "created_date", descending: true).limit(to: 3).getDocuments { (snapshot, error) in
+        db.collection("packages/\(self.packageDocumentId!)/open_comments").order(by: "created_date", descending: true).limit(to: 3).getDocuments { (snapshot, error) in
             if error != nil {
                 print(error!)
             } else {

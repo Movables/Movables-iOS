@@ -12,7 +12,7 @@
 "tabBar.organize" = "組織";
 "tabBar.profile" = "我的帳戶";
 "navBar.conversation" = "對話";
-"headerCollectionCell.conversation" = "對話";
+"headerCollectionCell.public_conversation" = "最近留言";
 "button.pickup" = "撿取";
 "button.pickupAway" = "於%@之外撿取";
 "button.dropoff" = "放置";
@@ -21,7 +21,7 @@
 "button.tracking" = "關注中";
 "button.inTransit" = "運送中";
 "button.delivered" = "已送達";
-"button.participate" = "參與";
+"button.participate" = "留言";
 "button.moved" = "已運送";
 "button.loading" =  "讀取中";
 "button.pending" = "待取中";
@@ -78,9 +78,11 @@
 "label.nearbyConversations" = "附近對話";
 "label.conversationTypeLocal" = "地方";
 "label.conversationTypePackage" = "議題包";
+"label.conversationTypeOpen" = "議題包（公開）";
 "label.conversationTypePrivate" = "私密";
 "label.conversationTypeLocalDesc" = "與地方社群對話。由附近行政地區清單選擇。";
 "label.conversationTypePackageDesc" = "與共同運送人對話。";
+"label.conversationTypeGlobalDesc" = "與任何人討論特定議題包。";
 "label.conversationTypePrivateDesc" = "與你所邀請的使用者對話。";
 "label.by" = "%@ 著";
 "label.sinceDate" = "始於 %@";

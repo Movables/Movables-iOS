@@ -35,7 +35,6 @@ class MCRouteSummaryCollectionViewCell: UICollectionViewCell {
     var contentStackView: UIStackView!
     
     var transitRecord: TransitRecord!
-    var packagePreview: PackagePreview!
     var units: [LogisticsRow]!
     var presentingVC: DropoffSummaryViewController!
     

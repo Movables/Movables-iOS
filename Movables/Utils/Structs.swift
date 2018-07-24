@@ -283,6 +283,7 @@ enum CommunityType {
     case package
     case location
     case group
+    case open
 }
 
 func getStringForCommunityType(type: CommunityType) -> String {
@@ -293,6 +294,8 @@ func getStringForCommunityType(type: CommunityType) -> String {
         return "package"
     case .group:
         return "group"
+    case .open:
+        return "open"
     }
 }
 
@@ -302,6 +305,8 @@ func getReadableForCommunityType(type: CommunityType) -> String {
         return String(NSLocalizedString("label.conversationTypeLocal", comment: "label text for local conversation"))
     case .package:
         return String(NSLocalizedString("label.conversationTypePackage", comment: "label text for package conversation"))
+    case .open:
+        return String(NSLocalizedString("label.conversationTypeOpen", comment: "label text for open conversation"))
     default:
         return String(NSLocalizedString("label.conversationTypePrivate", comment: "label text for private conversation"))
     }
@@ -313,6 +318,8 @@ func getEnumForCommunityType(with string: String) -> CommunityType {
         return .group
     case "location":
         return .location
+    case "open":
+        return .open
     default:
         return .package
     }
@@ -324,6 +331,8 @@ func getDescriptionForCommunityType(type: CommunityType) -> String {
         return String(NSLocalizedString("label.conversationTypeLocalDesc", comment: "label text for conversation type local description"))
     case .package:
         return String(NSLocalizedString("label.conversationTypePackageDesc", comment: "label text for conversation type package description"))
+    case .open:
+        return String(NSLocalizedString("label.conversationTypeOpenDesc", comment: "label text for conversation type open description"))
     default:
         return String(NSLocalizedString("label.conversationTypePrivateDesc", comment: "label text for conversation type private description"))
     }

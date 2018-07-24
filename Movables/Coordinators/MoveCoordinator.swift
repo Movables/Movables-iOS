@@ -70,6 +70,7 @@ extension MoveCoordinator: PackageDetailViewControllerDelegate {
         let postsVC = PostsViewController(collectionViewLayout: UICollectionViewFlowLayout())
         postsVC!.reference = packageDetailVC?.package?.reference
         postsVC!.referenceType = .package
+        postsVC!.isOpen = true
         packageDetailVC?.navigationController?.show(postsVC!, sender: packageDetailVC)
     }
     
