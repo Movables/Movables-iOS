@@ -328,9 +328,9 @@ struct Package: Equatable {
         }
 
         self.followers = [:]
-        if let followersDict = relations["followers"] as? [String: TimeInterval] {
+        if let followersDict = relations["followers"] as? [String: Timestamp] {
             for (key, value) in followersDict {
-                self.followers!.updateValue(Date(timeIntervalSince1970: value), forKey: key)
+                self.followers!.updateValue(value.dateValue(), forKey: key)
             }
         }
     }
