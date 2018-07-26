@@ -121,6 +121,7 @@
 "label.packageContents" = "Package Contents";
 "label.distanceRemaining" = "Distance Remaining";
 "label.timeRemaining" = "Time Remaining";
+"label.noNearbyConversations" = "No nearby conversations, yet.";
 "label.due" = "Due";
 "label.headline" = "Headline";
 "label.description" = "Description";

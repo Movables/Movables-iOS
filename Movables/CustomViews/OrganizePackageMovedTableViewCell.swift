@@ -47,6 +47,7 @@ class OrganizePackageMovedTableViewCell: UITableViewCell {
         supplementLabelContainerView.translatesAutoresizingMaskIntoConstraints = false
         supplementLabelContainerView.layer.cornerRadius = 4
         supplementLabelContainerView.clipsToBounds = true
+        supplementLabelContainerView.backgroundColor = Theme().mapStampTint
         contentView.addSubview(supplementLabelContainerView)
         
         supplementLabel = UILabel(frame: .zero)
@@ -101,6 +102,7 @@ class OrganizePackageMovedTableViewCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         
+        supplementLabelContainerView.backgroundColor = Theme().mapStampTint
         // Configure the view for the selected state
     }
 }

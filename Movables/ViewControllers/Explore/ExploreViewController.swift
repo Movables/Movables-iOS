@@ -646,6 +646,7 @@ extension ExploreViewController: UICollectionViewDelegate {
                     collectionView.deselectItem(at: selectedIndexPath, animated: false)
                     if let cell = collectionView.cellForItem(at: selectedIndexPath) as? TopicTrendingCollectionViewCell {
                         cell.containerView.backgroundColor = .white
+                        cell.label.textColor = Theme().grayTextColor
                     }
                     
                 }

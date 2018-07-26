@@ -223,6 +223,7 @@ class SubscribedTopicDetailViewController: UIViewController {
         tableView.register(OrganizeDetailTableHeaderViewCell.self, forCellReuseIdentifier: "organizeDetailHeader")
         tableView.register(SectionHeaderTableViewHeaderView.self, forHeaderFooterViewReuseIdentifier: "sectionHeader")
         tableView.register(CommunityTableViewCell.self, forCellReuseIdentifier: "communityCell")
+        tableView.register(EmptyStateWithButtonTableViewCell.self, forCellReuseIdentifier: "emptyState")
         tableView.backgroundColor = .white
         view.addSubview(tableView)
         
@@ -310,9 +311,10 @@ extension SubscribedTopicDetailViewController: UITableViewDataSource {
         case 0:
             return 1
         case 1:
-            return favoriteCommunities?.count ?? 1
+            return favoriteCommunities != nil && favoriteCommunities!.count > 0 ? favoriteCommunities!.count : 0
         default:
-            return nearbyCommunities?.count ?? 5
+            // nearby communities count
+            return nearbyCommunities != nil && nearbyCommunities!.count > 0 ? nearbyCommunities!.count : 1
         }
     }
     
@@ -324,14 +326,23 @@ extension SubscribedTopicDetailViewController: UITableViewDataSource {
             cell.descriptionLabel.text = self.topic?.description ?? ""
             return cell
         } else {
-            // return favorited communities
-            let cell = tableView.dequeueReusableCell(withIdentifier: "communityCell") as! CommunityTableViewCell
-            let community: Community = indexPath.section == 1 ? favoriteCommunities![indexPath.row] : nearbyCommunities![indexPath.row]
-            cell.nameLabel.text = community.name
-            cell.descriptionLabel.text = getDescriptionForCommunity(community: community)
-            cell.supplementLabelContainerView.isHidden = true
-            cell.communityTypeImageView.image = getImageForCommunityType(type: community.type)
-            return cell
+            if indexPath.section == 2 && nearbyCommunities?.count == 0 {
+                // return create local conversation button
+                let cell = tableView.dequeueReusableCell(withIdentifier: "emptyState") as! EmptyStateWithButtonTableViewCell
+                cell.emptyStateView.subtitleLabel.text = String(NSLocalizedString("label.noNearbyConversations", comment: "label for no nearby conversations"))
+            cell.emptyStateView.actionButton.setTitle(String(NSLocalizedString("button.create", comment: "button title for create local conversation")), for: .normal)
+                cell.emptyStateView.actionButton.addTarget(self, action: #selector(didTapAddButton(sender:)), for: .touchUpInside)
+                return cell
+            } else {
+                // return community
+                let cell = tableView.dequeueReusableCell(withIdentifier: "communityCell") as! CommunityTableViewCell
+                let community: Community = indexPath.section == 1 ? favoriteCommunities![indexPath.row] : nearbyCommunities![indexPath.row]
+                cell.nameLabel.text = community.name
+                cell.descriptionLabel.text = getDescriptionForCommunity(community: community)
+                cell.supplementLabelContainerView.isHidden = true
+                cell.communityTypeImageView.image = getImageForCommunityType(type: community.type)
+                return cell
+            }
         }
     }
     
