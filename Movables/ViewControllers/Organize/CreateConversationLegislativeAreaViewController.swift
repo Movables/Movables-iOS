@@ -232,7 +232,9 @@ extension CreateConversationLegislativeAreaViewController: UITableViewDataSource
         
         let db = Firestore.firestore()
         // check if conversation exists for topic
-        createConversationCoordinator.topic.reference.collection("conversations").whereField("legislative_area", isEqualTo: [createConversationCoordinator.legislativeArea!.1: createConversationCoordinator.legislativeArea!.0]).getDocuments { (querySnapshot, error) in
+        print("query path is: \("legislative_area.\(createConversationCoordinator.legislativeArea!.0)")")
+        print("query match is: \(createConversationCoordinator.legislativeArea!.1)")
+        createConversationCoordinator.topic.reference.collection("conversations").whereField("legislative_area.\(createConversationCoordinator.legislativeArea!.0)", isEqualTo: createConversationCoordinator.legislativeArea!.1).getDocuments { (querySnapshot, error) in
             if let error = error {
                 print(error)
                 return
@@ -240,6 +242,19 @@ extension CreateConversationLegislativeAreaViewController: UITableViewDataSource
             if let snapshot = querySnapshot {
                 if snapshot.documents.count > 0 {
                     print("conversation exists")
+                    let alertController = UIAlertController(
+                        title: String(NSLocalizedString("copy.alert.conversationExists", comment: "title for conversation exists alert")),
+                        message: String(format: NSLocalizedString("copy.alert.conversationExistsDesc", comment: "body text for conversation exists alert"), self.createConversationCoordinator.topic.name, self.createConversationCoordinator.legislativeArea!.1),
+                        preferredStyle: .alert
+                    )
+                    alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.ok", comment: "button title for ok")), style: .cancel, handler: { (action) in
+                        print("ok")
+                    }))
+                    self.present(alertController, animated: true, completion: {
+                        self.cancelButton.isEnabled = true
+                        self.createConversationCoordinator.legislativeArea = nil
+                    })
+                    
                 } else {
                     db.runTransaction({ (transaction, errorPointer) -> Any? in
                         let conversationsReference = self.createConversationCoordinator.topic.reference.collection("conversations")
