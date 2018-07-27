@@ -61,14 +61,19 @@ class ActivitiesViewController: UIViewController {
                     } else {
                         self.emptyStateView.isHidden = true
                     }
-                    self.tableView.reloadData()
-                    self.refreshControl.endRefreshing()
+                    for rowIndex in self.tableView.indexPathsForVisibleRows ?? [] {
+                        if let cell = self.tableView.cellForRow(at: rowIndex) {
+                            if cell.isMember(of: ActivityTableViewCell.self) {
+                                (cell as! ActivityTableViewCell).imageMapView.image = self.mapPreviewImagesForIndexPaths[rowIndex] ?? nil
+                            }
+                        }
+                    }
                 }
             }
         }
     }
     
-    let query = Firestore.firestore().collection("public_activities").whereField("followers.\(Auth.auth().currentUser!.uid)", isGreaterThan: Date(timeIntervalSince1970: 0)).order(by: "followers.\(Auth.auth().currentUser!.uid)", descending: true).limit(to: 2)
+    let query = Firestore.firestore().collection("public_activities").whereField("followers.\(Auth.auth().currentUser!.uid)", isGreaterThan: Date(timeIntervalSince1970: 0)).order(by: "followers.\(Auth.auth().currentUser!.uid)", descending: true)
     
     var queryInProgress: Bool = false
     var noMorePublicActivities: Bool = false
@@ -87,7 +92,7 @@ class ActivitiesViewController: UIViewController {
             if !self.queryInProgress {
                 self.queryInProgress = true
                 print("start next query")
-                query.start(afterDocument: lastDocument).getDocuments { (snapshot, error) in
+                query.start(afterDocument: lastDocument).limit(to: 2).getDocuments { (snapshot, error) in
                     guard let snapshot = snapshot else {
                         print("error retrieving public activities: \(error.debugDescription)")
                         self.queryInProgress = false
@@ -105,13 +110,20 @@ class ActivitiesViewController: UIViewController {
                         publicActivitiesTemp.append(PublicActivity(with: docSnapshot.data()))
                     })
                     self.documents.append(contentsOf: snapshot.documents)
+                    let startingRow = self.publicActivities.count
+                    var indexPathsToInsert:[IndexPath] = []
                     self.publicActivities.append(contentsOf: publicActivitiesTemp)
-                    for (index, activity) in self.publicActivities.enumerated() {
-                        self.rowsForIndexPaths.updateValue(self.generateRows(for: activity.supplements!, with: activity.supplementsType!), forKey: IndexPath(row: index, section: 0))
-                        self.annotationsForIndexPaths.updateValue(self.generateAnnotations(for: activity.supplements!, with: activity.supplementsType!), forKey: IndexPath(row: index, section: 0))
+                    for (index, activity) in publicActivitiesTemp.enumerated() {
+                        self.rowsForIndexPaths.updateValue(self.generateRows(for: activity.supplements!, with: activity.supplementsType!), forKey: IndexPath(row: startingRow + index, section: 0))
+                        self.annotationsForIndexPaths.updateValue(self.generateAnnotations(for: activity.supplements!, with: activity.supplementsType!), forKey: IndexPath(row: startingRow + index, section: 0))
+                        indexPathsToInsert.append(IndexPath(row: startingRow + index, section: 0))
                     }
                     self.generateMapImages()
-                    print("appended activities: \(self.publicActivities)")
+                    print("insert indexes: \(indexPathsToInsert)")
+                    print("number of rows: \(self.tableView.numberOfRows(inSection: 0))")
+                    self.tableView.beginUpdates()
+                    self.tableView.insertRows(at: indexPathsToInsert, with: .automatic)
+                    self.tableView.endUpdates()
                     self.queryInProgress = false
                 }
             }
@@ -123,7 +135,7 @@ class ActivitiesViewController: UIViewController {
         if !queryInProgress {
             queryInProgress = true
             self.noMorePublicActivities = false
-            query.getDocuments(completion: { (snapshot, error) in
+            query.limit(to: 2).getDocuments(completion: { (snapshot, error) in
                 guard let snapshot = snapshot else {
                     print("error retrieving public activities: \(error.debugDescription)")
                     self.tableView.reloadData()
@@ -158,6 +170,8 @@ class ActivitiesViewController: UIViewController {
                     self.annotationsForIndexPaths.updateValue(self.generateAnnotations(for: activity.supplements!, with: activity.supplementsType!), forKey: IndexPath(row: index, section: 0))
                 }
                 self.generateMapImages()
+                self.tableView.reloadData()
+                self.refreshControl.endRefreshing()
                 self.queryInProgress = false
             })
         }
@@ -266,7 +280,7 @@ extension ActivitiesViewController: UITableViewDataSource {
         cell.userEventView.eventLabel.addLink(to: urlForActor, with: rangeOfActor)
         cell.userEventView.eventLabel.delegate = self
         cell.userEventView.dateLabel.text = activity.date.timeAgoSinceNow
-        cell.imageMapView.image = self.mapPreviewImagesForIndexPaths[indexPath]
+        cell.imageMapView.image = self.mapPreviewImagesForIndexPaths[indexPath] ?? nil
         let rows = rowsForIndexPaths[indexPath]!
         
         let firstRow = rows[0]
