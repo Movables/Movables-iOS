@@ -121,6 +121,7 @@
 "label.packageContents" = "Package Contents";
 "label.distanceRemaining" = "Distance Remaining";
 "label.timeRemaining" = "Time Remaining";
+"label.noNearbyConversations" = "No nearby conversations, yet.";
 "label.due" = "Due";
 "label.headline" = "Headline";
 "label.description" = "Description";
@@ -156,6 +157,8 @@
 "copy.alert.privateConversation" = "Private Conversation Coming Soon";
 "copy.alert.unableToDropoff" = "Unable to Dropoff";
 "copy.alert.unableToDropoffDesc" = "To dropoff the package, move closer to the destination.";
+"copy.alert.conversationExists" = "Conversation Already Exists";
+"copy.alert.conversationExistsDesc" = "There is already a conversation for #%@ in %@.";
 "copy.category.animals" = "Animals";
 "copy.category.arts_culture_humanities" = "Arts, Culture, Humanities";
 "copy.category.community_development" = "Community Development";

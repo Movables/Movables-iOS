@@ -31,7 +31,7 @@ class CreateConversationCoordinator: Coordinator {
     
     let rootViewController: UIViewController
     let navigationController: UINavigationController
-    let typeSelectVC: CreateConversationTypeSelectViewController
+    let legislativeAreaSelectVC: CreateConversationLegislativeAreaViewController
     
     var topic: Topic!
     
@@ -40,12 +40,13 @@ class CreateConversationCoordinator: Coordinator {
     
     init(rootViewController: UIViewController) {
         self.rootViewController = rootViewController
-        self.typeSelectVC = CreateConversationTypeSelectViewController()
-        self.navigationController = UINavigationController(rootViewController: self.typeSelectVC)
+        legislativeAreaSelectVC = CreateConversationLegislativeAreaViewController()
+        
+        self.navigationController = UINavigationController(rootViewController: self.legislativeAreaSelectVC)
     }
     
     func start() {
-        self.typeSelectVC.createConversationCoordinator = self
+        self.legislativeAreaSelectVC.createConversationCoordinator = self
         rootViewController.present(self.navigationController, animated: true) {
             print("presented topicSearchVC")
         }
@@ -63,11 +64,11 @@ class CreateConversationCoordinator: Coordinator {
         }
     }
     
-    func showLegislativeAreaSelectVC() {
-        let legislativeAreaSelectVC = CreateConversationLegislativeAreaViewController()
-        legislativeAreaSelectVC.createConversationCoordinator = self
-        self.navigationController.pushViewController(legislativeAreaSelectVC, animated: true)
-    }
+//    func showLegislativeAreaSelectVC() {
+//        let legislativeAreaSelectVC = CreateConversationLegislativeAreaViewController()
+//        legislativeAreaSelectVC.createConversationCoordinator = self
+//        self.navigationController.pushViewController(legislativeAreaSelectVC, animated: true)
+//    }
     
     func unwind() {
         self.navigationController.popViewController(animated: true)

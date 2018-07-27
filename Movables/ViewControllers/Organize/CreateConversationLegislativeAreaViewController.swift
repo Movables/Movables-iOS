@@ -39,8 +39,8 @@ class CreateConversationLegislativeAreaViewController: UIViewController {
     var instructionLabel: MCPill!
     
     var floatingButtonsContainerView: UIView!
-    var backButtonBaseView: UIView!
-    var backButton: UIButton!
+    var cancelButtonBaseView: UIView!
+    var cancelButton: UIButton!
     var bottomConstraintFAB: NSLayoutConstraint!
     
     var legislativeAreas: [(String, String)]? {
@@ -69,37 +69,37 @@ class CreateConversationLegislativeAreaViewController: UIViewController {
         floatingButtonsContainerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(floatingButtonsContainerView)
         
-        backButtonBaseView = UIView(frame: .zero)
-        backButtonBaseView.translatesAutoresizingMaskIntoConstraints = false
-        backButtonBaseView.layer.shadowColor = UIColor.black.cgColor
-        backButtonBaseView.layer.shadowOpacity = 0.3
-        backButtonBaseView.layer.shadowRadius = 14
-        backButtonBaseView.layer.shadowOffset = CGSize(width: 0, height: 0)
-        floatingButtonsContainerView.addSubview(backButtonBaseView)
+        cancelButtonBaseView = UIView(frame: .zero)
+        cancelButtonBaseView.translatesAutoresizingMaskIntoConstraints = false
+        cancelButtonBaseView.layer.shadowColor = UIColor.black.cgColor
+        cancelButtonBaseView.layer.shadowOpacity = 0.3
+        cancelButtonBaseView.layer.shadowRadius = 14
+        cancelButtonBaseView.layer.shadowOffset = CGSize(width: 0, height: 0)
+        floatingButtonsContainerView.addSubview(cancelButtonBaseView)
         
-        backButton = UIButton(frame: .zero)
-        backButton.translatesAutoresizingMaskIntoConstraints = false
-        backButton.setImage(UIImage(named: "round_back_black_50pt"), for: .normal)
-        backButton.tintColor = .white
-        backButton.setBackgroundColor(color: Theme().grayTextColor, forUIControlState: .normal)
-        backButton.setBackgroundColor(color: Theme().grayTextColorHighlight, forUIControlState: .highlighted)
-        backButton.contentEdgeInsets = .zero
-        backButton.layer.cornerRadius = 25
-        backButton.clipsToBounds = true
-        backButton.addTarget(self, action: #selector(didTapBackButton(sender:)), for: .touchUpInside)
-        backButton.isEnabled = true
-        backButtonBaseView.addSubview(backButton)
+        cancelButton = UIButton(frame: .zero)
+        cancelButton.translatesAutoresizingMaskIntoConstraints = false
+        cancelButton.setImage(UIImage(named: "round_close_black_50pt"), for: .normal)
+        cancelButton.tintColor = .white
+        cancelButton.setBackgroundColor(color: Theme().grayTextColor, forUIControlState: .normal)
+        cancelButton.setBackgroundColor(color: Theme().grayTextColorHighlight, forUIControlState: .highlighted)
+        cancelButton.contentEdgeInsets = .zero
+        cancelButton.layer.cornerRadius = 25
+        cancelButton.clipsToBounds = true
+        cancelButton.addTarget(self, action: #selector(didTapcancelButton(sender:)), for: .touchUpInside)
+        cancelButton.isEnabled = true
+        cancelButtonBaseView.addSubview(cancelButton)
         
-        let backHConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[backButton(50)]|", options: .directionLeadingToTrailing, metrics: nil, views: ["backButton": backButton])
-        backButtonBaseView.addConstraints(backHConstraints)
-        let backVConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|[backButton(50)]|", options: .alignAllTrailing, metrics: nil, views: ["backButton": backButton])
-        backButtonBaseView.addConstraints(backVConstraints)
+        let backHConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[cancelButton(50)]|", options: .directionLeadingToTrailing, metrics: nil, views: ["cancelButton": cancelButton])
+        cancelButtonBaseView.addConstraints(backHConstraints)
+        let backVConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|[cancelButton(50)]|", options: .alignAllTrailing, metrics: nil, views: ["cancelButton": cancelButton])
+        cancelButtonBaseView.addConstraints(backVConstraints)
         
         let containerViewCenterXConstraint = NSLayoutConstraint(item: floatingButtonsContainerView, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
         view.addConstraint(containerViewCenterXConstraint)
         
-        let hBaseViewsConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[backButtonBaseView]|", options: [.alignAllTop, .alignAllBottom], metrics: nil, views: ["backButtonBaseView": backButtonBaseView])
-        let vBaseViewsConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|[backButtonBaseView]|", options: [.alignAllTop, .alignAllBottom], metrics: nil, views: ["backButtonBaseView": backButtonBaseView])
+        let hBaseViewsConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[cancelButtonBaseView]|", options: [.alignAllTop, .alignAllBottom], metrics: nil, views: ["cancelButtonBaseView": cancelButtonBaseView])
+        let vBaseViewsConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|[cancelButtonBaseView]|", options: [.alignAllTop, .alignAllBottom], metrics: nil, views: ["cancelButtonBaseView": cancelButtonBaseView])
         floatingButtonsContainerView.addConstraints(hBaseViewsConstraints + vBaseViewsConstraints)
         
         bottomConstraintFAB = NSLayoutConstraint(item: self.floatingButtonsContainerView, attribute: .top, relatedBy: .equal, toItem: self.view, attribute: .bottom, multiplier: 1, constant: -(UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 50 + (UIDevice.isIphoneX ? 0 : 18)))
@@ -146,8 +146,8 @@ class CreateConversationLegislativeAreaViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @objc private func didTapBackButton(sender: UIButton) {
-        createConversationCoordinator.unwind()
+    @objc private func didTapcancelButton(sender: UIButton) {
+        createConversationCoordinator.cancelConversationCreation(created: false)
         print("backed")
     }
     
@@ -232,7 +232,9 @@ extension CreateConversationLegislativeAreaViewController: UITableViewDataSource
         
         let db = Firestore.firestore()
         // check if conversation exists for topic
-        createConversationCoordinator.topic.reference.collection("conversations").whereField("legislative_area", isEqualTo: [createConversationCoordinator.legislativeArea!.1: createConversationCoordinator.legislativeArea!.0]).getDocuments { (querySnapshot, error) in
+        print("query path is: \("legislative_area.\(createConversationCoordinator.legislativeArea!.0)")")
+        print("query match is: \(createConversationCoordinator.legislativeArea!.1)")
+        createConversationCoordinator.topic.reference.collection("conversations").whereField("legislative_area.\(createConversationCoordinator.legislativeArea!.0)", isEqualTo: createConversationCoordinator.legislativeArea!.1).getDocuments { (querySnapshot, error) in
             if let error = error {
                 print(error)
                 return
@@ -240,6 +242,19 @@ extension CreateConversationLegislativeAreaViewController: UITableViewDataSource
             if let snapshot = querySnapshot {
                 if snapshot.documents.count > 0 {
                     print("conversation exists")
+                    let alertController = UIAlertController(
+                        title: String(NSLocalizedString("copy.alert.conversationExists", comment: "title for conversation exists alert")),
+                        message: String(format: NSLocalizedString("copy.alert.conversationExistsDesc", comment: "body text for conversation exists alert"), self.createConversationCoordinator.topic.name, self.createConversationCoordinator.legislativeArea!.1),
+                        preferredStyle: .alert
+                    )
+                    alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.ok", comment: "button title for ok")), style: .cancel, handler: { (action) in
+                        print("ok")
+                    }))
+                    self.present(alertController, animated: true, completion: {
+                        self.cancelButton.isEnabled = true
+                        self.createConversationCoordinator.legislativeArea = nil
+                    })
+                    
                 } else {
                     db.runTransaction({ (transaction, errorPointer) -> Any? in
                         let conversationsReference = self.createConversationCoordinator.topic.reference.collection("conversations")
@@ -269,7 +284,7 @@ extension CreateConversationLegislativeAreaViewController: UITableViewDataSource
 extension CreateConversationLegislativeAreaViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.isUserInteractionEnabled = false
-        backButton.isEnabled = false
+        cancelButton.isEnabled = false
         createConversationCoordinator.legislativeArea = legislativeAreas![indexPath.row]
         self.saveConversation()
     }

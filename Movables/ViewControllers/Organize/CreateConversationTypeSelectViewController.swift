@@ -166,7 +166,7 @@ extension CreateConversationTypeSelectViewController: UITableViewDelegate {
         let selectedType = availableTypes[indexPath.row]
         if selectedType == .location {
             createConversationCoordinator.type = selectedType
-            createConversationCoordinator.showLegislativeAreaSelectVC()
+//            createConversationCoordinator.showLegislativeAreaSelectVC()
         } else {
             let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.privateConversation", comment: "alert copy for private conversation")), message: nil, preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.ok", comment: "button title for OK")), style: .default, handler: { (action) in
