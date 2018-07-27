@@ -92,7 +92,7 @@ class ActivitiesViewController: UIViewController {
             if !self.queryInProgress {
                 self.queryInProgress = true
                 print("start next query")
-                query.start(afterDocument: lastDocument).limit(to: 2).getDocuments { (snapshot, error) in
+                query.start(afterDocument: lastDocument).limit(to: 10).getDocuments { (snapshot, error) in
                     guard let snapshot = snapshot else {
                         print("error retrieving public activities: \(error.debugDescription)")
                         self.queryInProgress = false
@@ -140,7 +140,7 @@ class ActivitiesViewController: UIViewController {
         if !queryInProgress {
             queryInProgress = true
             self.noMorePublicActivities = false
-            query.limit(to: 2).getDocuments(completion: { (snapshot, error) in
+            query.limit(to: 10).getDocuments(completion: { (snapshot, error) in
                 guard let snapshot = snapshot else {
                     print("error retrieving public activities: \(error.debugDescription)")
                     self.tableView.reloadData()
