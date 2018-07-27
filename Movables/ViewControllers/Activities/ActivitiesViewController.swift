@@ -104,6 +104,7 @@ class ActivitiesViewController: UIViewController {
                         print("no more public activities")
                         if let cell = self.tableView.cellForRow(at: IndexPath(row: self.publicActivities.count, section: 0)) as? LoadingIndicatorTableViewCell {
                             cell.activityIndicator.stopAnimating()
+                            cell.label.isHidden = false
                         }
                         self.queryInProgress = false
                         return
@@ -125,10 +126,12 @@ class ActivitiesViewController: UIViewController {
                     indexPathsToInsert.append(IndexPath(row: self.publicActivities.count, section: 0))
                     print("insert indexes: \(indexPathsToInsert)")
                     print("number of rows: \(self.tableView.numberOfRows(inSection: 0))")
-                    self.tableView.beginUpdates()
-                    self.tableView.deleteRows(at: [IndexPath(row: startingRow, section: 0)], with: .none)
-                    self.tableView.insertRows(at: indexPathsToInsert, with: .none)
-                    self.tableView.endUpdates()
+                    DispatchQueue.main.async {
+                        self.tableView.beginUpdates()
+                        self.tableView.deleteRows(at: [IndexPath(row: startingRow, section: 0)], with: .none)
+                        self.tableView.insertRows(at: indexPathsToInsert, with: .none)
+                        self.tableView.endUpdates()
+                    }
                     self.queryInProgress = false
                 }
             }
@@ -258,10 +261,13 @@ extension ActivitiesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if self.publicActivities.isEmpty || indexPath.row == self.publicActivities.count {
             let cell = tableView.dequeueReusableCell(withIdentifier: "loadingCell") as! LoadingIndicatorTableViewCell
+            cell.label.text = String(NSLocalizedString("copy.noMoreActivities", comment: "label for no more activities"))
             if self.noMorePublicActivities {
                 cell.activityIndicator.stopAnimating()
+                cell.label.isHidden = false
             } else {
                 cell.activityIndicator.startAnimating()
+                cell.label.isHidden = true
             }
             return cell
         }

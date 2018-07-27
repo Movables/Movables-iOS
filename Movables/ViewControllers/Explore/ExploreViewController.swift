@@ -668,7 +668,6 @@ extension ExploreViewController: UICollectionViewDelegate {
                 cell.containerView.backgroundColor = .white
             }
             self.togglesCollectionView.deselectItem(at: indexPath, animated: false)
-            print("deselected: \(self.togglesCollectionView.indexPathsForSelectedItems)")
         }
         if collectionView == topicsTrendingCollectionView {
             self.topicName = nil
@@ -678,7 +677,6 @@ extension ExploreViewController: UICollectionViewDelegate {
                 cell.label.textColor = Theme().grayTextColor
             }
             self.topicsTrendingCollectionView.deselectItem(at: indexPath, animated: false)
-            print("deselected: \(self.topicsTrendingCollectionView.indexPathsForSelectedItems)")
         }
     }
     

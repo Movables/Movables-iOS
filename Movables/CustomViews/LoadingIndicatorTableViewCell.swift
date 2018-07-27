@@ -12,6 +12,7 @@ import NVActivityIndicatorView
 class LoadingIndicatorTableViewCell: UITableViewCell {
 
     var activityIndicator: NVActivityIndicatorView!
+    var label: UILabel!
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -27,12 +28,22 @@ class LoadingIndicatorTableViewCell: UITableViewCell {
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(activityIndicator)
         
+        label = UILabel(frame: .zero)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 13)
+        label.textColor = Theme().grayTextColor
+        label.isHidden = true
+        contentView.addSubview(label)
+        
         NSLayoutConstraint.activate([
-            activityIndicator.heightAnchor.constraint(equalToConstant: 50),
-            activityIndicator.widthAnchor.constraint(equalToConstant: 50),
-            activityIndicator.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 40),
-            activityIndicator.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -40),
-            activityIndicator.centerXAnchor.constraint(equalTo: contentView.centerXAnchor)
+            activityIndicator.heightAnchor.constraint(equalToConstant: 30),
+            activityIndicator.widthAnchor.constraint(equalToConstant: 30),
+            activityIndicator.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
+            activityIndicator.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            activityIndicator.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: -6),
+            label.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
         ])
     }
     

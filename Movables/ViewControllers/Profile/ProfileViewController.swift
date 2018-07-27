@@ -46,23 +46,21 @@ class ProfileViewController: UIViewController {
     var userDocument: UserDocument? {
         didSet {
             if userDocument != nil {
-                self.fetchAccountActivities(userDoc: userDocument!, completion: { (success, accountActivities) in
-                    if success {
-                        self.accountActivities = accountActivities!
-                        self.activityIndicatorView?.stopAnimating()
-                        self.tableView.reloadData()
-                    } else {
-                        print("error loading account activities")
-                    }
-                })
+                self.query = userDocument!.reference.collection("account_activities").order(by: "date", descending: true)
+                self.fetchAccountActivities()
             }
         }
     }
-    var accountActivities: [AccountActivity]?
+    var accountActivities: [AccountActivity] = []
+    var documents: [QueryDocumentSnapshot] = []
+    
+    var query: Query!
+    
+    var noMoreAccountActivities = false
+    var queryInProgress = false
     
     var tableView: UITableView!
-    
-    var activityIndicatorView: NVActivityIndicatorView!
+    var refreshControl: UIRefreshControl!
     
     var delegate: ProfileViewControllerDelegate?
     
@@ -81,20 +79,84 @@ class ProfileViewController: UIViewController {
         self.userDocument = (notification.userInfo as! [String: Any])["userDocument"] as? UserDocument
         print("received notification and set userDocument")
     }
-
     
-    
-    private func fetchAccountActivities(userDoc: UserDocument, completion: @escaping (Bool, [AccountActivity]?) -> ()) {
-        userDoc.reference.collection("account_activities").order(by: "date", descending: true).limit(to: 10).getDocuments { (querySnapshot, error) in
-            if let error = error {
-                print(error)
-                completion(false, nil)
-            } else if let snapshot = querySnapshot {
+    private func fetchAccountActivities() {
+        if !queryInProgress {
+            queryInProgress = true
+            self.noMoreAccountActivities = false
+            query.limit(to: 10).getDocuments { (snapshot, error) in
+                guard let snapshot = snapshot else {
+                    print("error retrieving account activities: \(error.debugDescription)")
+                    self.tableView.reloadData()
+                    self.refreshControl.endRefreshing()
+                    self.queryInProgress = false
+                    return
+                }
+                guard snapshot.documents.last != nil else {
+                    self.noMoreAccountActivities = true
+                    self.tableView.reloadData()
+                    self.refreshControl.endRefreshing()
+                    self.queryInProgress = false
+                    return
+                }
+                
+                self.accountActivities.removeAll()
+                self.documents.removeAll()
+                self.documents.append(contentsOf: snapshot.documents)
+                
                 var accountActivities:[AccountActivity] = []
                 snapshot.documents.forEach({ (docSnapshot) in
                     accountActivities.append(AccountActivity(with: docSnapshot.data()))
                 })
-                completion(true, accountActivities)
+                self.accountActivities.append(contentsOf: accountActivities)
+                self.tableView.reloadData()
+                self.refreshControl.endRefreshing()
+                self.queryInProgress = false
+            }
+        }
+    }
+    
+    private func fetchMoreAccountActivities() {
+        if let lastDocument = self.documents.last {
+            if !self.queryInProgress {
+                self.queryInProgress = true
+                query.start(afterDocument: lastDocument).limit(to: 10).getDocuments { (snapshot, error) in
+                    guard let snapshot = snapshot else {
+                        print("error retrieiving more account activities:\(error.debugDescription)")
+                        self.queryInProgress = false
+                        return
+                    }
+                    guard snapshot.documents.last != nil else {
+                        // no more account activities
+                        self.noMoreAccountActivities = true
+                        print("no more account activities")
+                        if let cell = self.tableView.cellForRow(at: IndexPath(row: self.accountActivities.count + 1, section: 0)) as? LoadingIndicatorTableViewCell {
+                            cell.activityIndicator.stopAnimating()
+                            cell.label.isHidden = false
+                        }
+                        self.queryInProgress = false
+                        return
+                    }
+                    var accountActivities:[AccountActivity] = []
+                    let startingRow = self.accountActivities.count + 1
+                    var indexPathsToInsert:[IndexPath] = []
+                    self.documents.append(contentsOf: snapshot.documents)
+                    for (index, docSnapshot) in snapshot.documents.enumerated() {
+                        accountActivities.append(AccountActivity(with: docSnapshot.data()))
+                        indexPathsToInsert.append(IndexPath(row: startingRow + index, section: 0))
+                    }
+                    self.accountActivities.append(contentsOf: accountActivities)
+                    indexPathsToInsert.append(IndexPath(row: self.accountActivities.count + 1, section: 0))
+
+                    DispatchQueue.main.async {
+                        self.tableView.beginUpdates()
+                        self.tableView.deleteRows(at: [IndexPath(row: startingRow, section: 0)], with: .none)
+                        self.tableView.insertRows(at: indexPathsToInsert, with: .none)
+                        self.tableView.endUpdates()
+                    }
+                    self.queryInProgress = false
+                    
+                }
             }
         }
     }
@@ -113,39 +175,52 @@ class ProfileViewController: UIViewController {
         tableView.separatorStyle = .none
         tableView.register(ProfileFaceTableViewCell.self, forCellReuseIdentifier: "profileFace")
         tableView.register(EventActivityTableViewCell.self, forCellReuseIdentifier: "eventActivity")
+        tableView.register(LoadingIndicatorTableViewCell.self, forCellReuseIdentifier: "loadingCell")
         tableView.dataSource = self
+        tableView.delegate = self
         view.addSubview(tableView)
         
-        activityIndicatorView = NVActivityIndicatorView(frame: .zero, type: .ballScale, color: Theme().textColor, padding: 0)
-        activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
-        activityIndicatorView.startAnimating()
-        tableView.backgroundView = activityIndicatorView
+        refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(didRefresh(sender:)), for: .valueChanged)
+        tableView.addSubview(refreshControl)
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            activityIndicatorView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            activityIndicatorView.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
-            activityIndicatorView.heightAnchor.constraint(equalToConstant: 50),
-            activityIndicatorView.widthAnchor.constraint(equalToConstant: 50),
         ])
+    }
+    
+    @objc private func didRefresh(sender: UIRefreshControl) {
+        sender.beginRefreshing()
+        fetchAccountActivities()
     }
 }
 
 extension ProfileViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if self.userDocument != nil {
-            return 1 + (self.accountActivities?.count ?? 0)
+            return 1 + self.accountActivities.count + 1
         } else {
-            return 0
+            return 1
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch indexPath.row {
-        case 0:
+        if (self.userDocument == nil && indexPath.row == 0) || self.userDocument != nil && indexPath.row == self.accountActivities.count + 1 {
+            // loading indicator cell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "loadingCell") as! LoadingIndicatorTableViewCell
+            cell.label.text = String(NSLocalizedString("copy.noMoreAccountActivities", comment: "label for no more account activities"))
+            if noMoreAccountActivities {
+                cell.activityIndicator.stopAnimating()
+                cell.label.isHidden = false
+            } else {
+                cell.activityIndicator.startAnimating()
+                cell.label.isHidden = true
+            }
+            return cell
+        } else if indexPath.row == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "profileFace") as! ProfileFaceTableViewCell
             cell.nameLabel.text = userDocument!.publicProfile.displayName
             cell.profilePicImageView.sd_setImage(with: URL(string: self.userDocument!.publicProfile.picUrl!)) { (image, error, cacheType, url) in
@@ -160,16 +235,15 @@ extension ProfileViewController: UITableViewDataSource {
             dateFormatter.dateStyle = .long
             cell.journeyLabel.text = String(format: NSLocalizedString("label.sinceDate", comment: "label text for since date"), dateFormatter.string(from: userDocument!.publicProfile.createdDate))
             var interestsString: String = ""
-            print(userDocument)
             for interest in userDocument!.privateProfile.interests {
                interestsString += getEmojiForCategory(category: interest)
             }
             cell.interestsLabel.text = interestsString
             return cell
-        default:
+        } else {
             // activity row
             let cell = tableView.dequeueReusableCell(withIdentifier: "eventActivity") as! EventActivityTableViewCell
-            let activity = self.accountActivities![indexPath.row - 1]
+            let activity = self.accountActivities[indexPath.row - 1]
             let eventText = generateLabelTextForAccountActivity(accountActivity: activity)
             cell.eventLabel.text = eventText
             let eventTextNSString = eventText as NSString
@@ -255,6 +329,14 @@ extension ProfileViewController: UITableViewDataSource {
         print("did tap on edit")
     }
 
+}
+
+extension ProfileViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == self.tableView.numberOfRows(inSection: 0) - 1 && !queryInProgress && !noMoreAccountActivities {
+            fetchMoreAccountActivities()
+        }
+    }
 }
 
 extension ProfileViewController: TTTAttributedLabelDelegate {

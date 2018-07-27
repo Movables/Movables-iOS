@@ -313,7 +313,7 @@ extension CreatePackageTopicSearchViewController: UITableViewDataSource {
         let curSearchId = searchId
         topicsIndex.search(query) { (data, error) in
             if (curSearchId <= self.displayedSearchId) || (error != nil) {
-                print(error)
+                print(error.debugDescription)
                 return
             }
             self.displayedSearchId = curSearchId
