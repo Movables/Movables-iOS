@@ -100,6 +100,7 @@
 		2CDE1EC020B42E1900D45170 /* DeliveryLogisticsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDE1EBF20B42E1900D45170 /* DeliveryLogisticsCollectionViewCell.swift */; };
 		2CDE1EC220B4351E00D45170 /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDE1EC120B4351E00D45170 /* UIView+Extensions.swift */; };
 		2CDFE4262109AF2200B25641 /* EmptyStateWithButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDFE4252109AF2200B25641 /* EmptyStateWithButtonTableViewCell.swift */; };
+		2CDFE428210AFFB600B25641 /* LoadingIndicatorTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDFE427210AFFB600B25641 /* LoadingIndicatorTableViewCell.swift */; };
 		2CE12D812089923F00C4625A /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CE12D802089923F00C4625A /* Package.swift */; };
 		2CE12D87208A294C00C4625A /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CE12D86208A294C00C4625A /* Comment.swift */; };
 		2CE12D8C208F2B5900C4625A /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CE12D8B208F2B5900C4625A /* LocationManager.swift */; };
@@ -247,6 +248,7 @@
 		2CDE1EBF20B42E1900D45170 /* DeliveryLogisticsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeliveryLogisticsCollectionViewCell.swift; sourceTree = "<group>"; };
 		2CDE1EC120B4351E00D45170 /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		2CDFE4252109AF2200B25641 /* EmptyStateWithButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateWithButtonTableViewCell.swift; sourceTree = "<group>"; };
+		2CDFE427210AFFB600B25641 /* LoadingIndicatorTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingIndicatorTableViewCell.swift; sourceTree = "<group>"; };
 		2CE12D802089923F00C4625A /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		2CE12D86208A294C00C4625A /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		2CE12D8B208F2B5900C4625A /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
@@ -413,6 +415,7 @@
 			isa = PBXGroup;
 			children = (
 				2CAE906220EA8CEF00F23937 /* CommunityTableViewCell.swift */,
+				2CDFE427210AFFB600B25641 /* LoadingIndicatorTableViewCell.swift */,
 				2CDFE4252109AF2200B25641 /* EmptyStateWithButtonTableViewCell.swift */,
 				2CA1187020EA021800EBA4A8 /* OrganizeDetailTableHeaderViewCell.swift */,
 				2CA1187420EB59A100EBA4A8 /* SectionHeaderTableViewHeaderView.swift */,
@@ -987,6 +990,7 @@
 				2C4EACEE20CFB75C00CD741A /* CreatePackagePersonSearchViewController.swift in Sources */,
 				2CD4BAA020DE04D400D72E25 /* TextFieldWithBorder.swift in Sources */,
 				2CDE1EA820B2737500D45170 /* ExpandableTextCollectionViewCell.swift in Sources */,
+				2CDFE428210AFFB600B25641 /* LoadingIndicatorTableViewCell.swift in Sources */,
 				2CEE36E620BE794B0097AC5F /* EmptyStateView.swift in Sources */,
 				2CE12D812089923F00C4625A /* Package.swift in Sources */,
 				2CD4BA9E20DDFBE000D72E25 /* InterestPickerViewController.swift in Sources */,

@@ -43,12 +43,12 @@ class ActivitiesViewController: UIViewController {
     var mainCoordinatorDelegate: MainCoordinatorDelegate?
     var mainCoordinator: MainCoordinator?
     var tableView: UITableView!
-    var activityIndicatorView: NVActivityIndicatorView!
     var refreshControl: UIRefreshControl!
     
     var emptyStateView: EmptyStateView!
 
-    var publicActivities: [PublicActivity]?
+    var publicActivities: [PublicActivity] = []
+    var documents: [QueryDocumentSnapshot] = []
     
     var rowsForIndexPaths: [IndexPath: [LogisticsRow]] = [:]
     var annotationsForIndexPaths: [IndexPath: [MKAnnotation]] = [:]
@@ -56,8 +56,7 @@ class ActivitiesViewController: UIViewController {
         didSet {
             if mapPreviewImagesForIndexPaths.count == self.annotationsForIndexPaths.count {
                 DispatchQueue.main.async {
-                    self.activityIndicatorView.stopAnimating()
-                    if self.publicActivities!.count == 0 {
+                    if self.publicActivities.count == 0 {
                         self.emptyStateView.isHidden = false
                     } else {
                         self.emptyStateView.isHidden = true
@@ -69,6 +68,11 @@ class ActivitiesViewController: UIViewController {
         }
     }
     
+    let query = Firestore.firestore().collection("public_activities").whereField("followers.\(Auth.auth().currentUser!.uid)", isGreaterThan: Date(timeIntervalSince1970: 0)).order(by: "followers.\(Auth.auth().currentUser!.uid)", descending: true).limit(to: 2)
+    
+    var queryInProgress: Bool = false
+    var noMorePublicActivities: Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -78,43 +82,83 @@ class ActivitiesViewController: UIViewController {
         fetchPublicActivities()
     }
     
-    private func fetchPublicActivities() {
-        print("fetch public activities")
-        let db = Firestore.firestore()
-        db.collection("public_activities").whereField("followers.\(Auth.auth().currentUser!.uid)", isGreaterThan: Date(timeIntervalSince1970: 0)).order(by: "followers.\(Auth.auth().currentUser!.uid)", descending: true).getDocuments { (querySnapshot, error) in
-            if let error = error {
-                print(error)
-                return
-            } else {
-                if let snapshot = querySnapshot {
-
+    private func fetchMorePublicActivities() {
+        if let lastDocument = self.documents.last {
+            if !self.queryInProgress {
+                self.queryInProgress = true
+                print("start next query")
+                query.start(afterDocument: lastDocument).getDocuments { (snapshot, error) in
+                    guard let snapshot = snapshot else {
+                        print("error retrieving public activities: \(error.debugDescription)")
+                        self.queryInProgress = false
+                        return
+                    }
+                    guard let lastSnapshot = snapshot.documents.last else {
+                        // no more documents
+                        self.noMorePublicActivities = true
+                        print("no more public activities")
+                        self.queryInProgress = false
+                        return
+                    }
                     var publicActivitiesTemp:[PublicActivity] = []
                     snapshot.documents.forEach({ (docSnapshot) in
                         publicActivitiesTemp.append(PublicActivity(with: docSnapshot.data()))
                     })
-                    self.publicActivities = publicActivitiesTemp
-                    if self.publicActivities!.count > 0 {
-                        print("more than 0")
-                        self.rowsForIndexPaths.removeAll()
-                        self.annotationsForIndexPaths.removeAll()
-                        for (index, activity) in self.publicActivities!.enumerated() {
-                            self.rowsForIndexPaths.updateValue(self.generateRows(for: activity.supplements!, with: activity.supplementsType!), forKey: IndexPath(row: index, section: 0))
+                    self.documents.append(contentsOf: snapshot.documents)
+                    self.publicActivities.append(contentsOf: publicActivitiesTemp)
+                    for (index, activity) in self.publicActivities.enumerated() {
+                        self.rowsForIndexPaths.updateValue(self.generateRows(for: activity.supplements!, with: activity.supplementsType!), forKey: IndexPath(row: index, section: 0))
                         self.annotationsForIndexPaths.updateValue(self.generateAnnotations(for: activity.supplements!, with: activity.supplementsType!), forKey: IndexPath(row: index, section: 0))
-                        }
-                        self.generateMapImages()
-                    } else {
-                        print("== 0")
-                        self.activityIndicatorView.stopAnimating()
-                        self.tableView.reloadData()
-                        self.refreshControl.endRefreshing()
                     }
-                } else {
-                    print("snapshot nil")
-                    self.activityIndicatorView.stopAnimating()
-                    self.tableView.reloadData()
-                    self.refreshControl.endRefreshing()
+                    self.generateMapImages()
+                    print("appended activities: \(self.publicActivities)")
+                    self.queryInProgress = false
                 }
             }
+        }
+    }
+    
+    private func fetchPublicActivities() {
+        print("fetch public activities")
+        if !queryInProgress {
+            queryInProgress = true
+            self.noMorePublicActivities = false
+            query.getDocuments(completion: { (snapshot, error) in
+                guard let snapshot = snapshot else {
+                    print("error retrieving public activities: \(error.debugDescription)")
+                    self.tableView.reloadData()
+                    self.refreshControl.endRefreshing()
+                    self.queryInProgress = false
+                    return
+                }
+                guard snapshot.documents.last != nil else {
+                    // empty results
+                    self.noMorePublicActivities = true
+                    self.tableView.reloadData()
+                    self.refreshControl.endRefreshing()
+                    self.queryInProgress = false
+                    return
+                }
+                self.rowsForIndexPaths.removeAll()
+                self.mapPreviewImagesForIndexPaths.removeAll()
+                self.annotationsForIndexPaths.removeAll()
+                self.publicActivities.removeAll()
+                self.documents.removeAll()
+                self.documents.append(contentsOf: snapshot.documents)
+                
+                var publicActivitiesTemp:[PublicActivity] = []
+                snapshot.documents.forEach({ (docSnapshot) in
+                    publicActivitiesTemp.append(PublicActivity(with: docSnapshot.data()))
+                })
+                
+                self.publicActivities.append(contentsOf: publicActivitiesTemp)
+                for (index, activity) in self.publicActivities.enumerated() {
+                    self.rowsForIndexPaths.updateValue(self.generateRows(for: activity.supplements!, with: activity.supplementsType!), forKey: IndexPath(row: index, section: 0))
+                    self.annotationsForIndexPaths.updateValue(self.generateAnnotations(for: activity.supplements!, with: activity.supplementsType!), forKey: IndexPath(row: index, section: 0))
+                }
+                self.generateMapImages()
+                self.queryInProgress = false
+            })
         }
     }
     
@@ -139,7 +183,6 @@ class ActivitiesViewController: UIViewController {
                     self?.mapPreviewImagesForIndexPaths.updateValue(snapShotImage, forKey: entry.key)
                 }
             })
-
         }
     }
     
@@ -152,6 +195,7 @@ class ActivitiesViewController: UIViewController {
         tableView.estimatedRowHeight = 250
         tableView.separatorStyle = .none
         tableView.register(ActivityTableViewCell.self, forCellReuseIdentifier: "activityCell")
+        tableView.register(LoadingIndicatorTableViewCell.self, forCellReuseIdentifier: "loadingCell")
         tableView.dataSource = self
         tableView.delegate = self
         view.addSubview(tableView)
@@ -159,11 +203,6 @@ class ActivitiesViewController: UIViewController {
         refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(didRefresh(sender:)), for: .valueChanged)
         tableView.addSubview(refreshControl)
-        
-        activityIndicatorView = NVActivityIndicatorView(frame: .zero, type: .ballScale, color: Theme().textColor, padding: 0)
-        activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
-        activityIndicatorView.startAnimating()
-        tableView.backgroundView = activityIndicatorView
         
         emptyStateView = EmptyStateView(frame: .zero)
         emptyStateView.translatesAutoresizingMaskIntoConstraints = false
@@ -178,10 +217,6 @@ class ActivitiesViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            activityIndicatorView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            activityIndicatorView.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
-            activityIndicatorView.heightAnchor.constraint(equalToConstant: 50),
-            activityIndicatorView.widthAnchor.constraint(equalToConstant: 50),
             emptyStateView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             emptyStateView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
@@ -201,9 +236,19 @@ class ActivitiesViewController: UIViewController {
 
 extension ActivitiesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if self.publicActivities.isEmpty || indexPath.row == self.publicActivities.count {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "loadingCell") as! LoadingIndicatorTableViewCell
+            if self.noMorePublicActivities {
+                cell.activityIndicator.stopAnimating()
+            } else {
+                cell.activityIndicator.startAnimating()
+            }
+            return cell
+        }
+        
         // activity row
         let cell = tableView.dequeueReusableCell(withIdentifier: "activityCell") as! ActivityTableViewCell
-        let activity = self.publicActivities![indexPath.row]
+        let activity = self.publicActivities[indexPath.row]
         let eventText = generateLabelTextForPublicActivity(publicActivity: activity)
         cell.userEventView.eventLabel.text = eventText
         if activity.actorPic != nil {
@@ -239,7 +284,7 @@ extension ActivitiesViewController: UITableViewDataSource {
             self.configureActivityRowViewWithRowViewData(rowView: cell.firstRow, with: firstRowData)
             self.configureActivityRowViewWithRowViewData(rowView: cell.secondRow, with: secondRowData)
             self.configureActivityRowViewWithRowViewData(rowView: cell.thirdRow, with: thirdRowData)
-
+            
             switch activity.type {
             case .packageDelivery:
                 let annotation = annotations.first! as! ActivityDeliveryAnnotation
@@ -271,9 +316,9 @@ extension ActivitiesViewController: UITableViewDataSource {
             default:
                 print("default")
             }
-
         }
         return cell
+        
     }
     
     private func configureActivityRowViewWithRowViewData(rowView: ActivityRowView, with rowViewData: ActivityRowViewData) {
@@ -290,7 +335,7 @@ extension ActivitiesViewController: UITableViewDataSource {
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.publicActivities?.count ?? 0
+        return self.publicActivities.count + 1
     }
     
     private func generateRows(for supplements: [String: Any], with type:ActivitySupplementsType) -> [LogisticsRow] {
@@ -404,8 +449,15 @@ extension ActivitiesViewController: UITableViewDataSource {
 extension ActivitiesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("selected \(indexPath.row)")
-        let activity = self.publicActivities![indexPath.row]
+        let activity = self.publicActivities[indexPath.row]
         delegate?.showPackageDetail(with: activity.objectReference.documentID, and: activity.objectName)
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if !self.noMorePublicActivities && !self.queryInProgress && indexPath.row == self.publicActivities.count {
+            print("fetch more public activities")
+            fetchMorePublicActivities()
+        }
     }
 }
 
