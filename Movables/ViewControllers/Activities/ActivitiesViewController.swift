@@ -102,6 +102,9 @@ class ActivitiesViewController: UIViewController {
                         // no more documents
                         self.noMorePublicActivities = true
                         print("no more public activities")
+                        if let cell = self.tableView.cellForRow(at: IndexPath(row: self.publicActivities.count, section: 0)) as? LoadingIndicatorTableViewCell {
+                            cell.activityIndicator.stopAnimating()
+                        }
                         self.queryInProgress = false
                         return
                     }
@@ -119,10 +122,12 @@ class ActivitiesViewController: UIViewController {
                         indexPathsToInsert.append(IndexPath(row: startingRow + index, section: 0))
                     }
                     self.generateMapImages()
+                    indexPathsToInsert.append(IndexPath(row: self.publicActivities.count, section: 0))
                     print("insert indexes: \(indexPathsToInsert)")
                     print("number of rows: \(self.tableView.numberOfRows(inSection: 0))")
                     self.tableView.beginUpdates()
-                    self.tableView.insertRows(at: indexPathsToInsert, with: .automatic)
+                    self.tableView.deleteRows(at: [IndexPath(row: startingRow, section: 0)], with: .none)
+                    self.tableView.insertRows(at: indexPathsToInsert, with: .none)
                     self.tableView.endUpdates()
                     self.queryInProgress = false
                 }
@@ -268,7 +273,7 @@ extension ActivitiesViewController: UITableViewDataSource {
         cell.userEventView.eventLabel.text = eventText
         if activity.actorPic != nil {
             cell.userEventView.profilePicImageView.sd_setImage(with: URL(string: activity.actorPic!)) { (image, error, cacheType, url) in
-                print("loaded actor pic")
+//                print("loaded actor pic")
             }
         }
         let eventTextNSString = eventText as NSString
@@ -339,7 +344,7 @@ extension ActivitiesViewController: UITableViewDataSource {
     private func configureActivityRowViewWithRowViewData(rowView: ActivityRowView, with rowViewData: ActivityRowViewData) {
         if rowViewData.profilePicUrl != nil {
             rowView.imageView.sd_setImage(with: URL(string: rowViewData.profilePicUrl!)!) { (image, error, cacheType, url) in
-                print("loaded image")
+//                print("loaded image")
             }
         } else {
             rowView.imageView.image = getImage(for: rowViewData.logisticRowType)
