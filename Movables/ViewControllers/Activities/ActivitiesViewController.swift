@@ -93,7 +93,7 @@ class ActivitiesViewController: UIViewController {
                         self.queryInProgress = false
                         return
                     }
-                    guard let lastSnapshot = snapshot.documents.last else {
+                    guard snapshot.documents.last != nil else {
                         // no more documents
                         self.noMorePublicActivities = true
                         print("no more public activities")
@@ -139,6 +139,7 @@ class ActivitiesViewController: UIViewController {
                     self.queryInProgress = false
                     return
                 }
+                
                 self.rowsForIndexPaths.removeAll()
                 self.mapPreviewImagesForIndexPaths.removeAll()
                 self.annotationsForIndexPaths.removeAll()
