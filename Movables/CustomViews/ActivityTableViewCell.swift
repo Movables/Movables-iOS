@@ -90,6 +90,7 @@ class ActivityTableViewCell: UITableViewCell {
         imageMapView = UIImageView(frame: .zero)
         imageMapView.translatesAutoresizingMaskIntoConstraints = false
         imageMapView.contentMode = .scaleAspectFill
+        imageMapView.backgroundColor = Theme().borderColor
         cardView.addSubview(imageMapView)
         
         NSLayoutConstraint.activate([
