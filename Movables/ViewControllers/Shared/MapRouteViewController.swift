@@ -172,7 +172,7 @@ class MapRouteViewController: UIViewController {
     func activateMapTransitRecords() {
         package?.reference.collection("transit_records").getDocuments(completion: { (querySnapshot, error) in
             guard let snapshot = querySnapshot else {
-                print(error!)
+                print(error?.localizedDescription)
                 return
             }
             var transitRecordsTemp:[TransitRecord] = []

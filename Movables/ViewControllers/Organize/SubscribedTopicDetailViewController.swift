@@ -196,7 +196,7 @@ class SubscribedTopicDetailViewController: UIViewController {
                             }
                             self.nearbyCommunities = communitiesTemp
                         } else {
-                            print(error!)
+                            print(error?.localizedDescription)
                         }
                     })
                 } else {

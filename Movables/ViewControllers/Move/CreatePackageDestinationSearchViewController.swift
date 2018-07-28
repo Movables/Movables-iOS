@@ -258,7 +258,7 @@ class CreatePackageDestinationSearchViewController: UIViewController {
         search.start(completionHandler: {(response, error) in
             
             if error != nil {
-                print("Error occurred in search: \(error!.localizedDescription)")
+                print("Error occurred in search: \(error?.localizedDescription)")
             } else if response!.mapItems.count == 0 {
                 print("No matches found")
             } else {

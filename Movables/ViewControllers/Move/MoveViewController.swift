@@ -218,7 +218,7 @@ class MoveViewController: UIViewController {
         // fetch current package details
         self.currentPackageListener = userDocument?.privateProfile.currentPackage?.addSnapshotListener({ (documentSnapshot, error) in
             guard let snapshot = documentSnapshot else {
-                print("error fetching document: \(error!)")
+                print("error fetching document: \(error?.localizedDescription)")
                 self.moveLocationManager.stopUpdatingHeading()
                 self.moveLocationManager.stopUpdatingLocation()
                 self.currentPackage = nil
@@ -265,7 +265,7 @@ class MoveViewController: UIViewController {
     private func listenToTransitRecord() {
         self.currentTransitRecordListener = self.currentPackage?.reference.collection("transit_records").document(userDocument!.publicProfile.uid).addSnapshotListener({ (documentSnapshot, error) in
             guard documentSnapshot != nil else {
-                print("Error fetching transit record: \(error!)")
+                print("Error fetching transit record: \(error?.localizedDescription)")
                 self.currentTransitRecord = nil
                 return
             }

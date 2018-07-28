@@ -113,7 +113,7 @@ class ActivityRowView: UIView {
         if row.type == .Person && row.circleImageUrl != nil && !row.circleImageUrl!.isEmpty{
             imageView.sd_setImage(with: URL(string: row.circleImageUrl!)) { (image, error, cacheType, url) in
                 if error != nil {
-                    print(error!)
+                    print(error?.localizedDescription)
                 }
             }
         } else {

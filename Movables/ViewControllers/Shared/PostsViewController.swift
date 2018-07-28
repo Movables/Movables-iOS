@@ -117,7 +117,7 @@ class PostsViewController: SLKTextViewController {
     private func listenToPosts() {
         self.commentsReference!.order(by: "created_date", descending: true).getDocuments { (querySnapshot, error) in
             guard let snapshot = querySnapshot else {
-                print("Error fetching snapshots: \(error!)")
+                print("Error fetching snapshots: \(error?.localizedDescription)")
                 return
             }
             var postsTemp:[Post] = []
@@ -137,7 +137,7 @@ class PostsViewController: SLKTextViewController {
             }
             self.listener = self.commentsReference!.order(by: "created_date", descending: true).addSnapshotListener { (querySnapshot, error) in
                 guard let snapshot = querySnapshot else {
-                    print("Error fetching snapshots: \(error!)")
+                    print("Error fetching snapshots: \(error?.localizedDescription)")
                     return
                 }
                 var newPosts:[Post] = []

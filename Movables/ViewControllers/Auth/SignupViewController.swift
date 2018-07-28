@@ -218,11 +218,21 @@ class SignupViewController: UIViewController {
                 profilePicImageReference.putData(UIImageJPEGRepresentation(image, 0.5)!, metadata: metaData, completion: { (meta, error) in
                     if let error = error {
                         print("error: \(error)")
+                        let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.fileSaveUnsuccessful", comment: "alert title for unsuccessful file save")), message: error.localizedDescription, preferredStyle: .alert)
+                        alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.ok", comment: "button title for ok")), style: .cancel, handler: { (action) in
+                            sender.isEnabled = true
+                        }))
+                        self.present(alertController, animated: true, completion: nil)
                     } else {
                         profilePicImageReference.downloadURL(completion: { (url, error) in
                             guard let downloadURL = url else {
                                 // Uh-oh, an error occurred!
-                                print(error!)
+                                print(error?.localizedDescription)
+                                let alertController = UIAlertController(title: nil, message: error?.localizedDescription, preferredStyle: .alert)
+                                alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.ok", comment: "button title for ok")), style: .cancel, handler: { (action) in
+                                    sender.isEnabled = true
+                                }))
+                                self.present(alertController, animated: true, completion: nil)
                                 return
                             }
                             let profileChangeRequest = authDataResult!.user.createProfileChangeRequest()
@@ -230,7 +240,7 @@ class SignupViewController: UIViewController {
                             profileChangeRequest.displayName = self.displayNameTextFieldView.textField.text!
                             profileChangeRequest.commitChanges(completion: { (error) in
                                 if error != nil {
-                                    print(error!)
+                                    print(error?.localizedDescription)
                                 } else {
                                     self.delegate.didSignup(with: authDataResult)
                                 }
@@ -257,12 +267,12 @@ class SignupViewController: UIViewController {
         print("did tap add profile pic")
         if self.profilePicImage != nil {
             let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-            alertController.addAction(UIAlertAction(title: "Remove", style: .destructive, handler: { (action) in
+            alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.remove", comment: "button title for remove")), style: .destructive, handler: { (action) in
                 self.profileImageView.image = UIImage(named: "user_black_56pt")
                 self.profilePicImage = nil
                 self.checkSubmitState()
             }))
-            alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
+            alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.cancel", comment: "button title for cancel")), style: .cancel, handler: { (action) in
                 print("canceled")
                 self.checkSubmitState()
             }))
@@ -271,7 +281,7 @@ class SignupViewController: UIViewController {
             }
         } else {
             let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-            alertController.addAction(UIAlertAction(title: "Camera", style: .default, handler: { (action) in
+            alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.camera", comment: "button title for camera")), style: .default, handler: { (action) in
                 print("Camera")
                 if UIImagePickerController.isSourceTypeAvailable(.camera) {
                     self.picker.allowsEditing = false
@@ -282,11 +292,11 @@ class SignupViewController: UIViewController {
                     self.present(self.picker,animated: true,completion: nil)
                 } else {
                     let alertVC = UIAlertController(
-                        title: "No Camera",
-                        message: "Sorry, this device has no camera",
+                        title: String(NSLocalizedString("copy.alert.noCamera", comment: "alert title for no camera")),
+                        message: String(NSLocalizedString("copy.alert.noCameraDesc", comment: "alert body for no camera")),
                         preferredStyle: .alert)
                     let okAction = UIAlertAction(
-                        title: "OK",
+                        title: String(NSLocalizedString("button.ok", comment: "button title for ok")),
                         style:.default,
                         handler: nil)
                     alertVC.addAction(okAction)
@@ -296,7 +306,7 @@ class SignupViewController: UIViewController {
                         completion: nil)
                 }
             }))
-            alertController.addAction(UIAlertAction(title: "Photo Library", style: .default, handler: { (action) in
+            alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.photoLibrary", comment: "button title for photo library")), style: .default, handler: { (action) in
                 print("Photo Library")
                 self.picker.allowsEditing = false
                 self.picker.sourceType = .photoLibrary
@@ -304,7 +314,7 @@ class SignupViewController: UIViewController {
                 self.picker.modalPresentationStyle = .overCurrentContext
                 self.present(self.picker, animated: true, completion: nil)
             }))
-            alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
+            alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.cancel", comment: "button title for cancel")), style: .cancel, handler: { (action) in
                 print("Cancel")
             }))
             present(alertController, animated: true) {

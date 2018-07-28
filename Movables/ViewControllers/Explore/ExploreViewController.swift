@@ -330,7 +330,7 @@ class ExploreViewController: UIViewController {
                         }
                     }
                 } else {
-                    print(error!)
+                    print(error?.localizedDescription)
                 }
             })
         } else {
@@ -359,7 +359,7 @@ class ExploreViewController: UIViewController {
                     self.topicsTrendingCollectionView.reloadData()
                 }
             } else {
-                print(error!)
+                print(error?.localizedDescription)
             }
         })
     }

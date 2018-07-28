@@ -344,7 +344,7 @@ class CreatePackageCoordinator: Coordinator {
                     coverPicImageReference.downloadURL(completion: { (url, error) in
                         guard let downloadURL = url else {
                             // Uh-oh, an error occurred!
-                            print(error!)
+                            print(error?.localizedDescription)
                             completion(false)
                             return
                         }

@@ -143,6 +143,8 @@
 "label.passwordAgain" = "Verify password";
 "label.email" = "Email";
 "label.username" = "Username";
+"copy.alert.noCamera" = "No Camera";
+"copy.alert.noCameraDesc" = "Sorry, this device has no camera.";
 "copy.alert.packageTemplates" = "Package Templates";
 "copy.alert.packageTemplateDesc" = "By saving the contents of your package as a template, others will be able to reuse your cover photo, headline, description, due date, and dropoff actions when they create packages for #%@.";
 "copy.alert.packageCreation" = "Confirm Package Creation";
@@ -170,6 +172,7 @@
 "copy.alert.conversationExistsDesc" = "There is already a conversation for #%@ in %@.";
 "copy.alert.signinUnsuccessful" = "Sign-in Unsuccessful";
 "copy.alert.signupUnsuccessful" = "Signup Unsuccessful";
+"copy.alert.fileSaveUnsuccessful" = "File Save Unsuccessful";
 "copy.category.animals" = "Animals";
 "copy.category.arts_culture_humanities" = "Arts, Culture, Humanities";
 "copy.category.community_development" = "Community Development";
