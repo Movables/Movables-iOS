@@ -30,6 +30,7 @@ import CropViewController
 
 protocol SignupViewControllerDelegate {
     func didSignup(with authDataResult: AuthDataResult?)
+    func didCancelSignup()
 }
 
 class SignupViewController: UIViewController {
@@ -44,6 +45,11 @@ class SignupViewController: UIViewController {
     var passwordTextFieldView: TextFieldWithBorder!
     var confirmPasswordTextFieldView: TextFieldWithBorder!
     var submitButton: UIButton!
+    
+    var floatingButtonsContainerView: UIView!
+    var cancelButtonBaseView: UIView!
+    var cancelButton: UIButton!
+    var bottomConstraintFAB: NSLayoutConstraint!
     
     var picker: UIImagePickerController = UIImagePickerController()
     var cropVC: CropViewController?
@@ -132,11 +138,61 @@ class SignupViewController: UIViewController {
         ])
         
         picker.delegate = self
+        
+        setupFAB()
     }
+    
+    private func setupFAB() {
+        
+        floatingButtonsContainerView = UIView(frame: .zero)
+        floatingButtonsContainerView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(floatingButtonsContainerView)
+        
+        cancelButtonBaseView = UIView(frame: .zero)
+        cancelButtonBaseView.translatesAutoresizingMaskIntoConstraints = false
+        cancelButtonBaseView.layer.shadowColor = UIColor.black.cgColor
+        cancelButtonBaseView.layer.shadowOpacity = 0.3
+        cancelButtonBaseView.layer.shadowRadius = 14
+        cancelButtonBaseView.layer.shadowOffset = CGSize(width: 0, height: 0)
+        floatingButtonsContainerView.addSubview(cancelButtonBaseView)
+        
+        cancelButton = UIButton(frame: .zero)
+        cancelButton.translatesAutoresizingMaskIntoConstraints = false
+        cancelButton.setImage(UIImage(named: "round_close_black_50pt"), for: .normal)
+        cancelButton.tintColor = .white
+        cancelButton.setBackgroundColor(color: Theme().grayTextColor, forUIControlState: .normal)
+        cancelButton.setBackgroundColor(color: Theme().grayTextColorHighlight, forUIControlState: .highlighted)
+        cancelButton.contentEdgeInsets = .zero
+        cancelButton.layer.cornerRadius = 25
+        cancelButton.clipsToBounds = true
+        cancelButton.addTarget(self, action: #selector(didTapCancelButton(sender:)), for: .touchUpInside)
+        cancelButton.isEnabled = true
+        cancelButtonBaseView.addSubview(cancelButton)
+        
+        let cancelHConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[cancelButton(50)]|", options: .directionLeadingToTrailing, metrics: nil, views: ["cancelButton": cancelButton])
+        cancelButtonBaseView.addConstraints(cancelHConstraints)
+        let cancelVConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|[cancelButton(50)]|", options: .alignAllTrailing, metrics: nil, views: ["cancelButton": cancelButton])
+        cancelButtonBaseView.addConstraints(cancelVConstraints)
+        
+        let containerViewCenterXConstraint = NSLayoutConstraint(item: floatingButtonsContainerView, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1, constant: 0)
+        view.addConstraint(containerViewCenterXConstraint)
+        
+        let hBaseViewsConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[cancelButtonBaseView(50)]|", options: [.alignAllTop, .alignAllBottom], metrics: nil, views: ["cancelButtonBaseView": cancelButtonBaseView])
+        let vBaseViewsConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|[cancelButtonBaseView(50)]|", options: [.alignAllTop, .alignAllBottom], metrics: nil, views: ["cancelButtonBaseView": cancelButtonBaseView])
+        floatingButtonsContainerView.addConstraints(hBaseViewsConstraints + vBaseViewsConstraints)
+        
+        bottomConstraintFAB = NSLayoutConstraint(item: self.floatingButtonsContainerView, attribute: .top, relatedBy: .equal, toItem: self.view, attribute: .bottom, multiplier: 1, constant: -(UIApplication.shared.keyWindow!.safeAreaInsets.bottom + 50 + (UIDevice.isIphoneX ? 0 : 18)))
+        view.addConstraint(bottomConstraintFAB)
+    }
+
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    @objc private func didTapCancelButton(sender: UIButton) {
+        delegate.didCancelSignup()
     }
     
     @objc private func didTapSubmitButton(sender: UIButton) {
