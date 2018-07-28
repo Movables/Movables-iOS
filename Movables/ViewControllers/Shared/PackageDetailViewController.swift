@@ -294,7 +294,6 @@ class PackageDetailViewController: UIViewController {
     }
     
     private func checkUserIsFollowingPackage() -> Bool {
-        print("followers: \(self.package!.followers)")
         return self.package!.followers != nil && self.package!.followers![UserManager.shared.userDocument!.reference.documentID] != nil
     }
     

@@ -303,7 +303,7 @@ extension CreatePackagePersonSearchViewController: UITableViewDataSource {
         let curSearchId = searchId
         peopleIndex.search(query) { (data, error) in
             if (curSearchId <= self.displayedSearchId) || (error != nil) {
-                print(error)
+                print(error.debugDescription)
                 return
             }
             self.displayedSearchId = curSearchId

@@ -121,6 +121,8 @@
 "copy.wannaOrgnize" = "想開始組織嗎?";
 "copy.wannaOrgnizeBody" = "先移動一個議題包再說。";
 "copy.nothingToSee" = "這裡沒東西，還沒有";
+"copy.noMoreActivities" = "沒有其他動態。";
+"copy.noMoreAccountActivities" = "沒有其他帳戶動態。";
 "label.noNearbyConversations" = "附近沒有在地對話，還沒有.";
 "copy.publicActivity.packagePickup" = "%@ 已撿取 %@。";
 "copy.publicActivity.packageDelivery" = "%@ 已送達 %@。";
