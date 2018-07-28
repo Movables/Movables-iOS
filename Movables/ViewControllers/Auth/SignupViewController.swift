@@ -39,7 +39,7 @@ class SignupViewController: UIViewController {
     
     var profilePicImage: UIImage?
     var stackView: UIStackView!
-    var profileImageView: UIImageView!
+    var addProfileImageButton: UIButton!
     var displayNameTextFieldView: TextFieldWithBorder!
     var emailTextFieldView: TextFieldWithBorder!
     var passwordTextFieldView: TextFieldWithBorder!
@@ -64,27 +64,27 @@ class SignupViewController: UIViewController {
         let profileImageViewContainerView = UIView(frame: .zero)
         profileImageViewContainerView.translatesAutoresizingMaskIntoConstraints = false
         
-        profileImageView = UIImageView(frame: .zero)
-        profileImageView.translatesAutoresizingMaskIntoConstraints = false
-        profileImageView.layer.cornerRadius = 50
-        profileImageView.clipsToBounds = true
-        profileImageView.contentMode = .scaleAspectFill
-        profileImageView.backgroundColor = Theme().backgroundShade
-        profileImageView.image = UIImage(named: "user_black_56pt")
-        profileImageView.tintColor = Theme().disabledTextColor
-        profileImageViewContainerView.addSubview(profileImageView)
+        addProfileImageButton = UIButton(frame: .zero)
+        addProfileImageButton.translatesAutoresizingMaskIntoConstraints = false
+        addProfileImageButton.setImage(UIImage(named: "user_black_56pt"), for: .normal)
+        addProfileImageButton.imageView?.contentMode = .scaleAspectFit
+        addProfileImageButton.contentHorizontalAlignment = .fill
+        addProfileImageButton.contentVerticalAlignment = .fill
+        addProfileImageButton.tintColor = Theme().disabledTextColor
+        addProfileImageButton.setBackgroundColor(color: Theme().backgroundShade, forUIControlState: .normal)
+        addProfileImageButton.setBackgroundColor(color: Theme().borderColor, forUIControlState: .highlighted)
+        addProfileImageButton.layer.cornerRadius = 50
+        addProfileImageButton.clipsToBounds = true
+        addProfileImageButton.addTarget(self, action: #selector(didTapAddProfilePic(sender:)), for: .touchUpInside)
+        profileImageViewContainerView.addSubview(addProfileImageButton)
         
         NSLayoutConstraint.activate([
-            profileImageView.heightAnchor.constraint(equalToConstant: 100),
-            profileImageView.widthAnchor.constraint(equalToConstant: 100),
-            profileImageView.topAnchor.constraint(equalTo: profileImageViewContainerView.topAnchor, constant: 50),
-            profileImageView.bottomAnchor.constraint(equalTo: profileImageViewContainerView.bottomAnchor),
-            profileImageView.centerXAnchor.constraint(equalTo: profileImageViewContainerView.centerXAnchor)
+            addProfileImageButton.heightAnchor.constraint(equalToConstant: 100),
+            addProfileImageButton.widthAnchor.constraint(equalToConstant: 100),
+            addProfileImageButton.topAnchor.constraint(equalTo: profileImageViewContainerView.topAnchor, constant: 50),
+            addProfileImageButton.bottomAnchor.constraint(equalTo: profileImageViewContainerView.bottomAnchor),
+            addProfileImageButton.centerXAnchor.constraint(equalTo: profileImageViewContainerView.centerXAnchor)
         ])
-        
-        let addProfilePicTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapAddProfilePic(sender:)))
-        profileImageView.isUserInteractionEnabled = true
-        profileImageView.addGestureRecognizer(addProfilePicTapRecognizer)
         
         displayNameTextFieldView = TextFieldWithBorder(frame: .zero, type: .username)
         displayNameTextFieldView.translatesAutoresizingMaskIntoConstraints = false
@@ -277,12 +277,12 @@ class SignupViewController: UIViewController {
         )
     }
     
-    @objc private func didTapAddProfilePic(sender: UITapGestureRecognizer) {
+    @objc private func didTapAddProfilePic(sender: UIButton) {
         print("did tap add profile pic")
         if self.profilePicImage != nil {
-            let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+            let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.removeProfilePicture", comment: "action sheet title for remove profile picture")), message: nil, preferredStyle: .actionSheet)
             alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.remove", comment: "button title for remove")), style: .destructive, handler: { (action) in
-                self.profileImageView.image = UIImage(named: "user_black_56pt")
+                self.addProfileImageButton.setImage(UIImage(named: "user_black_56pt"), for: .normal)
                 self.profilePicImage = nil
                 self.checkSubmitState()
             }))
@@ -294,7 +294,7 @@ class SignupViewController: UIViewController {
                 print("presented image tap action sheet")
             }
         } else {
-            let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+            let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.addProfilePicture", comment: "action sheet title for add profile picture")), message: nil, preferredStyle: .actionSheet)
             alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.camera", comment: "button title for camera")), style: .default, handler: { (action) in
                 print("Camera")
                 if UIImagePickerController.isSourceTypeAvailable(.camera) {
@@ -393,7 +393,7 @@ extension SignupViewController: CropViewControllerDelegate {
                 let string = bcf.string(fromByteCount: Int64(data.count))
                 print("formatted result: \(string)")
                 // display image on stackview
-                self.profileImageView.image = image
+                self.addProfileImageButton.setImage(image, for: .normal)
                 self.profilePicImage = image
                 self.checkSubmitState()
             }

@@ -119,8 +119,10 @@ class LoginViewController: UIViewController, GIDSignInUIDelegate {
         
         
         NSLayoutConstraint.activate([
-            logoImageView.heightAnchor.constraint(equalToConstant: 75),
-            logoImageView.widthAnchor.constraint(equalToConstant: 75),
+            logoImageView.heightAnchor.constraint(greaterThanOrEqualToConstant: 75),
+            logoImageView.heightAnchor.constraint(lessThanOrEqualToConstant: 120),
+
+            logoImageView.widthAnchor.constraint(equalTo: logoImageView.heightAnchor),
             logoImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
             logoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             emailTextField.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 80),

@@ -143,7 +143,9 @@
 "label.passwordAgain" = "Verify password";
 "label.email" = "Email";
 "label.username" = "Username";
-"label.signupInstructions" = "Photo, username, email and password are required.";
+"label.signupInstructions" = "Profile picture, username, email and password are required.";
+"copy.alert.addProfilePicture" = "Add Profile Picture";
+"copy.alert.removeProfilePicture" = "Remove Profile Picture";
 "copy.alert.noCamera" = "No Camera";
 "copy.alert.noCameraDesc" = "Sorry, this device has no camera.";
 "copy.alert.packageTemplates" = "Package Templates";

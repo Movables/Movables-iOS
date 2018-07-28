@@ -141,6 +141,8 @@
 "label.email" = "Email";
 "label.username" = "使用者名稱";
 "label.signupInstructions" = "顯圖、使用者名稱、Email與密碼皆必填";
+"copy.alert.addProfilePicture" = "加入顯圖";
+"copy.alert.removeProfilePicture" = "移除顯圖";
 "copy.alert.noCamera" = "無法使用相機";
 "copy.alert.noCameraDesc" = "此裝置無可用相機";
 "copy.alert.signout" = "確定要登出?";
