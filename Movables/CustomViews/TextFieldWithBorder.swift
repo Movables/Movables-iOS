@@ -50,15 +50,15 @@ class TextFieldWithBorder: UIView {
 
         if type == .email {
             textField.keyboardType = .emailAddress
-            textField.placeholder = "Email"
+            textField.placeholder = String(NSLocalizedString("label.email", comment: "label for email"))
             textField.autocorrectionType = .no
         } else if type == .password {
             textField.keyboardType = .default
-            textField.placeholder = "Password"
+            textField.placeholder = String(NSLocalizedString("label.password", comment: "label for password"))
             textField.autocorrectionType = .no
             textField.isSecureTextEntry = true
         } else if type == .username {
-            textField.placeholder = "Username"
+            textField.placeholder = String(NSLocalizedString("label.username", comment: "label for username"))
             textField.autocorrectionType = .no
         }
         addSubview(textField)

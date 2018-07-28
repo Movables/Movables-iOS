@@ -78,7 +78,7 @@ class LoginViewController: UIViewController, GIDSignInUIDelegate {
         signInWithEmailButton.translatesAutoresizingMaskIntoConstraints = false
         signInWithEmailButton.layer.cornerRadius = 4
         signInWithEmailButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        signInWithEmailButton.setTitle("Sign in", for: .normal)
+        signInWithEmailButton.setTitle(String(NSLocalizedString("button.signin", comment: "button title for sign in")), for: .normal)
         signInWithEmailButton.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         signInWithEmailButton.setBackgroundColor(color: Theme().grayTextColor, forUIControlState: .normal)
         signInWithEmailButton.setBackgroundColor(color: Theme().grayTextColorHighlight, forUIControlState: .highlighted)
@@ -101,7 +101,7 @@ class LoginViewController: UIViewController, GIDSignInUIDelegate {
         signupWithEmailButton.translatesAutoresizingMaskIntoConstraints = false
         signupWithEmailButton.layer.cornerRadius = 4
         signupWithEmailButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        signupWithEmailButton.setTitle("Signup with Email", for: .normal)
+        signupWithEmailButton.setTitle(String(NSLocalizedString("button.signupWithEmail", comment: "button title for signup with email")), for: .normal)
         signupWithEmailButton.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         signupWithEmailButton.setBackgroundColor(color: Theme().grayTextColor, forUIControlState: .normal)
         signupWithEmailButton.setBackgroundColor(color: Theme().grayTextColorHighlight, forUIControlState: .highlighted)

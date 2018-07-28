@@ -97,7 +97,7 @@ class SignupViewController: UIViewController {
         confirmPasswordTextFieldView.translatesAutoresizingMaskIntoConstraints =
         false
         confirmPasswordTextFieldView.textField.returnKeyType = .done
-        confirmPasswordTextFieldView.textField.placeholder = "Confirm Password"
+        confirmPasswordTextFieldView.textField.placeholder = String(NSLocalizedString("label.passwordAgain", comment: "label for confirm password"))
         confirmPasswordTextFieldView.textField.delegate = self
         
         submitButton = UIButton(frame: .zero)
@@ -105,7 +105,7 @@ class SignupViewController: UIViewController {
         submitButton.isEnabled = false
         submitButton.layer.cornerRadius = 4
         submitButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        submitButton.setTitle("Signup", for: .normal)
+        submitButton.setTitle(String(NSLocalizedString("button.signup", comment: "button title for signup")), for: .normal)
         submitButton.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         submitButton.setBackgroundColor(color: Theme().grayTextColor, forUIControlState: .normal)
         submitButton.setBackgroundColor(color: Theme().grayTextColorHighlight, forUIControlState: .highlighted)
@@ -145,7 +145,11 @@ class SignupViewController: UIViewController {
         Auth.auth().createUser(withEmail: self.emailTextFieldView.textField.text!, password: self.passwordTextFieldView.textField.text!) { (authDataResult, error) in
             if let error = error {
                 print(error)
-                sender.isEnabled = true
+                let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.signupUnsuccessful", comment: "alert title for unsuccessful signup")), message: error.localizedDescription, preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.ok", comment: "button title for ok")), style: .cancel, handler: { (action) in
+                    sender.isEnabled = true
+                }))
+                self.present(alertController, animated: true, completion: nil)
                 return
             } else {
                 let image = self.profilePicImage!
