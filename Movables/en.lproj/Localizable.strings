@@ -159,6 +159,7 @@
 "copy.alert.unableToDropoffDesc" = "To dropoff the package, move closer to the destination.";
 "copy.alert.conversationExists" = "Conversation Already Exists";
 "copy.alert.conversationExistsDesc" = "There is already a conversation for #%@ in %@.";
+"copy.alert.signinUnsuccessful" = "Signin Unsuccessful";
 "copy.category.animals" = "Animals";
 "copy.category.arts_culture_humanities" = "Arts, Culture, Humanities";
 "copy.category.community_development" = "Community Development";

@@ -164,7 +164,11 @@ class LoginViewController: UIViewController, GIDSignInUIDelegate {
         Auth.auth().signIn(withEmail: emailTextField.textField.text!, password: passwordTextField.textField.text!) { (authDataResult, error) in
             if let error = error {
                 print(error)
-                sender.isEnabled = true
+                let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.signinUnsuccessful", comment: "alert title for unsuccessful signin")), message: error.localizedDescription, preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.ok", comment: "button title for ok")), style: .cancel, handler: { (action) in
+                    sender.isEnabled = true
+                }))
+                self.present(alertController, animated: true, completion: nil)
                 return
             } else {
                 if authDataResult?.user != nil {

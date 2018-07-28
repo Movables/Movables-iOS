@@ -141,6 +141,7 @@
 "copy.alert.unableToDropoffDesc" = "要放置議題包，請往目的地方向移動。";
 "copy.alert.conversationExists" = "對話已經存在";
 "copy.alert.conversationExistsDesc" = "已經有一個關於 #%@ 的對話在 %@。";
+"copy.alert.signinUnsuccessful" = "登入失敗";
 "copy.category.animals" = "動物福利";
 "copy.category.arts_culture_humanities" = "藝術人文";
 "copy.category.community_development" = "社區營造";
