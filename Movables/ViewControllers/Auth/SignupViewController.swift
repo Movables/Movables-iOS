@@ -46,6 +46,8 @@ class SignupViewController: UIViewController {
     var confirmPasswordTextFieldView: TextFieldWithBorder!
     var submitButton: UIButton!
     
+    var instructionLabel: UILabel!
+    
     var floatingButtonsContainerView: UIView!
     var cancelButtonBaseView: UIView!
     var cancelButton: UIButton!
@@ -131,10 +133,22 @@ class SignupViewController: UIViewController {
         stackView.spacing = 30
         view.addSubview(stackView)
         
+        instructionLabel = UILabel(frame: .zero)
+        instructionLabel.translatesAutoresizingMaskIntoConstraints = false
+        instructionLabel.text = String(NSLocalizedString("label.signupInstructions", comment: "instructions for signup"))
+        instructionLabel.textAlignment = .center
+        instructionLabel.font = UIFont.boldSystemFont(ofSize: 13)
+        instructionLabel.textColor = Theme().disabledTextColor
+        instructionLabel.numberOfLines = 0
+        view.addSubview(instructionLabel)
+        
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -28),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 28),
+            instructionLabel.topAnchor.constraint(equalTo: submitButton.bottomAnchor, constant: 16),
+            instructionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 28),
+            instructionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -28),
         ])
         
         picker.delegate = self
