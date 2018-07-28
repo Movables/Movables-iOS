@@ -221,7 +221,7 @@ class DeliveryLogisticsCollectionViewCell: UICollectionViewCell {
             let package = (self.presentingVC as! PackageDetailViewController).package
             package?.reference.collection("transit_records").getDocuments(completion: { (querySnapshot, error) in
                 guard let snapshot = querySnapshot else {
-                    print(error!)
+                    print(error?.localizedDescription)
                     return
                 }
                 var transitRecordsTemp:[TransitRecord] = []
@@ -262,7 +262,7 @@ class DeliveryLogisticsCollectionViewCell: UICollectionViewCell {
                     if !unit.circleImageUrl!.isEmpty {
                         imageView.sd_setImage(with: URL(string: unit.circleImageUrl!)) { (image, error, cacheType, url) in
                             if error != nil {
-                                print(error!)
+                                print(error?.localizedDescription)
                             }
                         }
                     } else {

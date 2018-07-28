@@ -67,6 +67,9 @@
 "button.create" = "Create";
 "button.preview" = "Preview";
 "button.readMore" = "Read more";
+"button.signin" = "Sign in";
+"button.signup" = "Signup";
+"button.signupWithEmail" = "Signup with Email";
 "annotation.pickup" = "Pickup";
 "annotation.dropoff" = "Dropoff";
 "annotation.currentLocation" = "Current Location";
@@ -136,6 +139,15 @@
 "label.donate" = "Donate";
 "label.act" = "Take Action";
 "label.learn" = "Learn";
+"label.password" = "Password";
+"label.passwordAgain" = "Verify password";
+"label.email" = "Email";
+"label.username" = "Username";
+"label.signupInstructions" = "Profile picture, username, email and password are required.";
+"copy.alert.addProfilePicture" = "Add Profile Picture";
+"copy.alert.removeProfilePicture" = "Remove Profile Picture";
+"copy.alert.noCamera" = "No Camera";
+"copy.alert.noCameraDesc" = "Sorry, this device has no camera.";
 "copy.alert.packageTemplates" = "Package Templates";
 "copy.alert.packageTemplateDesc" = "By saving the contents of your package as a template, others will be able to reuse your cover photo, headline, description, due date, and dropoff actions when they create packages for #%@.";
 "copy.alert.packageCreation" = "Confirm Package Creation";
@@ -161,6 +173,9 @@
 "copy.alert.unableToDropoffDesc" = "To dropoff the package, move closer to the destination.";
 "copy.alert.conversationExists" = "Conversation Already Exists";
 "copy.alert.conversationExistsDesc" = "There is already a conversation for #%@ in %@.";
+"copy.alert.signinUnsuccessful" = "Sign-in Unsuccessful";
+"copy.alert.signupUnsuccessful" = "Signup Unsuccessful";
+"copy.alert.fileSaveUnsuccessful" = "File Save Unsuccessful";
 "copy.category.animals" = "Animals";
 "copy.category.arts_culture_humanities" = "Arts, Culture, Humanities";
 "copy.category.community_development" = "Community Development";

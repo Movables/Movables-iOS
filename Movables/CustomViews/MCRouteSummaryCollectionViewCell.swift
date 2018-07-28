@@ -142,7 +142,7 @@ class MCRouteSummaryCollectionViewCell: UICollectionViewCell {
                     if !unit.circleImageUrl!.isEmpty {
                         imageView.sd_setImage(with: URL(string: unit.circleImageUrl!)) { (image, error, cacheType, url) in
                             if error != nil {
-                                print(error!)
+                                print(error?.localizedDescription)
                             }
                         }
                     } else {

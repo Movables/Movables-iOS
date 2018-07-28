@@ -313,7 +313,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
 //        transitRecordListener = self.package.reference.collection("transit_records").document(Auth.auth().currentUser!.uid).addSnapshotListener({ (documentSnapshot, error) in
         self.package.reference.collection("transit_records").document(Auth.auth().currentUser!.uid).getDocument(source: .server) { (documentSnapshot, error) in
             guard documentSnapshot != nil else {
-                print("Error fetching snapshots: \(error!)")
+                print("Error fetching snapshots: \(error?.localizedDescription)")
                 return
             }
             self.transitRecord = TransitRecord(dict: documentSnapshot!.data()!, reference: documentSnapshot!.reference)

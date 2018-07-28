@@ -49,6 +49,9 @@
 "button.create" = "製作議題包";
 "button.preview" = "預覽議題包";
 "button.readMore" = "閱讀更多";
+"button.signin" = "登入";
+"button.signup" = "註冊";
+"button.signupWithEmail" = "使用Email註冊";
 "annotation.pickup" = "撿取地點";
 "annotation.dropoff" = "放置地點";
 "annotation.currentLocation" = "現在地點";
@@ -133,6 +136,15 @@
 "copy.accountActivity.packageCreation" = "製作 %@。";
 "copy.accountActivity.templateCreation" = "為#%@製作了一個範本。";
 "copy.accountActivity.templateUsage" = "範本被使用：%@。";
+"label.password" = "密碼";
+"label.passwordAgain" = "再輸入一次密碼";
+"label.email" = "Email";
+"label.username" = "使用者名稱";
+"label.signupInstructions" = "顯圖、使用者名稱、Email與密碼皆必填";
+"copy.alert.addProfilePicture" = "加入顯圖";
+"copy.alert.removeProfilePicture" = "移除顯圖";
+"copy.alert.noCamera" = "無法使用相機";
+"copy.alert.noCameraDesc" = "此裝置無可用相機";
 "copy.alert.signout" = "確定要登出?";
 "copy.alert.privateConversation" = "私密對話尚未開放";
 "copy.alert.packageTemplates" = "議題包範本";
@@ -143,6 +155,9 @@
 "copy.alert.unableToDropoffDesc" = "要放置議題包，請往目的地方向移動。";
 "copy.alert.conversationExists" = "對話已經存在";
 "copy.alert.conversationExistsDesc" = "已經有一個關於 #%@ 的對話在 %@。";
+"copy.alert.signinUnsuccessful" = "登入失敗";
+"copy.alert.signupUnsuccessful" = "註冊失敗";
+"copy.alert.fileSaveUnsuccessful" = "檔案上傳失敗";
 "copy.category.animals" = "動物福利";
 "copy.category.arts_culture_humanities" = "藝術人文";
 "copy.category.community_development" = "社區營造";

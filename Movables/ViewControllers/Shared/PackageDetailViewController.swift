@@ -522,7 +522,7 @@ extension PackageDetailViewController: UICollectionViewDataSource {
         if package != nil && package!.coverImageUrl != nil {
             view.imageView.sd_setImage(with: URL(string: package!.coverImageUrl!)) { (image, error, cacheType, url) in
                 if error != nil {
-                    print(error!)
+                    print(error?.localizedDescription)
                 }
             }
             view.topicPill.characterLabel.text = getEmojiForCategory(category: self.package!.category)
@@ -567,7 +567,7 @@ extension PackageDetailViewController: UICollectionViewDataSource {
         if self.packageTransitRecordsListener == nil {
             self.packageTransitRecordsListener =  self.package!.reference.collection("transit_records").addSnapshotListener({ (querySnapshot, error) in
                 guard let snapshot = querySnapshot else {
-                    print("Error fetching snapshots: \(error!)")
+                    print("Error fetching snapshots: \(error?.localizedDescription)")
                     return
                 }
                 var newTransitRecords:[TransitRecord] = []
@@ -722,7 +722,7 @@ extension PackageDetailViewController: UICollectionViewDelegate {
         let db = Firestore.firestore()
         db.collection("packages/\(self.packageDocumentId!)/open_comments").order(by: "created_date", descending: true).limit(to: 3).getDocuments { (snapshot, error) in
             if error != nil {
-                print(error!)
+                print(error?.localizedDescription)
             } else {
                 if snapshot != nil {
                     var posts:[Post] = []

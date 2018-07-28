@@ -38,7 +38,7 @@ class UserManager {
     func startListening() {
         listener = Firestore.firestore().collection("users").document(Auth.auth().currentUser!.uid).addSnapshotListener({ (documentSnapshot, error) in
             guard documentSnapshot != nil else {
-                print("Error fetching snapshots: \(error!)")
+                print("Error fetching snapshots: \(error?.localizedDescription)")
                 return
             }
             self.userDocument = UserDocument(with: documentSnapshot!.data()!, reference: documentSnapshot!.reference)

@@ -69,7 +69,7 @@ class AuthCoordinator: Coordinator {
     func showSignup() {
         self.signupVC = SignupViewController()
         self.signupVC?.delegate = self
-        navigationController.show(self.signupVC!, sender: self)
+        navigationController.present(signupVC!, animated: true, completion: nil)
     }
     
     func showNewUserOnboarding() {
@@ -92,6 +92,10 @@ extension AuthCoordinator: LoginViewControllerDelegate {
 extension AuthCoordinator: SignupViewControllerDelegate {
     func didSignup(with authDataResult: AuthDataResult?) {
         delegate?.coordinatorDidAuthenticate(with: authDataResult)
+    }
+    
+    func didCancelSignup() {
+        signupVC?.dismiss(animated: true, completion: nil)
     }
 }
 

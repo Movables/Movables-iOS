@@ -78,7 +78,7 @@ class LoginViewController: UIViewController, GIDSignInUIDelegate {
         signInWithEmailButton.translatesAutoresizingMaskIntoConstraints = false
         signInWithEmailButton.layer.cornerRadius = 4
         signInWithEmailButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        signInWithEmailButton.setTitle("Sign in", for: .normal)
+        signInWithEmailButton.setTitle(String(NSLocalizedString("button.signin", comment: "button title for sign in")), for: .normal)
         signInWithEmailButton.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         signInWithEmailButton.setBackgroundColor(color: Theme().grayTextColor, forUIControlState: .normal)
         signInWithEmailButton.setBackgroundColor(color: Theme().grayTextColorHighlight, forUIControlState: .highlighted)
@@ -101,7 +101,7 @@ class LoginViewController: UIViewController, GIDSignInUIDelegate {
         signupWithEmailButton.translatesAutoresizingMaskIntoConstraints = false
         signupWithEmailButton.layer.cornerRadius = 4
         signupWithEmailButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        signupWithEmailButton.setTitle("Signup with Email", for: .normal)
+        signupWithEmailButton.setTitle(String(NSLocalizedString("button.signupWithEmail", comment: "button title for signup with email")), for: .normal)
         signupWithEmailButton.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         signupWithEmailButton.setBackgroundColor(color: Theme().grayTextColor, forUIControlState: .normal)
         signupWithEmailButton.setBackgroundColor(color: Theme().grayTextColorHighlight, forUIControlState: .highlighted)
@@ -119,8 +119,10 @@ class LoginViewController: UIViewController, GIDSignInUIDelegate {
         
         
         NSLayoutConstraint.activate([
-            logoImageView.heightAnchor.constraint(equalToConstant: 75),
-            logoImageView.widthAnchor.constraint(equalToConstant: 75),
+            logoImageView.heightAnchor.constraint(greaterThanOrEqualToConstant: 75),
+            logoImageView.heightAnchor.constraint(lessThanOrEqualToConstant: 120),
+
+            logoImageView.widthAnchor.constraint(equalTo: logoImageView.heightAnchor),
             logoImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
             logoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             emailTextField.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 80),
@@ -164,7 +166,11 @@ class LoginViewController: UIViewController, GIDSignInUIDelegate {
         Auth.auth().signIn(withEmail: emailTextField.textField.text!, password: passwordTextField.textField.text!) { (authDataResult, error) in
             if let error = error {
                 print(error)
-                sender.isEnabled = true
+                let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.signinUnsuccessful", comment: "alert title for unsuccessful signin")), message: error.localizedDescription, preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.ok", comment: "button title for ok")), style: .cancel, handler: { (action) in
+                    sender.isEnabled = true
+                }))
+                self.present(alertController, animated: true, completion: nil)
                 return
             } else {
                 if authDataResult?.user != nil {
