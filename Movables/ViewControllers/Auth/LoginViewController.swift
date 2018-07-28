@@ -95,6 +95,7 @@ class LoginViewController: UIViewController, GIDSignInUIDelegate {
         facebookSignInButton = FacebookButton(frame: .zero)
         facebookSignInButton.translatesAutoresizingMaskIntoConstraints = false
         facebookSignInButton.delegate = UIApplication.shared.delegate as! AppDelegate
+        facebookSignInButton.readPermissions = ["email", "public_profile"]
         view.addSubview(facebookSignInButton)
         
         signupWithEmailButton = UIButton(frame: .zero)

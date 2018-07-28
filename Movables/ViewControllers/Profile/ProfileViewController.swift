@@ -295,7 +295,7 @@ extension ProfileViewController: UITableViewDataSource {
         }))
         alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.privacyPolicy", comment: "button title for privacy policy")), style: .default, handler: { (action) in
             print("go to privacy policy")
-            self.navigationController?.present(SFSafariViewController(url: URL(string: "https://www.google.com")!), animated: true)
+            self.navigationController?.present(SFSafariViewController(url: URL(string: "https://movables.app/privacy.html")!), animated: true)
         }))
         alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.signout", comment: "button title for signout")), style: .default, handler: { (action) in
             print("signout")
