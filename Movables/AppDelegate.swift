@@ -52,7 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, FBSDKL
         IQKeyboardManager.shared.enable = true
         
         setupAppCoordinator()
-
+        
         return true
     }
     

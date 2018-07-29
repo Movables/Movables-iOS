@@ -30,6 +30,7 @@
 "tabBar.profile" = "Profile";
 "navBar.conversation" = "Conversation";
 "headerCollectionCell.public_conversation" = "Recent Comments";
+"button.viewAllComments" = "View all comments";
 "button.reportConversation" = "Report Conversation";
 "button.pickup" = "Pickup";
 "button.pickupAway" = "Pickup %@ away";
@@ -37,7 +38,10 @@
 "button.deliver" = "Deliver";
 "button.track" = "Follow";
 "button.tracking" = "Following";
-"button.inTransit" = "In Transit";
+"button.inTransit" = "In transit";
+"button.tooFarAway" = "Too far away";
+"button.unavailable" = "Unavailable";
+"button.error" = "Error";
 "button.delivered" = "Delivered";
 "button.participate" = "Comment";
 "button.moved" = "Moved";
