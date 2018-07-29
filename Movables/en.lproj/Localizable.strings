@@ -30,6 +30,7 @@
 "tabBar.profile" = "Profile";
 "navBar.conversation" = "Conversation";
 "headerCollectionCell.public_conversation" = "Recent Comments";
+"button.reportConversation" = "Report Conversation";
 "button.pickup" = "Pickup";
 "button.pickupAway" = "Pickup %@ away";
 "button.dropoff" = "Dropoff";

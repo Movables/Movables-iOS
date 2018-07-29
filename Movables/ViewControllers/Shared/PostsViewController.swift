@@ -107,6 +107,20 @@ class PostsViewController: SLKTextViewController {
     
     @objc private func didTapMoreButton(sender: UIBarButtonItem) {
         print("tapped more")
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.cancel", comment: "button title for cancel")), style: .cancel, handler: { (action) in
+            print("canceld")
+        }))
+        alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.reportConversation", comment: "button title for report conversation")), style: .destructive, handler: { (action) in
+            Firestore.firestore().collection("monitor").addDocument(data: [
+                    "report_date": Date(),
+                    "type": "conversation",
+                    "reference": self.reference,
+                    "subtype": getStringForCommunityType(type: self.referenceType),
+                    "reporter": UserManager.shared.userDocument?.reference
+                ])
+        }))
+        self.present(alertController, animated: true, completion: nil)
     }
 
     override func didReceiveMemoryWarning() {
