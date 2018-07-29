@@ -17,4 +17,8 @@ platform :ios do
     build_app(workspace: "Movables.xcworkspace", scheme: "Movables", xcargs: "-allowProvisioningUpdates")
     upload_to_testflight(changelog: "Firebase and Fastlane setup", skip_waiting_for_build_processing: true)
   end
+  lane :release do
+    build_app(workspace: "Movables.xcworkspace", scheme: "Movables", xcargs: "-allowProvisioningUpdates")
+    upload_to_testflight(changelog: "pre 1.0 beta", skip_waiting_for_build_processing: true)
+  end
 end
