@@ -165,6 +165,9 @@
 "copy.alert.fileSaveUnsuccessful" = "檔案上傳失敗";
 "copy.alert.passwordMismatch" = "密碼確認輸入不相同";
 "copy.alert.passwordMismatchDesc" = "確認密碼輸入相同後再試一次";
+"copy.alert.unableToCreatePackage" = "無法製作議題包";
+"copy.alert.unableToCreatePackageDescExisting" = "您已經在移動一個議題包了，移完再回來製作。";
+"copy.alert.unableToCreatePackageDescCredits" = "您沒有足夠的點數，製作一個議題包需要100點。";
 "copy.category.animals" = "動物福利";
 "copy.category.arts_culture_humanities" = "藝術人文";
 "copy.category.community_development" = "社區營造";

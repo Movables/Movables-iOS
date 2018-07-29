@@ -199,16 +199,28 @@ class MoveViewController: UIViewController {
     
     @objc private func addPackageButtonTapped(sender: UIButton) {
         print("add package button tapped")
+        sender.isEnabled = false
         // check if current package exists for user
         if userDocument?.privateProfile.currentPackage != nil {
-            let alertController = UIAlertController(title: "Unable to Add Package", message: "Add a package when you're finished moving the package on hand.", preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: "OK", style: .cancel, handler: { (action) in
+            let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.unableToCreatePackage", comment: "alert title for unable to create a package")), message: String(NSLocalizedString("copy.alert.unableToCreatePackageDescExisting", comment: "alert body for existing current package")), preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.ok", comment: "button title for ok")), style: .cancel, handler: { (action) in
                 print("canceld no add package alert")
+                sender.isEnabled = true
+            }))
+            self.present(alertController, animated: true, completion: {
+                print("presented ")
+            })
+        } else if userDocument!.privateProfile.pointsBalance < 100.0 {
+            let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.unableToCreatePackage", comment: "alert title for unable to create a package")), message: String(NSLocalizedString("copy.alert.unableToCreatePackageDescCredits", comment: "alert body for insufficient points")), preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.ok", comment: "button title for ok")), style: .cancel, handler: { (action) in
+                print("canceld no add package alert")
+                sender.isEnabled = true
             }))
             self.present(alertController, animated: true, completion: {
                 print("presented ")
             })
         } else {
+            sender.isEnabled = true
             let createPackageCoordinator = CreatePackageCoordinator(rootViewController: self)
             createPackageCoordinator.start()
         }

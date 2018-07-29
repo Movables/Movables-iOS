@@ -248,6 +248,7 @@ extension ProfileViewController: UITableViewDataSource {
             cell.secondaryButton.setImage(UIImage(named: "profile_edit"), for: .normal)
             cell.accessoryButton.addTarget(self, action: #selector(didTapOnSettings(sender:)), for: .touchUpInside)
             cell.secondaryButton.addTarget(self, action: #selector(didTapOnEdit(sender:)), for: .touchUpInside)
+            cell.secondaryButton.isHidden = true
             cell.balanceLabel.text = "\(Int(userDocument!.privateProfile.pointsBalance))"
             let dateFormatter = DateFormatter()
             dateFormatter.dateStyle = .long

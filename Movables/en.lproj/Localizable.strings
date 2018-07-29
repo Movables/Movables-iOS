@@ -183,6 +183,9 @@
 "copy.alert.fileSaveUnsuccessful" = "File Save Unsuccessful";
 "copy.alert.passwordMismatch" = "Password Mismatch";
 "copy.alert.passwordMismatchDesc" = "Check that password entered in both fields match.";
+"copy.alert.unableToCreatePackage" = "Unable to Create Package";
+"copy.alert.unableToCreatePackageDescExisting" = "Create a package when you're finished moving the package on hand.";
+"copy.alert.unableToCreatePackageDescCredits" = "Each package costs 100 points. You do not have sufficient points.";
 "copy.category.animals" = "Animals";
 "copy.category.arts_culture_humanities" = "Arts, Culture, Humanities";
 "copy.category.community_development" = "Community Development";
