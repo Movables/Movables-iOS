@@ -118,36 +118,35 @@ class LoginViewController: UIViewController, GIDSignInUIDelegate {
         logoImageView.image = UIImage(named: "AppIconVector")
         view.addSubview(logoImageView)
         
-        
         NSLayoutConstraint.activate([
-            logoImageView.heightAnchor.constraint(greaterThanOrEqualToConstant: 75),
+            logoImageView.heightAnchor.constraint(greaterThanOrEqualToConstant: 50),
             logoImageView.heightAnchor.constraint(lessThanOrEqualToConstant: 120),
-
             logoImageView.widthAnchor.constraint(equalTo: logoImageView.heightAnchor),
-            logoImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
+            logoImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             logoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            emailTextField.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 80),
+            emailTextField.topAnchor.constraint(greaterThanOrEqualTo: logoImageView.bottomAnchor, constant: 30),
             emailTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 28),
             emailTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -28),
             passwordTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 30),
             passwordTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 28),
             passwordTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -28),
-            signInWithEmailButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 50),
+            signInWithEmailButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 28),
             signInWithEmailButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 28),
             signInWithEmailButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -28),
             signInWithEmailButton.heightAnchor.constraint(equalToConstant: 40),
+            signInWithEmailButton.bottomAnchor.constraint(equalTo: separatorView.topAnchor, constant: -30),
             separatorView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 28),
             separatorView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -28),
             separatorView.heightAnchor.constraint(equalToConstant: 1),
-            separatorView.topAnchor.constraint(equalTo: signInWithEmailButton.bottomAnchor, constant: 50),
-            facebookSignInButton.bottomAnchor.constraint(equalTo: signInButton.topAnchor, constant: -20),
-            facebookSignInButton.heightAnchor.constraint(equalToConstant: 40),
-            facebookSignInButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 28),
-            facebookSignInButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -28),
+            separatorView.bottomAnchor.constraint(lessThanOrEqualTo: signupWithEmailButton.topAnchor, constant: -30),
             signupWithEmailButton.bottomAnchor.constraint(equalTo: facebookSignInButton.topAnchor, constant: -20),
             signupWithEmailButton.heightAnchor.constraint(equalToConstant: 40),
             signupWithEmailButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 28),
             signupWithEmailButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -28),
+            facebookSignInButton.bottomAnchor.constraint(equalTo: signInButton.topAnchor, constant: -20),
+            facebookSignInButton.heightAnchor.constraint(equalToConstant: 40),
+            facebookSignInButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 28),
+            facebookSignInButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -28),
         ])
 
     }

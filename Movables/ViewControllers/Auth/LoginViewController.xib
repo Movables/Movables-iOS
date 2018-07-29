@@ -21,7 +21,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="o0z-rv-HBu" customClass="GIDSignInButton">
-                    <rect key="frame" x="25" y="557" width="325" height="60"/>
+                    <rect key="frame" x="25" y="587" width="325" height="60"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="60" id="4PR-q3-JQV"/>
@@ -30,7 +30,7 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="o0z-rv-HBu" secondAttribute="bottom" constant="50" id="WZF-BJ-b50"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="o0z-rv-HBu" secondAttribute="bottom" constant="20" id="WZF-BJ-b50"/>
                 <constraint firstItem="o0z-rv-HBu" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="fA9-th-V5Z"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="o0z-rv-HBu" secondAttribute="trailing" constant="25" id="psf-xv-HLy"/>
                 <constraint firstItem="o0z-rv-HBu" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="25" id="rDW-Cx-iQ0"/>

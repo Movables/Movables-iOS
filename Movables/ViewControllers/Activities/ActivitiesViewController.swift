@@ -58,8 +58,10 @@ class ActivitiesViewController: UIViewController {
                 DispatchQueue.main.async {
                     if self.publicActivities.count == 0 {
                         self.emptyStateView.isHidden = false
+                        self.view.backgroundColor = .white
                     } else {
                         self.emptyStateView.isHidden = true
+                        self.view.backgroundColor = Theme().backgroundShade
                     }
                     for rowIndex in self.tableView.indexPathsForVisibleRows ?? [] {
                         if let cell = self.tableView.cellForRow(at: rowIndex) {
@@ -104,7 +106,11 @@ class ActivitiesViewController: UIViewController {
                         print("no more public activities")
                         if let cell = self.tableView.cellForRow(at: IndexPath(row: self.publicActivities.count, section: 0)) as? LoadingIndicatorTableViewCell {
                             cell.activityIndicator.stopAnimating()
-                            cell.label.isHidden = false
+                            if self.publicActivities.count > 0 {
+                                cell.label.isHidden = false
+                            } else {
+                                cell.label.isHidden = true
+                            }
                         }
                         self.queryInProgress = false
                         return
@@ -148,18 +154,33 @@ class ActivitiesViewController: UIViewController {
                     print("error retrieving public activities: \(error.debugDescription)")
                     self.tableView.reloadData()
                     self.refreshControl.endRefreshing()
+                    if self.publicActivities.count == 0 {
+                        self.emptyStateView.isHidden = false
+                        self.view.backgroundColor = .white
+                    } else {
+                        self.emptyStateView.isHidden = true
+                        self.view.backgroundColor = Theme().backgroundShade
+                    }
                     self.queryInProgress = false
                     return
                 }
                 guard snapshot.documents.last != nil else {
                     // empty results
+                    print("empty results")
                     self.noMorePublicActivities = true
                     self.tableView.reloadData()
                     self.refreshControl.endRefreshing()
+                    if self.publicActivities.count == 0 {
+                        self.emptyStateView.isHidden = false
+                        self.view.backgroundColor = .white
+                    } else {
+                        self.emptyStateView.isHidden = true
+                        self.view.backgroundColor = Theme().backgroundShade
+                    }
                     self.queryInProgress = false
                     return
                 }
-                
+                print("some results")
                 self.rowsForIndexPaths.removeAll()
                 self.mapPreviewImagesForIndexPaths.removeAll()
                 self.annotationsForIndexPaths.removeAll()
@@ -179,6 +200,13 @@ class ActivitiesViewController: UIViewController {
                 }
                 self.generateMapImages()
                 self.tableView.reloadData()
+                if self.publicActivities.count == 0 {
+                    self.emptyStateView.isHidden = false
+                    self.view.backgroundColor = .white
+                } else {
+                    self.emptyStateView.isHidden = true
+                    self.view.backgroundColor = Theme().backgroundShade
+                }
                 self.refreshControl.endRefreshing()
                 self.queryInProgress = false
             })
@@ -211,9 +239,11 @@ class ActivitiesViewController: UIViewController {
     
     private func setupTableView() {
         
+        view.backgroundColor = Theme().backgroundShade
+        
         tableView = UITableView(frame: .zero)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.backgroundColor = Theme().backgroundShade
+        tableView.backgroundColor = .clear
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 250
         tableView.separatorStyle = .none
@@ -269,6 +299,8 @@ extension ActivitiesViewController: UITableViewDataSource {
                 cell.activityIndicator.startAnimating()
                 cell.label.isHidden = true
             }
+            
+            cell.label.isHidden = self.publicActivities.isEmpty
             return cell
         }
         
@@ -475,8 +507,12 @@ extension ActivitiesViewController: UITableViewDataSource {
 extension ActivitiesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("selected \(indexPath.row)")
-        let activity = self.publicActivities[indexPath.row]
-        delegate?.showPackageDetail(with: activity.objectReference.documentID, and: activity.objectName)
+        if indexPath.row != tableView.numberOfRows(inSection: 0) - 1 {
+            let activity = self.publicActivities[indexPath.row]
+            delegate?.showPackageDetail(with: activity.objectReference.documentID, and: activity.objectName)
+        } else {
+            print("selected last row")
+        }
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

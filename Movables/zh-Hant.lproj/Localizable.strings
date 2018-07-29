@@ -52,6 +52,7 @@
 "button.signin" = "登入";
 "button.signup" = "註冊";
 "button.signupWithEmail" = "使用Email註冊";
+"button.reload" = "重新讀取";
 "annotation.pickup" = "撿取地點";
 "annotation.dropoff" = "放置地點";
 "annotation.currentLocation" = "現在地點";
@@ -126,6 +127,7 @@
 "copy.nothingToSee" = "這裡沒東西，還沒有";
 "copy.noMoreActivities" = "沒有其他動態。";
 "copy.noMoreAccountActivities" = "沒有其他帳戶動態。";
+"copy.noAccountActivities" = "無帳戶動態。";
 "label.noNearbyConversations" = "附近沒有在地對話，還沒有.";
 "copy.publicActivity.packagePickup" = "%@ 已撿取 %@。";
 "copy.publicActivity.packageDelivery" = "%@ 已送達 %@。";
@@ -158,6 +160,8 @@
 "copy.alert.signinUnsuccessful" = "登入失敗";
 "copy.alert.signupUnsuccessful" = "註冊失敗";
 "copy.alert.fileSaveUnsuccessful" = "檔案上傳失敗";
+"copy.alert.passwordMismatch" = "密碼確認輸入不相同";
+"copy.alert.passwordMismatchDesc" = "確認密碼輸入相同後再試一次";
 "copy.category.animals" = "動物福利";
 "copy.category.arts_culture_humanities" = "藝術人文";
 "copy.category.community_development" = "社區營造";

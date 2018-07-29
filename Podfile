@@ -51,7 +51,6 @@ target 'Movables' do
   # Lint
   pod 'SwiftLint'
   
-  
 
   target 'MovablesTests' do
     inherit! :search_paths

@@ -19,6 +19,8 @@ class EmptyStateWithButtonTableViewCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        selectionStyle = .none
+        
         emptyStateView = EmptyStateView(frame: .zero)
         emptyStateView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(emptyStateView)

@@ -70,6 +70,7 @@
 "button.signin" = "Sign in";
 "button.signup" = "Signup";
 "button.signupWithEmail" = "Signup with Email";
+"button.reload" = "Reload";
 "annotation.pickup" = "Pickup";
 "annotation.dropoff" = "Dropoff";
 "annotation.currentLocation" = "Current Location";
@@ -126,6 +127,7 @@
 "label.timeRemaining" = "Time Remaining";
 "copy.noMoreActivities" = "No more activities.";
 "copy.noMoreAccountActivities" = "No more account activities.";
+"copy.noAccountActivities" = "No account activity.";
 "label.noNearbyConversations" = "No nearby conversations, yet.";
 "label.due" = "Due";
 "label.headline" = "Headline";
@@ -176,6 +178,8 @@
 "copy.alert.signinUnsuccessful" = "Sign-in Unsuccessful";
 "copy.alert.signupUnsuccessful" = "Signup Unsuccessful";
 "copy.alert.fileSaveUnsuccessful" = "File Save Unsuccessful";
+"copy.alert.passwordMismatch" = "Password Mismatch";
+"copy.alert.passwordMismatchDesc" = "Check that password entered in both fields match.";
 "copy.category.animals" = "Animals";
 "copy.category.arts_culture_humanities" = "Arts, Culture, Humanities";
 "copy.category.community_development" = "Community Development";

@@ -212,6 +212,16 @@ class SignupViewController: UIViewController {
     @objc private func didTapSubmitButton(sender: UIButton) {
         print("did tap submit button")
         sender.isEnabled = false
+        self.cancelButton.isEnabled = false
+        if passwordTextFieldView.textField.text! != confirmPasswordTextFieldView.textField.text! {
+            let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.passwordMismatch", comment: "alert title for password mismatch")), message: String(NSLocalizedString("copy.alert.passwordMismatchDesc", comment: "alert copy for password mismatch")), preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.ok", comment: "button title for ok")), style: .cancel, handler: { (action) in
+                sender.isEnabled = true
+                self.cancelButton.isEnabled = true
+            }))
+            self.present(alertController, animated: true, completion: nil)
+            return
+        }
         Auth.auth().createUser(withEmail: self.emailTextFieldView.textField.text!, password: self.passwordTextFieldView.textField.text!) { (authDataResult, error) in
             if let error = error {
                 print(error)
@@ -272,8 +282,7 @@ class SignupViewController: UIViewController {
             !displayNameTextFieldView.textField.text!.isEmpty &&
             !emailTextFieldView.textField.text!.isEmpty &&
             !passwordTextFieldView.textField.text!.isEmpty &&
-            !confirmPasswordTextFieldView.textField.text!.isEmpty &&
-            passwordTextFieldView.textField.text! == confirmPasswordTextFieldView.textField.text!
+            !confirmPasswordTextFieldView.textField.text!.isEmpty
         )
     }
     
