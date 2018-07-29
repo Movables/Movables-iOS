@@ -196,6 +196,7 @@ extension InterestPickerViewController: UITableViewDataSource {
         cell.titleLabel.text = getReadableStringForCategory(category: category)
         cell.titleLabel.textColor = categories.contains(category) ? .white : Theme().textColor
         cell.backgroundColor = categories.contains(category) ? getTintForCategory(category: category) : .clear
+        cell.selectionStyle = .none
         return cell
     }
 }
@@ -208,6 +209,7 @@ extension InterestPickerViewController: UITableViewDelegate {
             categories.append(category)
         }
         if let cell = tableView.cellForRow(at: indexPath) as? CategoryLabelsTableViewCell {
+            cell.selectionStyle = .none
             cell.titleLabel.textColor = categories.contains(category) ? .white : Theme().textColor
             cell.backgroundColor = categories.contains(category) ? getTintForCategory(category: category) : .clear
         }
@@ -221,6 +223,7 @@ extension InterestPickerViewController: UITableViewDelegate {
             categories.remove(at: categories.index(of: category)!)
         }
         if let cell = tableView.cellForRow(at: indexPath) as? CategoryLabelsTableViewCell {
+            cell.selectionStyle = .none
             cell.titleLabel.textColor = categories.contains(category) ? .white : Theme().textColor
             cell.backgroundColor = categories.contains(category) ? getTintForCategory(category: category) : .clear
         }

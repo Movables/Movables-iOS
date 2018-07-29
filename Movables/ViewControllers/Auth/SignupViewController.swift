@@ -266,7 +266,9 @@ class SignupViewController: UIViewController {
                                 if error != nil {
                                     print(error?.localizedDescription)
                                 } else {
-                                    self.delegate.didSignup(with: authDataResult)
+                                    self.dismiss(animated: true, completion: {
+                                        self.delegate.didSignup(with: authDataResult)
+                                    })
                                 }
                             })
                         })
