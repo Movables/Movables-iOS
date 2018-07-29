@@ -125,6 +125,9 @@
 "label.packageContents" = "Package Contents";
 "label.distanceRemaining" = "Distance Remaining";
 "label.timeRemaining" = "Time Remaining";
+"label.whatMovesYou" = "What Moves You?";
+"label.topicName" = "#%@";
+"label.selectALegislativeArea" = "Select a Legislative Area";
 "copy.noMoreActivities" = "No more activities.";
 "copy.noMoreAccountActivities" = "No more account activities.";
 "copy.noAccountActivities" = "No account activity.";

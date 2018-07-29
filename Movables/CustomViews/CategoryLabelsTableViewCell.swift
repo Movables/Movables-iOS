@@ -38,6 +38,7 @@ class CategoryLabelsTableViewCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        selectionStyle = .none
         backgroundColor = .clear
         
         categoryLabel = UILabel(frame: .zero)

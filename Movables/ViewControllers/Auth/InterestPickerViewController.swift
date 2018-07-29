@@ -120,6 +120,7 @@ class InterestPickerViewController: UIViewController {
         tableView = UITableView(frame: .zero)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.separatorStyle = .none
         tableView.estimatedRowHeight = 88
         tableView.dataSource = self
         tableView.delegate = self
@@ -128,9 +129,11 @@ class InterestPickerViewController: UIViewController {
         tableView.contentInset.top = CONTENT_INSET_TOP
         tableView.contentInset.bottom = CONTENT_INSET_BOTTOM
         tableView.contentOffset.y = -CONTENT_INSET_TOP
+        tableView.allowsMultipleSelection = true
+        tableView.allowsSelection = true
         view.addSubview(tableView)
         
-        instructionLabel = MCPill(frame: .zero, character: "1", image: nil, body: "What Are Your Passions?", color: .white)
+        instructionLabel = MCPill(frame: .zero, character: "1", image: nil, body: String(NSLocalizedString("label.whatMovesYou", comment: "instruction label text for what moves you")), color: .white)
         instructionLabel.bodyLabel.textColor = Theme().textColor
         instructionLabel.circleMask.backgroundColor = Theme().textColor
         instructionLabel.characterLabel.textColor = .white
@@ -158,6 +161,7 @@ class InterestPickerViewController: UIViewController {
     
     @objc private func didTapSetButton(sender: UIButton) {
         // save interests then show main
+        sender.isEnabled = false
         print("save interests then show main")
         var interestsDictionary:[String: Bool] = [:]
         for category in self.categories {
@@ -166,6 +170,7 @@ class InterestPickerViewController: UIViewController {
         UserManager.shared.userDocument?.reference.updateData(["private_profile.interests": interestsDictionary], completion: { (error) in
             if let error = error {
                 print(error)
+                sender.isEnabled = true
             } else {
                 // show main
                 self.authCoordinator.delegate?.coordinatorDidAuthenticate(with: nil)
@@ -189,7 +194,8 @@ extension InterestPickerViewController: UITableViewDataSource {
         let category = packageCategoriesEnumArray[indexPath.row]
         cell.categoryLabel.text = getEmojiForCategory(category: category)
         cell.titleLabel.text = getReadableStringForCategory(category: category)
-        cell.titleLabel.textColor = categories.contains(category) ? getTintForCategory(category: category) : Theme().textColor
+        cell.titleLabel.textColor = categories.contains(category) ? .white : Theme().textColor
+        cell.backgroundColor = categories.contains(category) ? getTintForCategory(category: category) : .clear
         return cell
     }
 }
@@ -201,7 +207,11 @@ extension InterestPickerViewController: UITableViewDelegate {
         if !categories.contains(category) {
             categories.append(category)
         }
-        tableView.reloadRows(at: [indexPath], with: .automatic)
+        if let cell = tableView.cellForRow(at: indexPath) as? CategoryLabelsTableViewCell {
+            cell.titleLabel.textColor = categories.contains(category) ? .white : Theme().textColor
+            cell.backgroundColor = categories.contains(category) ? getTintForCategory(category: category) : .clear
+        }
+        tableView.selectRow(at: indexPath, animated: false, scrollPosition: UITableViewScrollPosition.none)
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
@@ -210,7 +220,11 @@ extension InterestPickerViewController: UITableViewDelegate {
         if categories.contains(category) {
             categories.remove(at: categories.index(of: category)!)
         }
-        tableView.reloadRows(at: [indexPath], with: .automatic)
+        if let cell = tableView.cellForRow(at: indexPath) as? CategoryLabelsTableViewCell {
+            cell.titleLabel.textColor = categories.contains(category) ? .white : Theme().textColor
+            cell.backgroundColor = categories.contains(category) ? getTintForCategory(category: category) : .clear
+        }
+        tableView.deselectRow(at: indexPath, animated: false)
     }
 }
 

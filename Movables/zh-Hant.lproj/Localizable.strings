@@ -119,6 +119,9 @@
 "label.donate" = "捐款";
 "label.act" = "行動";
 "label.learn" = "學習";
+"label.whatMovesYou" = "你為什麼而動?";
+"label.topicName" = "#%@";
+"label.selectALegislativeArea" = "選擇一個行政區";
 "copy.dropoffSummary" = "移動報告";
 "copy.makeItHappen" = "你就是沒有人";
 "copy.makeItHappenBody" = "製作一個全新的議題包或是以範本來製作議題包。你來決定！";

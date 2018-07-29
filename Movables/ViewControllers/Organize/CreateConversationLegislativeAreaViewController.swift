@@ -120,7 +120,7 @@ class CreateConversationLegislativeAreaViewController: UIViewController {
         tableView.contentOffset.y = -CONTENT_INSET_TOP
         view.addSubview(tableView)
         
-        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.childViewControllers.count)", image: nil, body: "Select a Legislative Area", color: .white)
+        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.childViewControllers.count)", image: nil, body: String(NSLocalizedString("label.selectALegislativeArea", comment: "instruction label text for select a legislative area")), color: .white)
         instructionLabel.bodyLabel.textColor = Theme().textColor
         instructionLabel.circleMask.backgroundColor = Theme().textColor
         instructionLabel.characterLabel.textColor = .white

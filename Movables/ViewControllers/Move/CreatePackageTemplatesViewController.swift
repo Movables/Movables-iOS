@@ -79,7 +79,7 @@ class CreatePackageTemplatesViewController: UIViewController {
         tableView.register(ListViewButtonTableViewCell.self, forCellReuseIdentifier: "buttonCell")
         view.addSubview(tableView)
 
-        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.childViewControllers.count)", image: nil, body: "#\(createPackageCoordinator.topicResultItem!.name)", color: .white)
+        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.childViewControllers.count)", image: nil, body: String(format: String(NSLocalizedString("label.topicName", comment: "instruction label for topic name")), createPackageCoordinator.topicResultItem!.name), color: .white)
         instructionLabel.bodyLabel.textColor = Theme().textColor
         instructionLabel.circleMask.backgroundColor = Theme().textColor
         instructionLabel.characterLabel.textColor = .white
