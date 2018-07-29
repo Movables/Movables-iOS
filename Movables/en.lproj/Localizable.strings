@@ -162,6 +162,8 @@
 "copy.makeItHappenBody" = "Create a new package using templates others have created or create something new from scratch. Your call.";
 "copy.wannaOrgnize" = "Wanna organize?";
 "copy.wannaOrgnizeBody" = "Move a package first.";
+"copy.wannaSeeSomeActivities" = "Wanna see activities?";
+"copy.wannaSeeSomeActivitiesBody" = "Gotta do something first.";
 "copy.nothingToSee" = "Nothing to see here, yet.";
 "copy.publicActivity.packagePickup" = "%@ picked up %@.";
 "copy.publicActivity.packageDelivery" = "%@ delivered %@.";

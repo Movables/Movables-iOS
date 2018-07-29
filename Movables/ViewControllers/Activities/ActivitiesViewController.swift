@@ -153,6 +153,7 @@ class ActivitiesViewController: UIViewController {
             query.limit(to: 10).getDocuments(completion: { (snapshot, error) in
                 guard let snapshot = snapshot else {
                     print("error retrieving public activities: \(error.debugDescription)")
+                    self.initialFetchPerformed = true
                     self.tableView.reloadData()
                     self.refreshControl.endRefreshing()
                     if self.publicActivities.count == 0 {
@@ -169,6 +170,7 @@ class ActivitiesViewController: UIViewController {
                     // empty results
                     print("empty results")
                     self.noMorePublicActivities = true
+                    self.initialFetchPerformed = true
                     self.tableView.reloadData()
                     self.refreshControl.endRefreshing()
                     if self.publicActivities.count == 0 {
@@ -200,6 +202,7 @@ class ActivitiesViewController: UIViewController {
                     self.annotationsForIndexPaths.updateValue(self.generateAnnotations(for: activity.supplements!, with: activity.supplementsType!), forKey: IndexPath(row: index, section: 0))
                 }
                 self.generateMapImages()
+                self.initialFetchPerformed = true
                 self.tableView.reloadData()
                 if self.publicActivities.count == 0 {
                     self.emptyStateView.isHidden = false
@@ -260,8 +263,8 @@ class ActivitiesViewController: UIViewController {
         
         emptyStateView = EmptyStateView(frame: .zero)
         emptyStateView.translatesAutoresizingMaskIntoConstraints = false
-        emptyStateView.titleLabel.text = "Wanna see something?"
-        emptyStateView.subtitleLabel.text = "Gotta do something first."
+        emptyStateView.titleLabel.text = String(NSLocalizedString("copy.wannaSeeSomeActivities", comment: "title for wanna see some activities"))
+        emptyStateView.subtitleLabel.text = String(NSLocalizedString("copy.wannaSeeSomeActivitiesBody", comment: "body for wanna see some activities"))
         emptyStateView.actionButton.isHidden = true
         emptyStateView.isHidden = true
         view.addSubview(emptyStateView)
