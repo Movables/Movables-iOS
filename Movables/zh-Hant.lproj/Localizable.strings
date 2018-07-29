@@ -13,7 +13,7 @@
 "tabBar.profile" = "我的帳戶";
 "navBar.conversation" = "對話";
 "headerCollectionCell.public_conversation" = "最近留言";
-"button.reportConversation" = "通報對話違規";
+"button.reportConversation" = "檢舉違規對話";
 "button.pickup" = "撿取";
 "button.pickupAway" = "於%@之外撿取";
 "button.dropoff" = "放置";

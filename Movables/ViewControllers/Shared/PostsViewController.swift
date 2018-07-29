@@ -115,8 +115,7 @@ class PostsViewController: SLKTextViewController {
             Firestore.firestore().collection("monitor").addDocument(data: [
                     "report_date": Date(),
                     "type": "conversation",
-                    "reference": self.reference,
-                    "subtype": getStringForCommunityType(type: self.referenceType),
+                    "reference": self.commentsReference?.parent,
                     "reporter": UserManager.shared.userDocument?.reference
                 ])
         }))

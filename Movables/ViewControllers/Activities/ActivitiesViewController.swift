@@ -78,6 +78,7 @@ class ActivitiesViewController: UIViewController {
     let query = Firestore.firestore().collection("public_activities").whereField("followers.\(Auth.auth().currentUser!.uid)", isGreaterThan: Date(timeIntervalSince1970: 0)).order(by: "followers.\(Auth.auth().currentUser!.uid)", descending: true)
     
     var queryInProgress: Bool = false
+    var initialFetchPerformed = false
     var noMorePublicActivities: Bool = false
     
     override func viewDidLoad() {
@@ -299,8 +300,9 @@ extension ActivitiesViewController: UITableViewDataSource {
                 cell.activityIndicator.startAnimating()
                 cell.label.isHidden = true
             }
-            
-            cell.label.isHidden = self.publicActivities.isEmpty
+            if self.initialFetchPerformed && self.publicActivities.isEmpty {
+                cell.label.isHidden = true
+            }
             return cell
         }
         
