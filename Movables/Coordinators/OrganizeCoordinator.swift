@@ -60,9 +60,10 @@ extension OrganizeCoordinator: SubscribedTopicDetailViewControllerDelegate {
         })
     }
     
-    func showPostsVC(for reference: DocumentReference, referenceType: CommunityType) {
+    func showPostsVC(for community: Community) {
         let postsVC = PostsViewController(collectionViewLayout: UICollectionViewFlowLayout())
-        postsVC!.reference = reference
+        postsVC!.reference = community.reference
+        postsVC!.presenterName = "#\(subscribedTopicDetailVC!.topic!.name) . \(community.name)"
         self.subscribedTopicDetailVC?.navigationController?.pushViewController(postsVC!, animated: true)
     }
 }

@@ -64,6 +64,8 @@ class ProfileViewController: UIViewController {
     
     var delegate: ProfileViewControllerDelegate?
     
+    var initialFetchPerformed = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -87,6 +89,7 @@ class ProfileViewController: UIViewController {
             query.limit(to: 10).getDocuments { (snapshot, error) in
                 guard let snapshot = snapshot else {
                     print("error retrieving account activities: \(error.debugDescription)")
+                    self.initialFetchPerformed = true
                     self.tableView.reloadData()
                     self.refreshControl.endRefreshing()
                     self.queryInProgress = false
@@ -94,6 +97,7 @@ class ProfileViewController: UIViewController {
                 }
                 guard snapshot.documents.last != nil else {
                     self.noMoreAccountActivities = true
+                    self.initialFetchPerformed = true
                     self.tableView.reloadData()
                     self.refreshControl.endRefreshing()
                     self.queryInProgress = false
@@ -109,6 +113,7 @@ class ProfileViewController: UIViewController {
                     accountActivities.append(AccountActivity(with: docSnapshot.data()))
                 })
                 self.accountActivities.append(contentsOf: accountActivities)
+                self.initialFetchPerformed = true
                 self.tableView.reloadData()
                 self.refreshControl.endRefreshing()
                 self.queryInProgress = false
@@ -176,6 +181,7 @@ class ProfileViewController: UIViewController {
         tableView.register(ProfileFaceTableViewCell.self, forCellReuseIdentifier: "profileFace")
         tableView.register(EventActivityTableViewCell.self, forCellReuseIdentifier: "eventActivity")
         tableView.register(LoadingIndicatorTableViewCell.self, forCellReuseIdentifier: "loadingCell")
+        tableView.register(EmptyStateWithButtonTableViewCell.self, forCellReuseIdentifier: "emptyStateCell")
         tableView.dataSource = self
         tableView.delegate = self
         view.addSubview(tableView)
@@ -207,19 +213,31 @@ extension ProfileViewController: UITableViewDataSource {
         }
     }
     
+    @objc private func didTapReloadButton(sender: UIButton) {
+        fetchAccountActivities()
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if (self.userDocument == nil && indexPath.row == 0) || self.userDocument != nil && indexPath.row == self.accountActivities.count + 1 {
             // loading indicator cell
-            let cell = tableView.dequeueReusableCell(withIdentifier: "loadingCell") as! LoadingIndicatorTableViewCell
-            cell.label.text = String(NSLocalizedString("copy.noMoreAccountActivities", comment: "label for no more account activities"))
-            if noMoreAccountActivities {
-                cell.activityIndicator.stopAnimating()
-                cell.label.isHidden = false
+            if self.accountActivities.isEmpty && self.initialFetchPerformed {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "emptyStateCell") as! EmptyStateWithButtonTableViewCell
+                cell.emptyStateView.actionButton.setTitle(String(NSLocalizedString("button.reload", comment: "button title for reload")), for: .normal)
+                cell.emptyStateView.actionButton.addTarget(self, action: #selector(didTapReloadButton(sender:)), for: .touchUpInside)
+                cell.emptyStateView.subtitleLabel.text = String(NSLocalizedString("copy.noAccountActivities", comment: "subtitle for no account activity."))
+                return cell
             } else {
-                cell.activityIndicator.startAnimating()
-                cell.label.isHidden = true
+                let cell = tableView.dequeueReusableCell(withIdentifier: "loadingCell") as! LoadingIndicatorTableViewCell
+                cell.label.text = String(format: String(NSLocalizedString("copy.noMoreAccountActivities", comment: "label for no more account activities")), self.accountActivities.count)
+                if noMoreAccountActivities {
+                    cell.activityIndicator.stopAnimating()
+                    cell.label.isHidden = false
+                } else {
+                    cell.activityIndicator.startAnimating()
+                    cell.label.isHidden = true
+                }
+                return cell
             }
-            return cell
         } else if indexPath.row == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "profileFace") as! ProfileFaceTableViewCell
             cell.nameLabel.text = userDocument!.publicProfile.displayName
@@ -230,6 +248,7 @@ extension ProfileViewController: UITableViewDataSource {
             cell.secondaryButton.setImage(UIImage(named: "profile_edit"), for: .normal)
             cell.accessoryButton.addTarget(self, action: #selector(didTapOnSettings(sender:)), for: .touchUpInside)
             cell.secondaryButton.addTarget(self, action: #selector(didTapOnEdit(sender:)), for: .touchUpInside)
+            cell.secondaryButton.isHidden = true
             cell.balanceLabel.text = "\(Int(userDocument!.privateProfile.pointsBalance))"
             let dateFormatter = DateFormatter()
             dateFormatter.dateStyle = .long
@@ -290,9 +309,9 @@ extension ProfileViewController: UITableViewDataSource {
     
     @objc private func didTapOnSettings(sender: UIButton) {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.notifications", comment: "button title for notifications")), style: .default, handler: { (action) in
-            print("go to notifications")
-        }))
+//        alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.notifications", comment: "button title for notifications")), style: .default, handler: { (action) in
+//            print("go to notifications")
+//        }))
         alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.privacyPolicy", comment: "button title for privacy policy")), style: .default, handler: { (action) in
             print("go to privacy policy")
             self.navigationController?.present(SFSafariViewController(url: URL(string: "https://movables.app/privacy.html")!), animated: true)

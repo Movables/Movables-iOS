@@ -58,8 +58,10 @@ class ActivitiesViewController: UIViewController {
                 DispatchQueue.main.async {
                     if self.publicActivities.count == 0 {
                         self.emptyStateView.isHidden = false
+                        self.view.backgroundColor = .white
                     } else {
                         self.emptyStateView.isHidden = true
+                        self.view.backgroundColor = Theme().backgroundShade
                     }
                     for rowIndex in self.tableView.indexPathsForVisibleRows ?? [] {
                         if let cell = self.tableView.cellForRow(at: rowIndex) {
@@ -76,6 +78,7 @@ class ActivitiesViewController: UIViewController {
     let query = Firestore.firestore().collection("public_activities").whereField("followers.\(Auth.auth().currentUser!.uid)", isGreaterThan: Date(timeIntervalSince1970: 0)).order(by: "followers.\(Auth.auth().currentUser!.uid)", descending: true)
     
     var queryInProgress: Bool = false
+    var initialFetchPerformed = false
     var noMorePublicActivities: Bool = false
     
     override func viewDidLoad() {
@@ -104,7 +107,11 @@ class ActivitiesViewController: UIViewController {
                         print("no more public activities")
                         if let cell = self.tableView.cellForRow(at: IndexPath(row: self.publicActivities.count, section: 0)) as? LoadingIndicatorTableViewCell {
                             cell.activityIndicator.stopAnimating()
-                            cell.label.isHidden = false
+                            if self.publicActivities.count > 0 {
+                                cell.label.isHidden = false
+                            } else {
+                                cell.label.isHidden = true
+                            }
                         }
                         self.queryInProgress = false
                         return
@@ -146,20 +153,37 @@ class ActivitiesViewController: UIViewController {
             query.limit(to: 10).getDocuments(completion: { (snapshot, error) in
                 guard let snapshot = snapshot else {
                     print("error retrieving public activities: \(error.debugDescription)")
+                    self.initialFetchPerformed = true
                     self.tableView.reloadData()
                     self.refreshControl.endRefreshing()
+                    if self.publicActivities.count == 0 {
+                        self.emptyStateView.isHidden = false
+                        self.view.backgroundColor = .white
+                    } else {
+                        self.emptyStateView.isHidden = true
+                        self.view.backgroundColor = Theme().backgroundShade
+                    }
                     self.queryInProgress = false
                     return
                 }
                 guard snapshot.documents.last != nil else {
                     // empty results
+                    print("empty results")
                     self.noMorePublicActivities = true
+                    self.initialFetchPerformed = true
                     self.tableView.reloadData()
                     self.refreshControl.endRefreshing()
+                    if self.publicActivities.count == 0 {
+                        self.emptyStateView.isHidden = false
+                        self.view.backgroundColor = .white
+                    } else {
+                        self.emptyStateView.isHidden = true
+                        self.view.backgroundColor = Theme().backgroundShade
+                    }
                     self.queryInProgress = false
                     return
                 }
-                
+                print("some results")
                 self.rowsForIndexPaths.removeAll()
                 self.mapPreviewImagesForIndexPaths.removeAll()
                 self.annotationsForIndexPaths.removeAll()
@@ -178,7 +202,15 @@ class ActivitiesViewController: UIViewController {
                     self.annotationsForIndexPaths.updateValue(self.generateAnnotations(for: activity.supplements!, with: activity.supplementsType!), forKey: IndexPath(row: index, section: 0))
                 }
                 self.generateMapImages()
+                self.initialFetchPerformed = true
                 self.tableView.reloadData()
+                if self.publicActivities.count == 0 {
+                    self.emptyStateView.isHidden = false
+                    self.view.backgroundColor = .white
+                } else {
+                    self.emptyStateView.isHidden = true
+                    self.view.backgroundColor = Theme().backgroundShade
+                }
                 self.refreshControl.endRefreshing()
                 self.queryInProgress = false
             })
@@ -211,9 +243,11 @@ class ActivitiesViewController: UIViewController {
     
     private func setupTableView() {
         
+        view.backgroundColor = Theme().backgroundShade
+        
         tableView = UITableView(frame: .zero)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.backgroundColor = Theme().backgroundShade
+        tableView.backgroundColor = .clear
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 250
         tableView.separatorStyle = .none
@@ -229,8 +263,8 @@ class ActivitiesViewController: UIViewController {
         
         emptyStateView = EmptyStateView(frame: .zero)
         emptyStateView.translatesAutoresizingMaskIntoConstraints = false
-        emptyStateView.titleLabel.text = "Wanna see something?"
-        emptyStateView.subtitleLabel.text = "Gotta do something first."
+        emptyStateView.titleLabel.text = String(NSLocalizedString("copy.wannaSeeSomeActivities", comment: "title for wanna see some activities"))
+        emptyStateView.subtitleLabel.text = String(NSLocalizedString("copy.wannaSeeSomeActivitiesBody", comment: "body for wanna see some activities"))
         emptyStateView.actionButton.isHidden = true
         emptyStateView.isHidden = true
         view.addSubview(emptyStateView)
@@ -261,12 +295,15 @@ extension ActivitiesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if self.publicActivities.isEmpty || indexPath.row == self.publicActivities.count {
             let cell = tableView.dequeueReusableCell(withIdentifier: "loadingCell") as! LoadingIndicatorTableViewCell
-            cell.label.text = String(NSLocalizedString("copy.noMoreActivities", comment: "label for no more activities"))
+            cell.label.text = String(format: String(NSLocalizedString("copy.noMoreActivities", comment: "label for no more activities")), self.publicActivities.count)
             if self.noMorePublicActivities {
                 cell.activityIndicator.stopAnimating()
                 cell.label.isHidden = false
             } else {
                 cell.activityIndicator.startAnimating()
+                cell.label.isHidden = true
+            }
+            if self.initialFetchPerformed && self.publicActivities.isEmpty {
                 cell.label.isHidden = true
             }
             return cell
@@ -475,8 +512,12 @@ extension ActivitiesViewController: UITableViewDataSource {
 extension ActivitiesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("selected \(indexPath.row)")
-        let activity = self.publicActivities[indexPath.row]
-        delegate?.showPackageDetail(with: activity.objectReference.documentID, and: activity.objectName)
+        if indexPath.row != tableView.numberOfRows(inSection: 0) - 1 {
+            let activity = self.publicActivities[indexPath.row]
+            delegate?.showPackageDetail(with: activity.objectReference.documentID, and: activity.objectName)
+        } else {
+            print("selected last row")
+        }
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

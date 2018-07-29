@@ -37,6 +37,7 @@ class PostsViewController: SLKTextViewController {
     var listener: ListenerRegistration?
     var emptyStateView: EmptyStateView!
     var commentsReference: CollectionReference?
+    var presenterName: String!
     
     required init?(coder decoder: NSCoder) {
         super.init(coder: decoder)
@@ -51,7 +52,12 @@ class PostsViewController: SLKTextViewController {
         
         navigationController?.setNavigationBarHidden(false, animated: false)
         
-        title = isOpen ? String(NSLocalizedString("headerCollectionCell.public_conversation", comment: "navigation bar title for public conversation")) : String(NSLocalizedString("navBar.conversation", comment: "navigation bar title for conversation"))
+        let titleText = isOpen ? String(NSLocalizedString("headerCollectionCell.public_conversation", comment: "navigation bar title for public conversation")) : String(NSLocalizedString("navBar.conversation", comment: "navigation bar title for conversation"))
+        
+        let subtitleText = self.presenterName
+        
+        navigationItem.titleView = TitleView(frame: .zero, title: titleText, subtitle: subtitleText!)
+
         
         collectionView?.dataSource = self
         collectionView?.delegate = self
@@ -107,6 +113,19 @@ class PostsViewController: SLKTextViewController {
     
     @objc private func didTapMoreButton(sender: UIBarButtonItem) {
         print("tapped more")
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.cancel", comment: "button title for cancel")), style: .cancel, handler: { (action) in
+            print("canceld")
+        }))
+        alertController.addAction(UIAlertAction(title: String(NSLocalizedString("button.reportConversation", comment: "button title for report conversation")), style: .destructive, handler: { (action) in
+            Firestore.firestore().collection("monitor").addDocument(data: [
+                    "report_date": Date(),
+                    "type": "conversation",
+                    "reference": self.commentsReference?.parent,
+                    "reporter": UserManager.shared.userDocument?.reference
+                ])
+        }))
+        self.present(alertController, animated: true, completion: nil)
     }
 
     override func didReceiveMemoryWarning() {

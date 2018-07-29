@@ -23,7 +23,6 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-
 "tabBar.explore" = "Explore";
 "tabBar.move" = "Move";
 "tabBar.activities" = "Activities";
@@ -31,6 +30,7 @@
 "tabBar.profile" = "Profile";
 "navBar.conversation" = "Conversation";
 "headerCollectionCell.public_conversation" = "Recent Comments";
+"button.reportConversation" = "Report Conversation";
 "button.pickup" = "Pickup";
 "button.pickupAway" = "Pickup %@ away";
 "button.dropoff" = "Dropoff";
@@ -65,11 +65,14 @@
 "button.dontCreateTemplate" = "Don't Create Template";
 "button.view" = "View";
 "button.create" = "Create";
+"button.createPackage" = "Create Package";
+"button.startLocalConversation" = "Start Local Conversation";
 "button.preview" = "Preview";
 "button.readMore" = "Read more";
 "button.signin" = "Sign in";
 "button.signup" = "Signup";
 "button.signupWithEmail" = "Signup with Email";
+"button.reload" = "Reload";
 "annotation.pickup" = "Pickup";
 "annotation.dropoff" = "Dropoff";
 "annotation.currentLocation" = "Current Location";
@@ -124,8 +127,12 @@
 "label.packageContents" = "Package Contents";
 "label.distanceRemaining" = "Distance Remaining";
 "label.timeRemaining" = "Time Remaining";
-"copy.noMoreActivities" = "No more activities.";
-"copy.noMoreAccountActivities" = "No more account activities.";
+"label.whatMovesYou" = "What Moves You?";
+"label.topicName" = "#%@";
+"label.selectALegislativeArea" = "Select a Legislative Area";
+"copy.noMoreActivities" = "%d activities in total.";
+"copy.noMoreAccountActivities" = "%d account activities in total.";
+"copy.noAccountActivities" = "No account activity.";
 "label.noNearbyConversations" = "No nearby conversations, yet.";
 "label.due" = "Due";
 "label.headline" = "Headline";
@@ -157,6 +164,8 @@
 "copy.makeItHappenBody" = "Create a new package using templates others have created or create something new from scratch. Your call.";
 "copy.wannaOrgnize" = "Wanna organize?";
 "copy.wannaOrgnizeBody" = "Move a package first.";
+"copy.wannaSeeSomeActivities" = "Wanna see activities?";
+"copy.wannaSeeSomeActivitiesBody" = "Gotta do something first.";
 "copy.nothingToSee" = "Nothing to see here, yet.";
 "copy.publicActivity.packagePickup" = "%@ picked up %@.";
 "copy.publicActivity.packageDelivery" = "%@ delivered %@.";
@@ -176,6 +185,11 @@
 "copy.alert.signinUnsuccessful" = "Sign-in Unsuccessful";
 "copy.alert.signupUnsuccessful" = "Signup Unsuccessful";
 "copy.alert.fileSaveUnsuccessful" = "File Save Unsuccessful";
+"copy.alert.passwordMismatch" = "Password Mismatch";
+"copy.alert.passwordMismatchDesc" = "Check that password entered in both fields match.";
+"copy.alert.unableToCreatePackage" = "Unable to Create Package";
+"copy.alert.unableToCreatePackageDescExisting" = "Create a package when you're finished moving the package on hand.";
+"copy.alert.unableToCreatePackageDescCredits" = "Each package costs 100 points. You do not have sufficient points.";
 "copy.category.animals" = "Animals";
 "copy.category.arts_culture_humanities" = "Arts, Culture, Humanities";
 "copy.category.community_development" = "Community Development";
@@ -187,3 +201,9 @@
 "copy.category.international" = "International";
 "copy.category.research_and_public_policy" = "Research and Public Policy";
 "copy.category.religion" = "Religion";
+"copy.locality.country" = "Country";
+"copy.locality.administrative_area" = "Administrative area";
+"copy.locality.sub_administrative_area" = "Sub-administrative area";
+"copy.locality.locality" = "Locality";
+"copy.locality.sublocality" = "Sub-locality";
+"copy.locality.unknown" = "Unknown";

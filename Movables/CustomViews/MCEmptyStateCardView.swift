@@ -73,7 +73,7 @@ class MCEmptyStateCardView: UIView {
         
         actionButton = UIButton(frame: .zero)
         actionButton.translatesAutoresizingMaskIntoConstraints = false
-        actionButton.setTitle(String(NSLocalizedString("button.create", comment: "Create button title")), for: .normal)
+        actionButton.setTitle(String(NSLocalizedString("button.createPackage", comment: "Create button title")), for: .normal)
         actionButton.setTitleColor(.white, for: .normal)
         actionButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
         actionButton.setBackgroundColor(color: Theme().grayTextColor, forUIControlState: .normal)
