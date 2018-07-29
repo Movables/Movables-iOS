@@ -48,12 +48,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate, FBSDKL
         readCredentials()
         
         setupServices(app: application, launchOptions: launchOptions)
-                        
-        setupAppCoordinator()
         
         IQKeyboardManager.shared.enable = true
-
         
+        setupAppCoordinator()
+
         return true
     }
     
