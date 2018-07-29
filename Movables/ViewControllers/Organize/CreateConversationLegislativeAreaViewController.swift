@@ -196,17 +196,17 @@ func generateLegislativeAreasTuples(for placemark: CLPlacemark) -> [(String, Str
 func getReadableStringForLegislativeAreaString(string: String) -> String {
     switch string {
     case "country":
-        return "Country"
+        return String(NSLocalizedString("copy.locality.country", comment: "country locality"))
     case "administrative_area":
-        return "Aadministrative area"
+        return String(NSLocalizedString("copy.locality.administrative_area", comment: "Administrative area locality"))
     case "sub_administrative_area":
-        return "Sub-administrative area"
+        return String(NSLocalizedString("copy.locality.sub_administrative_area", comment: "Sub-administrative area locality"))
     case "locality":
-        return "Locality"
+        return String(NSLocalizedString("copy.locality.locality", comment: "Locality locality"))
     case "sub_locality":
-        return "Sub-locality"
+        return String(NSLocalizedString("copy.locality.sublocality", comment: "locality locality"))
     default:
-        return "Unknown area"
+        return String(NSLocalizedString("copy.locality.unknown", comment: "Unknown locality"))
     }
 }
 

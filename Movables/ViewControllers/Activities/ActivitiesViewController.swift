@@ -295,7 +295,7 @@ extension ActivitiesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if self.publicActivities.isEmpty || indexPath.row == self.publicActivities.count {
             let cell = tableView.dequeueReusableCell(withIdentifier: "loadingCell") as! LoadingIndicatorTableViewCell
-            cell.label.text = String(NSLocalizedString("copy.noMoreActivities", comment: "label for no more activities"))
+            cell.label.text = String(format: String(NSLocalizedString("copy.noMoreActivities", comment: "label for no more activities")), self.publicActivities.count)
             if self.noMorePublicActivities {
                 cell.activityIndicator.stopAnimating()
                 cell.label.isHidden = false

@@ -65,6 +65,8 @@
 "button.dontCreateTemplate" = "Don't Create Template";
 "button.view" = "View";
 "button.create" = "Create";
+"button.createPackage" = "Create Package";
+"button.startLocalConversation" = "Start Local Conversation";
 "button.preview" = "Preview";
 "button.readMore" = "Read more";
 "button.signin" = "Sign in";
@@ -128,8 +130,8 @@
 "label.whatMovesYou" = "What Moves You?";
 "label.topicName" = "#%@";
 "label.selectALegislativeArea" = "Select a Legislative Area";
-"copy.noMoreActivities" = "No more activities.";
-"copy.noMoreAccountActivities" = "No more account activities.";
+"copy.noMoreActivities" = "%d activities in total.";
+"copy.noMoreAccountActivities" = "%d account activities in total.";
 "copy.noAccountActivities" = "No account activity.";
 "label.noNearbyConversations" = "No nearby conversations, yet.";
 "label.due" = "Due";
@@ -199,3 +201,9 @@
 "copy.category.international" = "International";
 "copy.category.research_and_public_policy" = "Research and Public Policy";
 "copy.category.religion" = "Religion";
+"copy.locality.country" = "Country";
+"copy.locality.administrative_area" = "Administrative area";
+"copy.locality.sub_administrative_area" = "Sub-administrative area";
+"copy.locality.locality" = "Locality";
+"copy.locality.sublocality" = "Sub-locality";
+"copy.locality.unknown" = "Unknown";

@@ -71,6 +71,7 @@ extension MoveCoordinator: PackageDetailViewControllerDelegate {
         postsVC!.reference = packageDetailVC?.package?.reference
         postsVC!.referenceType = .package
         postsVC!.isOpen = true
+        postsVC!.presenterName = packageDetailVC!.package!.headline
         packageDetailVC?.navigationController?.show(postsVC!, sender: packageDetailVC)
     }
     

@@ -161,7 +161,7 @@ class CreatePackageReviewViewController: UIViewController {
         createButton = UIButton(frame: .zero)
         createButton.translatesAutoresizingMaskIntoConstraints = false
         createButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        createButton.setTitle(String(NSLocalizedString("button.create", comment: "button title for Create")), for: .normal)
+        createButton.setTitle(String(NSLocalizedString("button.createPackage", comment: "button title for Create")), for: .normal)
         createButton.setTitleColor(.white, for: .normal)
         createButton.tintColor = .white
         createButton.setBackgroundColor(color: getTintForCategory(category: createPackageCoordinator.category!), forUIControlState: .normal)

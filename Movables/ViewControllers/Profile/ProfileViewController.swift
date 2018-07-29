@@ -228,7 +228,7 @@ extension ProfileViewController: UITableViewDataSource {
                 return cell
             } else {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "loadingCell") as! LoadingIndicatorTableViewCell
-                cell.label.text = String(NSLocalizedString("copy.noMoreAccountActivities", comment: "label for no more account activities"))
+                cell.label.text = String(format: String(NSLocalizedString("copy.noMoreAccountActivities", comment: "label for no more account activities")), self.accountActivities.count)
                 if noMoreAccountActivities {
                     cell.activityIndicator.stopAnimating()
                     cell.label.isHidden = false

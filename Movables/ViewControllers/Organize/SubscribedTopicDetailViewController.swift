@@ -32,7 +32,7 @@ import AlgoliaSearch
 
 protocol SubscribedTopicDetailViewControllerDelegate {
     func dismissSubscribedTopicDetailVC()
-    func showPostsVC(for reference: DocumentReference, referenceType: CommunityType)
+    func showPostsVC(for community: Community)
 }
 
 class SubscribedTopicDetailViewController: UIViewController {
@@ -288,15 +288,18 @@ extension SubscribedTopicDetailViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section != 0 {
-            let community: Community
+            var community: Community?
             if indexPath.section == 1 {
                 community = favoriteCommunities![indexPath.row]
             } else {
                 // section == 2
+                if indexPath.row != tableView.numberOfRows(inSection: 2) - 1 {
                 community = nearbyCommunities![indexPath.row]
+                }
             }
-            print("show posts for \(community)")
-            delegate?.showPostsVC(for: community.reference, referenceType: community.type)
+            if community != nil {
+                delegate?.showPostsVC(for: community!)
+            }
         }
     }
 }
@@ -330,7 +333,7 @@ extension SubscribedTopicDetailViewController: UITableViewDataSource {
                 // return create local conversation button
                 let cell = tableView.dequeueReusableCell(withIdentifier: "emptyState") as! EmptyStateWithButtonTableViewCell
                 cell.emptyStateView.subtitleLabel.text = String(NSLocalizedString("label.noNearbyConversations", comment: "label for no nearby conversations"))
-            cell.emptyStateView.actionButton.setTitle(String(NSLocalizedString("button.create", comment: "button title for create local conversation")), for: .normal)
+            cell.emptyStateView.actionButton.setTitle(String(NSLocalizedString("button.startLocalConversation", comment: "button title for create local conversation")), for: .normal)
                 cell.emptyStateView.actionButton.addTarget(self, action: #selector(didTapAddButton(sender:)), for: .touchUpInside)
                 return cell
             } else {

@@ -47,7 +47,9 @@
 "button.createTemplate" = "製作範本";
 "button.dontCreateTemplate" = "不製作範本";
 "button.view" = "檢視";
-"button.create" = "製作議題包";
+"button.create" = "製作";
+"button.createPackage" = "製作議題包";
+"button.startLocalConversation" = "開始在地對話";
 "button.preview" = "預覽議題包";
 "button.readMore" = "閱讀更多";
 "button.signin" = "登入";
@@ -122,7 +124,7 @@
 "label.learn" = "學習";
 "label.whatMovesYou" = "你為何而動?";
 "label.topicName" = "#%@";
-"label.selectALegislativeArea" = "選擇一個行政區";
+"label.selectALegislativeArea" = "選擇地方區級";
 "copy.dropoffSummary" = "移動報告";
 "copy.makeItHappen" = "你就是沒有人";
 "copy.makeItHappenBody" = "製作一個全新的議題包或是以範本來製作議題包。你來決定！";
@@ -131,8 +133,8 @@
 "copy.wannaSeeSomeActivities" = "想看到動態嗎?";
 "copy.wannaSeeSomeActivitiesBody" = "先動一下再說。";
 "copy.nothingToSee" = "這裡沒東西，還沒有";
-"copy.noMoreActivities" = "沒有其他動態。";
-"copy.noMoreAccountActivities" = "沒有其他帳戶動態。";
+"copy.noMoreActivities" = "共%d個動態。";
+"copy.noMoreAccountActivities" = "共%d個帳戶動態。";
 "copy.noAccountActivities" = "無帳戶動態。";
 "label.noNearbyConversations" = "附近沒有在地對話，還沒有.";
 "copy.publicActivity.packagePickup" = "%@ 已撿取 %@。";
@@ -182,3 +184,9 @@
 "copy.category.international" = "國際事務";
 "copy.category.research_and_public_policy" = "政策研究";
 "copy.category.religion" = "宗教相關";
+"copy.locality.country" = "國家";
+"copy.locality.administrative_area" = "行政區";
+"copy.locality.sub_administrative_area" = "次行政區";
+"copy.locality.locality" = "地方";
+"copy.locality.sublocality" = "次地方";
+"copy.locality.unknown" = "其他行政區";

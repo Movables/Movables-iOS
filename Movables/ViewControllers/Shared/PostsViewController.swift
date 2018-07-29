@@ -37,6 +37,7 @@ class PostsViewController: SLKTextViewController {
     var listener: ListenerRegistration?
     var emptyStateView: EmptyStateView!
     var commentsReference: CollectionReference?
+    var presenterName: String!
     
     required init?(coder decoder: NSCoder) {
         super.init(coder: decoder)
@@ -51,7 +52,12 @@ class PostsViewController: SLKTextViewController {
         
         navigationController?.setNavigationBarHidden(false, animated: false)
         
-        title = isOpen ? String(NSLocalizedString("headerCollectionCell.public_conversation", comment: "navigation bar title for public conversation")) : String(NSLocalizedString("navBar.conversation", comment: "navigation bar title for conversation"))
+        let titleText = isOpen ? String(NSLocalizedString("headerCollectionCell.public_conversation", comment: "navigation bar title for public conversation")) : String(NSLocalizedString("navBar.conversation", comment: "navigation bar title for conversation"))
+        
+        let subtitleText = self.presenterName
+        
+        navigationItem.titleView = TitleView(frame: .zero, title: titleText, subtitle: subtitleText!)
+
         
         collectionView?.dataSource = self
         collectionView?.delegate = self

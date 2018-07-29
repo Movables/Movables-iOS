@@ -326,11 +326,10 @@ class PackageDetailViewController: UIViewController {
     
     @objc private func didTapShareButton(sender: UIBarButtonItem) {
         // text to share
-        let text = "I'm tracking a package for #\(self.package!.topic.name): \(self.package!.headline). Join me on Movables at movables.co."
-        
+        let topic = "#\(self.package!.topic.name)"
         // set up activity view controller
-        let textToShare = [ text ]
-        let activityViewController = UIActivityViewController(activityItems: textToShare, applicationActivities: nil)
+        let itemsToShare = [ topic ]
+        let activityViewController = UIActivityViewController(activityItems: itemsToShare, applicationActivities: nil)
         activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
         
         // exclude some activity types from the list (optional)
