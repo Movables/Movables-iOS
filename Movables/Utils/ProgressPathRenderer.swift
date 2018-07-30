@@ -46,7 +46,7 @@ class ProgressPathRenderer: MKOverlayRenderer {
     
     override func draw(_ mapRect: MKMapRect, zoomScale: MKZoomScale, in context: CGContext) {
         let progresss = self.overlay as! ProgressPath
-        
+
         let lineWidth = MKRoadWidthAtZoomScale(zoomScale)
         
         // outset the map rect by the line width so that points just outside
@@ -67,6 +67,8 @@ class ProgressPathRenderer: MKOverlayRenderer {
             context.setLineCap(.round)
             context.setLineWidth(lineWidth)
             context.strokePath()
+            context.scaleBy(x: 1, y: -1)
+//            context.translateBy(x: 0.0, y: -mapRect.size.height)
         }
     }
     
