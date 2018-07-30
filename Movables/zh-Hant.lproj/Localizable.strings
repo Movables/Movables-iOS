@@ -13,6 +13,7 @@
 "tabBar.profile" = "我的帳戶";
 "navBar.conversation" = "對話";
 "headerCollectionCell.public_conversation" = "最近留言";
+"button.clearFilters" = "清除搜尋條件";
 "button.viewAllComments" = "檢視所有留言";
 "button.reportConversation" = "檢舉違規對話";
 "button.pickup" = "撿取";
@@ -64,6 +65,8 @@
 "annotation.dropoff" = "放置地點";
 "annotation.currentLocation" = "現在地點";
 "annotation.origin" = "寄送地";
+"label.noPackagesFound" = "找無議題包";
+"label.noPackagesNearby" = "附近沒有議題包";
 "label.saySomething" = "說點話...";
 "label.packageMoved" = "移動了%d個議題包";
 "label.packagesMovedPlural" = "移動了%d個議題包";

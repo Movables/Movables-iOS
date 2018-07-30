@@ -102,6 +102,7 @@
 		2CDFE4262109AF2200B25641 /* EmptyStateWithButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDFE4252109AF2200B25641 /* EmptyStateWithButtonTableViewCell.swift */; };
 		2CDFE428210AFFB600B25641 /* LoadingIndicatorTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDFE427210AFFB600B25641 /* LoadingIndicatorTableViewCell.swift */; };
 		2CDFE42D210D8F8000B25641 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2CDFE42F210D8F8000B25641 /* InfoPlist.strings */; };
+		2CDFE434210F38C600B25641 /* ExploreEmptyStateCardCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDFE433210F38C600B25641 /* ExploreEmptyStateCardCollectionViewCell.swift */; };
 		2CE12D812089923F00C4625A /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CE12D802089923F00C4625A /* Package.swift */; };
 		2CE12D87208A294C00C4625A /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CE12D86208A294C00C4625A /* Comment.swift */; };
 		2CE12D8C208F2B5900C4625A /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CE12D8B208F2B5900C4625A /* LocationManager.swift */; };
@@ -252,6 +253,7 @@
 		2CDFE427210AFFB600B25641 /* LoadingIndicatorTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingIndicatorTableViewCell.swift; sourceTree = "<group>"; };
 		2CDFE42E210D8F8000B25641 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2CDFE430210D8F8200B25641 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		2CDFE433210F38C600B25641 /* ExploreEmptyStateCardCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreEmptyStateCardCollectionViewCell.swift; sourceTree = "<group>"; };
 		2CE12D802089923F00C4625A /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		2CE12D86208A294C00C4625A /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		2CE12D8B208F2B5900C4625A /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
@@ -418,6 +420,7 @@
 			isa = PBXGroup;
 			children = (
 				2CAE906220EA8CEF00F23937 /* CommunityTableViewCell.swift */,
+				2CDFE433210F38C600B25641 /* ExploreEmptyStateCardCollectionViewCell.swift */,
 				2CDFE427210AFFB600B25641 /* LoadingIndicatorTableViewCell.swift */,
 				2CDFE4252109AF2200B25641 /* EmptyStateWithButtonTableViewCell.swift */,
 				2CA1187020EA021800EBA4A8 /* OrganizeDetailTableHeaderViewCell.swift */,
@@ -692,7 +695,7 @@
 				TargetAttributes = {
 					2C9DA3D4206365EA0041098A = {
 						CreatedOnToolsVersion = 9.2;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.Maps.iOS = {
 								enabled = 1;
@@ -972,6 +975,7 @@
 				2CAE905920E7C37C00F23937 /* ActivityRowView.swift in Sources */,
 				2CAA8BE020A2BFB9007F625F /* MainCoordinator.swift in Sources */,
 				2CEFFAF320DFC631002BE812 /* TopicTrendingCollectionViewCell.swift in Sources */,
+				2CDFE434210F38C600B25641 /* ExploreEmptyStateCardCollectionViewCell.swift in Sources */,
 				2CF5BABC20CA7540006A6FAE /* UIButton+Extensions.swift in Sources */,
 				2CDE1EBC20B2F47700D45170 /* CurrentLocationAnnotation.swift in Sources */,
 				2CAA8BEA20A40A80007F625F /* ActivitiesCoordinator.swift in Sources */,
@@ -1236,7 +1240,7 @@
 				AlgoliaAPIKey = 7864b7610473e24c911069ed320c3abf;
 				AlgoliaClientId = C8ELKK0ACA;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 3DZ3S2K7LU;
 				FBCFBundleURLSchemes = fb486581298446475;
 				FacebookAppID = 486581298446475;
@@ -1249,7 +1253,8 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\"";
 				PRODUCT_BUNDLE_IDENTIFIER = co.movables.Movables;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "0319f8b1-50e8-4bc8-93fa-df4ea28b6ff4";
+				PROVISIONING_PROFILE_SPECIFIER = "Movables Development Provisioning Profile";
 				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1263,8 +1268,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				AlgoliaAPIKey = 3696e8f2afa6fae3abf3ecc11623f777;
 				AlgoliaClientId = KU6MPQVNRO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 3DZ3S2K7LU;
 				FBCFBundleURLSchemes = fb209161136365034;
 				FacebookAppID = 209161136365034;
@@ -1277,7 +1282,8 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DRELEASE\"";
 				PRODUCT_BUNDLE_IDENTIFIER = co.movables.Movables;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "11077cf3-2659-4f41-9aac-8b4fe8fbd577";
+				PROVISIONING_PROFILE_SPECIFIER = "Movables App Store Provisioning Profile";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;

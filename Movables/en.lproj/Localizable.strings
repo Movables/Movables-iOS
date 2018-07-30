@@ -30,6 +30,7 @@
 "tabBar.profile" = "Profile";
 "navBar.conversation" = "Conversation";
 "headerCollectionCell.public_conversation" = "Recent Comments";
+"button.clearFilters" = "Clear Filters";
 "button.viewAllComments" = "View all comments";
 "button.reportConversation" = "Report Conversation";
 "button.pickup" = "Pickup";
@@ -81,6 +82,8 @@
 "annotation.dropoff" = "Dropoff";
 "annotation.currentLocation" = "Current Location";
 "annotation.origin" = "Origin";
+"label.noPackagesFound" = "No packages found.";
+"label.noPackagesNearby" = "No packages nearby";
 "label.saySomething" = "Say something...";
 "label.packageMoved" = "%d package moved";
 "label.packagesMovedPlural" = "%d packages moved";
