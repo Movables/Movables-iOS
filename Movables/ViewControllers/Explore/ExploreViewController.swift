@@ -224,6 +224,7 @@ class ExploreViewController: UIViewController {
         collectionViewFlowLayout.minimumLineSpacing = 0
         collectionViewFlowLayout.scrollDirection = .horizontal
         cardPeekCollectionView.register(MCExploreCardCollectionViewCell.self, forCellWithReuseIdentifier: "exploreCard")
+        cardPeekCollectionView.register(ExploreEmptyStateCardCollectionViewCell.self, forCellWithReuseIdentifier: "emptyStateCard")
         cardPeekCollectionView.dataSource = self
         cardPeekCollectionView.delegate = self
         cardPeekCollectionView.backgroundColor = .clear
@@ -549,7 +550,7 @@ extension ExploreViewController: UICollectionViewDelegate {
     }
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        if scrollView == self.cardPeekCollectionView {
+        if scrollView == self.cardPeekCollectionView && self.packages.count > 0 {
             // Stop scrollView sliding:
             targetContentOffset.pointee = scrollView.contentOffset
             
@@ -594,13 +595,13 @@ extension ExploreViewController: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if collectionView == cardPeekCollectionView {
+        if collectionView == cardPeekCollectionView && self.packages.count > 0 {
             (cell as! MCExploreCardCollectionViewCell).progressBarView.animateProgress()
         }
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if scrollView == cardPeekCollectionView {
+        if scrollView == cardPeekCollectionView && self.packages.count > 0 {
             print("select map")
             let indexOfMajorCell = self.indexOfMajorCell()
             var targetIndex: Int?
@@ -620,8 +621,12 @@ extension ExploreViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("did select \(indexPath)")
         if collectionView == cardPeekCollectionView {
-            let packageOfSelected = packages[indexPath.item]
-            delegate?.showPackageDetail(with: packageOfSelected)
+            if self.packages.count > 0 {
+                let packageOfSelected = packages[indexPath.item]
+                delegate?.showPackageDetail(with: packageOfSelected)
+            } else {
+                self.clearFilters()
+            }
         }
         if collectionView == togglesCollectionView {
             if let selectedIndexPaths = collectionView.indexPathsForSelectedItems {
@@ -685,7 +690,7 @@ extension ExploreViewController: UICollectionViewDelegate {
 extension ExploreViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == cardPeekCollectionView {
-            return packages.count
+            return packages.count > 0 ? packages.count : 1
         } else if collectionView == togglesCollectionView {
             // toggles
             return packageCategoriesEnumArray.count
@@ -694,13 +699,45 @@ extension ExploreViewController: UICollectionViewDataSource {
         }
     }
     
+    @objc private func didTapClearFilters(sender: UIButton) {
+        clearFilters()
+    }
+    
+    private func clearFilters() {
+        self.category = nil
+        self.topicName = nil
+        self.topicsTrendingCollectionView.reloadData()
+        self.togglesCollectionView.reloadData()
+        self.fetchNearbyPackages()
+    }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == cardPeekCollectionView {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "exploreCard", for: indexPath) as! MCExploreCardCollectionViewCell
-            cell.package = packages[indexPath.item]
-            cell.cellWidth = collectionViewFlowLayout.estimatedItemSize.width
-            cell.layout()
-            return cell
+            if packages.count > 0 {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "exploreCard", for: indexPath) as! MCExploreCardCollectionViewCell
+                cell.package = packages[indexPath.item]
+                cell.cellWidth = collectionViewFlowLayout.estimatedItemSize.width
+                cell.layout()
+                return cell
+            } else {
+                // empty state card
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "emptyStateCard", for: indexPath) as! ExploreEmptyStateCardCollectionViewCell
+                if self.category != nil || self.topicName != nil {
+                    // some filter applied, show action button
+                    cell.emptyStateView.actionButton.isHidden = false
+                    cell.emptyStateView.actionButton.setTitle(String(NSLocalizedString("button.clearFilters", comment: "button title for clear filters")), for: .normal)
+                    cell.emptyStateView.actionButton.addTarget(self, action: #selector(didTapClearFilters(sender:)), for: .touchUpInside)
+                    cell.emptyStateView.subtitleLabel.text = String(NSLocalizedString("label.noPackagesFound", comment: "label text for no packages found"))
+                } else {
+                    // no filter applied, hide button and update subtitle label text
+                    cell.emptyStateView.actionButton.isHidden = true
+                    cell.emptyStateView.subtitleLabel.text = String(NSLocalizedString("label.noPackagesNearby", comment: "label text for no packages nearby"))
+                }
+                cell.cellWidth = collectionViewFlowLayout.estimatedItemSize.width
+                cell.cellHeight = collectionViewFlowLayout.estimatedItemSize.height
+                cell.layout()
+                return cell
+            }
         } else if collectionView == togglesCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "circularToggle", for: indexPath) as! CircularToggleCollectionViewCell
             let category = packageCategoriesEnumArray[indexPath.item]

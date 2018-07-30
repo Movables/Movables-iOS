@@ -493,7 +493,7 @@ extension PackageDetailViewController: UICollectionViewDataSource {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "postsPreviewCell", for: indexPath) as! PostsPreviewCollectionViewCell
                 cell.button.addTarget(self, action: #selector(didTapViewPostsButton(sender:)), for: .touchUpInside)
                 cell.button.isHidden = self.posts?.count == 0
-                cell.button.setTitle("View all comments", for: .normal)
+                cell.button.setTitle(String(NSLocalizedString("button.viewAllComments", comment: "button title for view all comments")), for: .normal)
                 cell.posts = self.posts
                 cell.button.setTitleColor(getTintForCategory(category: self.package!.category), for: .normal)
                 cell.button.setTitleColor(getTintForCategory(category: self.package!.category).withAlphaComponent(0.85), for: .highlighted)
@@ -851,7 +851,7 @@ extension PackageDetailViewController: CLLocationManagerDelegate {
                         self.packageActionButton.setBackgroundColor(color: .white, forUIControlState: .disabled)
                     } else if self.package!.status == .transit {
                         // if package is in transit by others
-                        self.packageActionButton.setTitle("In transit", for: .disabled)
+                        self.packageActionButton.setTitle(String(NSLocalizedString("button.inTransit", comment: "button title for in transit")), for: .disabled)
                         applyDisabledStyleToButton(button: self.packageActionButton)
                         self.packageActionButton.setBackgroundColor(color: .white, forUIControlState: .disabled)
                     } else if self.package!.status == .pending {
@@ -867,7 +867,7 @@ extension PackageDetailViewController: CLLocationManagerDelegate {
                                 } else if distanceFromPickup >= self.ACTIONABLE_DISTANCE {
                                     if distanceFromPickup > self.TOO_FAR_DISTANCE {
                                         // if current location is beyond too far away distance from package location
-                                        self.packageActionButton.setTitle("Too far away", for: .disabled)
+                                        self.packageActionButton.setTitle(String(NSLocalizedString("button.tooFarAway", comment: "button title for too far away")), for: .disabled)
                                         applyDisabledStyleToButton(button: self.packageActionButton)
                                         self.packageActionButton.setBackgroundColor(color: .white, forUIControlState: .disabled)
 
@@ -888,7 +888,7 @@ extension PackageDetailViewController: CLLocationManagerDelegate {
                                 }
                             } else {
                                 // if current location is unavailable
-                                self.packageActionButton.setTitle("Unavailable", for: .disabled)
+                                self.packageActionButton.setTitle(String(NSLocalizedString("button.unavailable", comment: "button title for unavailable")), for: .disabled)
                                 applyDisabledStyleToButton(button: self.packageActionButton)
                                 self.packageActionButton.setBackgroundColor(color: .white, forUIControlState: .disabled)
                             }
@@ -907,7 +907,7 @@ extension PackageDetailViewController: CLLocationManagerDelegate {
 
                     } else {
                         // if package action can not be determined
-                        self.packageActionButton.setTitle("Error", for: .disabled)
+                        self.packageActionButton.setTitle(String(NSLocalizedString("button.error", comment: "button title for error")), for: .disabled)
                         applyDisabledStyleToButton(button: self.packageActionButton)
                         self.packageActionButton.setBackgroundColor(color: .white, forUIControlState: .disabled)
 

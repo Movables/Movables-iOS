@@ -97,7 +97,7 @@ class DropoffSummaryViewController: UIViewController {
         
         doneButton = UIButton(frame: .zero)
         doneButton.translatesAutoresizingMaskIntoConstraints = false
-        doneButton.setTitle("Done", for: .normal)
+        doneButton.setTitle(String(NSLocalizedString("button.done", comment: "button title for done")), for: .normal)
         doneButton.setTitleColor(.white, for: .normal)
         doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         doneButton.setBackgroundColor(color: getTintForCategory(category: self.package.category), forUIControlState: .normal)

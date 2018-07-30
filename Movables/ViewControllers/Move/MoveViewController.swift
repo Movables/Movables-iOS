@@ -326,7 +326,6 @@ extension MoveViewController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         var renderer: MKOverlayRenderer? = nil
-        
         if overlay is ProgressPath {
             if self.progressPathRenderer == nil {
                 progressPathRenderer = ProgressPathRenderer(overlay: overlay)
@@ -410,7 +409,7 @@ extension MoveViewController: CLLocationManagerDelegate {
                     if boundingMapRectChanged {
                         self.mapView.remove(self.progress! as MKOverlay)
                         self.progressPathRenderer = nil
-                        self.mapView.add(self.progress!, level: .aboveLabels)
+                        self.mapView.add(self.progress!, level: .aboveRoads)
                     }
                     if !MKMapRectIsNull(updateRect) {
                         // There is a non null update rect.
@@ -442,7 +441,7 @@ extension MoveViewController: CLLocationManagerDelegate {
                     self.progress = ProgressPath(center: CLLocationCoordinate2D(latitude: movement.geoPoint.latitude, longitude: movement.geoPoint.longitude))
                     self.mapView.remove(self.progress as! MKOverlay)
                     self.progressPathRenderer = nil
-                    self.mapView.add(self.progress!, level: .aboveLabels)
+                    self.mapView.add(self.progress!, level: .aboveRoads)
                     
                     let r = self.progress!.boundingMapRect
                     var pts: [MKMapPoint] = [
@@ -453,7 +452,7 @@ extension MoveViewController: CLLocationManagerDelegate {
                         ]
                     let count = pts.count
                     let boundingMapRectOverlay = MKPolygon(points: &pts, count: count)
-                    self.mapView.add(boundingMapRectOverlay, level: .aboveLabels)
+                    self.mapView.add(boundingMapRectOverlay, level: .aboveRoads)
                 } else {
                     var boundingMapRectChanged = false
                     let newCoordinate = CLLocationCoordinate2D(latitude: movement.geoPoint.latitude, longitude: movement.geoPoint.longitude)
@@ -514,7 +513,7 @@ extension MoveViewController: CLLocationManagerDelegate {
         for route in routes {
             self.proposedRouteOverlay = route.polyline
             self.mapView.add(self.proposedRouteOverlay!,
-                             level: MKOverlayLevel.aboveLabels)
+                             level: MKOverlayLevel.aboveRoads)
             print("draw route")
         }
         self.mapView.setUserTrackingMode(.follow, animated: true)
