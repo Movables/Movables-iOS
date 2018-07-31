@@ -253,7 +253,7 @@ class ExploreViewController: UIViewController {
             index = apiClient.index(withName: "packages")
             // sort by distance by default
             query.aroundLatLng = LatLng(lat: location.coordinate.latitude, lng: location.coordinate.longitude)
-            query.aroundRadius = .explicit(300000)
+//            query.aroundRadius = .explicit(300000)
             
             var filterString = "NOT logistics.status:\(getStringForStatusEnum(statusEnum: .delivered))"
             
