@@ -161,7 +161,7 @@ extension OrganizeViewController: UITableViewDataSource {
         cell.topicLabel.text = "#\(subscribedTopic.topicName)"
         cell.packageCountLabel.text = String(format: NSLocalizedString(subscribedTopic.count.packagesMoved == 1 ? "label.packageMoved" : "label.packagesMovedPlural", comment: "label text for packages moved"), subscribedTopic.count.packagesMoved)
         let unreadTotal = subscribedTopic.count.packagesMoved + subscribedTopic.count.localConversations + subscribedTopic.count.privateConversations
-        cell.supplementLabel.text = "\(unreadTotal)"
+        cell.supplementLabel.text = String(format: NSLocalizedString(unreadTotal == 1 ? "label.countConversations" : "label.countConversationsPlural", comment: "label text for count conversations participated in"), unreadTotal)
         if unreadTotal > 0 {
             cell.supplementLabelContainerView.isHidden = false
         } else {

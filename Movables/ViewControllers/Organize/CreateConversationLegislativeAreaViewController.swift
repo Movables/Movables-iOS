@@ -252,6 +252,7 @@ extension CreateConversationLegislativeAreaViewController: UITableViewDataSource
                     }))
                     self.present(alertController, animated: true, completion: {
                         self.cancelButton.isEnabled = true
+                        self.tableView.isUserInteractionEnabled = true
                         self.createConversationCoordinator.legislativeArea = nil
                     })
                     
