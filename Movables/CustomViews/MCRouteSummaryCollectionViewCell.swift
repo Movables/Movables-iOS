@@ -271,6 +271,8 @@ func getImageForActionType(actionType: ActionType) -> UIImage {
         return UIImage(named: "phone_50pt")!
     case .Tweet:
         return UIImage(named: "twitter_50pt")!
+    case .Facebook:
+        return UIImage(named: "facebook_50pt")!
     default:
         return UIImage(named: "more_50pt")!
     }

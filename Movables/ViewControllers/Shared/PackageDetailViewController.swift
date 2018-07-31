@@ -473,6 +473,8 @@ extension PackageDetailViewController: UICollectionViewDataSource {
                                         } else if action.type == .Tweet {
                                             button.addTarget(self, action: #selector(didTapTweetButton(sender:)), for: .touchUpInside)
                                             
+                                        } else if action.type == .Facebook {
+                                            button.addTarget(self, action: #selector(didTapFacebookButton(sender:)), for: .touchUpInside)
                                         } else {
                                             //                                        action.type == .More
                                             button.addTarget(self, action: #selector(didTapMoreButton(sender:)), for: .touchUpInside)
@@ -607,10 +609,13 @@ extension PackageDetailViewController: UICollectionViewDataSource {
         // recipient
         var recipientActions:[Action] = []
         if package.recipient.twitter != nil {
-            recipientActions.append(Action(type: .Tweet, dictionary: ["handle": package.recipient.twitter!]))
+            recipientActions.append(Action(type: .Tweet))
+        }
+        if package.recipient.facebook != nil {
+            recipientActions.append(Action(type: .Facebook))
         }
         if package.recipient.phone != nil {
-            recipientActions.append(Action(type: .Call, dictionary: ["phone": package.recipient.phone!]))
+            recipientActions.append(Action(type: .Call))
         }
         let recipientRow = LogisticsRow(
             circleImageUrl: package.recipient.photoUrl,
@@ -746,7 +751,7 @@ extension PackageDetailViewController: UICollectionViewDelegate {
     
     @objc private func didTapTweetButton(sender: UIButton) {
         print("tweet")
-        let twitterHandle = self.package!.recipient.twitter!
+        let twitterHandle = self.package!.recipient.twitter!.components(separatedBy: "/").last!
         let twUrl = URL(string: "twitter://user?screen_name=\(twitterHandle)")!
         let twUrlWeb = URL(string: "https://www.twitter.com/\(twitterHandle)")!
         if UIApplication.shared.canOpenURL(twUrl){
@@ -755,6 +760,13 @@ extension PackageDetailViewController: UICollectionViewDelegate {
             UIApplication.shared.open(twUrlWeb, options: [:], completionHandler: nil)
         }
     }
+    
+    @objc private func didTapFacebookButton(sender: UIButton) {
+        print("facebook")
+        let facebookLink = URL(string: self.package!.recipient.facebook!)!
+        UIApplication.shared.open(facebookLink, options: [:], completionHandler: nil)
+    }
+
 
     @objc private func didTapMoreButton(sender: UIButton) {
         print("more")

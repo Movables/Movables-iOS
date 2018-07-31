@@ -277,7 +277,8 @@ extension CreatePackageReviewViewController: UICollectionViewDataSource {
                                     
                                 } else if action.type == .Tweet {
                                     button.addTarget(self, action: #selector(didTapTweetButton(sender:)), for: .touchUpInside)
-                                    
+                                } else if action.type == .Facebook {
+                                    button.addTarget(self, action: #selector(didTapFacebookButton(sender:)), for: .touchUpInside)
                                 } else {
                                     //                                        action.type == .More
                                     button.addTarget(self, action: #selector(didTapMoreButton(sender:)), for: .touchUpInside)
@@ -339,10 +340,13 @@ extension CreatePackageReviewViewController: UICollectionViewDataSource {
         // recipient
         var recipientActions:[Action] = []
         if recipient.twitter != nil {
-            recipientActions.append(Action(type: .Tweet, dictionary: ["handle": recipient.twitter!]))
+            recipientActions.append(Action(type: .Tweet))
+        }
+        if recipient.facebook != nil {
+            recipientActions.append(Action(type: .Facebook))
         }
         if recipient.phone != nil {
-            recipientActions.append(Action(type: .Call, dictionary: ["phone": recipient.phone!]))
+            recipientActions.append(Action(type: .Call))
         }
         let recipientRow = LogisticsRow(
             circleImageUrl: recipient.photoUrl,
@@ -429,7 +433,7 @@ extension CreatePackageReviewViewController: UICollectionViewDataSource {
     
     @objc private func didTapTweetButton(sender: UIButton) {
         print("tweet")
-        let twitterHandle = self.recipient.twitter!
+        let twitterHandle = self.recipient.twitter!.components(separatedBy: "/").last!
         let twUrl = URL(string: "twitter://user?screen_name=\(twitterHandle)")!
         let twUrlWeb = URL(string: "https://www.twitter.com/\(twitterHandle)")!
         if UIApplication.shared.canOpenURL(twUrl){
@@ -437,6 +441,12 @@ extension CreatePackageReviewViewController: UICollectionViewDataSource {
         }else{
             UIApplication.shared.open(twUrlWeb, options: [:], completionHandler: nil)
         }
+    }
+    
+    @objc private func didTapFacebookButton(sender: UIButton) {
+        print("facebook")
+        let facebookLink = URL(string: self.recipient.facebook!)!
+        UIApplication.shared.open(facebookLink, options: [:], completionHandler: nil)
     }
     
     @objc private func didTapMoreButton(sender: UIButton) {
