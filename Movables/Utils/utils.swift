@@ -100,7 +100,7 @@ func getTintForCategory(category: PackageCategory) -> UIColor{
     case .environment:
         return UIColor(red:0.721, green: 0.766, blue: 0.000, alpha: 1.000)
     case .health:
-        return UIColor(red:0.545, green: 0.557, blue: 0.549, alpha: 1.000)
+        return UIColor(red:0.47, green:0.24, blue:0.92, alpha:1.00)
     case .human_and_civil_rights:
         return UIColor(red:0.800, green: 0.031, blue: 0.000, alpha: 1.000)
     case .human_services:

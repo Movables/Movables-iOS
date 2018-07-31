@@ -159,7 +159,7 @@ extension DropoffSummaryViewController: UICollectionViewDataSource {
         } else if indexPath.item == 1 {
             // optional dropoff action
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "paragraphActionsCell", for: indexPath) as! MCParagraphActionsCollectionViewCell
-            cell.paragraphLabel.text = package.dropoffMessage ?? ""
+            cell.paragraphLabel.text = package.dropoffMessage == nil || package.dropoffMessage!.isEmpty ? "❤️ \(package.headline)" : package.dropoffMessage!
             cell.cardView.layer.borderColor = getTintForCategory(category: package.category).withAlphaComponent(0.3).cgColor
             cell.actions = self.actions
             cell.activateStackView()

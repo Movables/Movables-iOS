@@ -76,6 +76,7 @@ class CreatePackagePersonSearchViewController: UIViewController {
     var loadedPage: UInt = 0
     var nbPages: UInt = 0
     
+    var countryCode: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -94,7 +95,14 @@ class CreatePackagePersonSearchViewController: UIViewController {
         
         registerKeyboardNotifications()
         
+        if let countryCode = (Locale.current as NSLocale).object(forKey: .countryCode) as? String {
+            print("country code is: \(countryCode)")
+            self.countryCode = countryCode
+        }
+        
         performQuery(with: "")
+        
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -144,7 +152,7 @@ class CreatePackagePersonSearchViewController: UIViewController {
         
         peopleIndex = apiClient.index(withName: "recipients")
         query.hitsPerPage = 15
-        query.attributesToRetrieve = ["name", "picUrl", "position", "twitter", "facebook", "phone", "documentID"]
+        query.attributesToRetrieve = ["name", "pic_url", "position", "twitter", "facebook", "phone", "objectID"]
         query.attributesToHighlight = ["name"]
     }
     
@@ -298,6 +306,7 @@ extension CreatePackagePersonSearchViewController: UITableViewDataSource {
     }
     
     private func performQuery(with queryString: String) {
+        query.filters = self.countryCode != nil ? "country:\(self.countryCode!)" : nil
         query.query = queryString
         print("queryString is \(queryString)")
         let curSearchId = searchId
@@ -315,7 +324,7 @@ extension CreatePackagePersonSearchViewController: UITableViewDataSource {
             self.results.removeAll()
             print(hits.count)
             for hit in hits {
-                self.results.append(RecipientResultItem(name: hit["name"] as! String, picUrl: hit["picUrl"] as? String, position: hit["position"] as? String, twitter: hit["twitter"] as? String, facebook: hit["facebook"] as? String, phone: hit["phone"] as? String, documentID: hit["documentID"] as! String, type: getEnumForRecipientTypeString(recipientTypeString: hit["type"] as? String)))
+                self.results.append(RecipientResultItem(name: hit["name"] as! String, picUrl: hit["pic_url"] as? String, position: hit["position"] as? String, twitter: hit["twitter"] as? String, facebook: hit["facebook"] as? String, phone: hit["phone"] as? String, documentID: hit["objectID"] as! String, type: getEnumForRecipientTypeString(recipientTypeString: hit["type"] as? String)))
             }
             DispatchQueue.main.async {
                 self.tableView.separatorStyle = .singleLine

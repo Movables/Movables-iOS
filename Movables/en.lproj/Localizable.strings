@@ -82,6 +82,8 @@
 "annotation.dropoff" = "Dropoff";
 "annotation.currentLocation" = "Current Location";
 "annotation.origin" = "Origin";
+"label.countConversations" = "%d Sub";
+"label.countConversationsPlural" = "%d Subs";
 "label.noPackagesFound" = "No packages found.";
 "label.noPackagesNearby" = "No packages nearby";
 "label.saySomething" = "Say something...";

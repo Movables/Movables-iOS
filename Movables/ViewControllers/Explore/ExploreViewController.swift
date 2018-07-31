@@ -101,7 +101,7 @@ class ExploreViewController: UIViewController {
     
     private func configureCollectionViewLayoutItemSize() {
         let inset: CGFloat = calculateSectionInset()
-        collectionViewFlowLayout.sectionInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: -16)
+        collectionViewFlowLayout.sectionInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset - 16)
         
         collectionViewFlowLayout.itemSize = UICollectionViewFlowLayoutAutomaticSize
         collectionViewFlowLayout.estimatedItemSize = CGSize(width: view.safeAreaLayoutGuide.layoutFrame.width - inset * 2, height: cardPeekCollectionView.frame.height)
@@ -253,7 +253,7 @@ class ExploreViewController: UIViewController {
             index = apiClient.index(withName: "packages")
             // sort by distance by default
             query.aroundLatLng = LatLng(lat: location.coordinate.latitude, lng: location.coordinate.longitude)
-            query.aroundRadius = .explicit(300000)
+//            query.aroundRadius = .explicit(300000)
             
             var filterString = "NOT logistics.status:\(getStringForStatusEnum(statusEnum: .delivered))"
             

@@ -461,7 +461,8 @@ class CreatePackageCoordinator: Coordinator {
             
             if topicDocument != nil {
                 let oldTopicPackagesCount = (topicDocument!.data()!["count"] as! [String: Any])["packages"] as! Int
-                transaction.updateData(["count.packages": oldTopicPackagesCount + 1], forDocument: topicReference!)
+                let newTopicTemplatesCount = ((topicDocument!.data()!["count"] as! [String: Any])["templates"] as! Int) + (self.shouldSaveAsTemplate! ? 1 : 0)
+                transaction.updateData(["count.packages": oldTopicPackagesCount + 1, "count.templates": newTopicTemplatesCount], forDocument: topicReference!)
             }
             
             if topicTemplate != nil {

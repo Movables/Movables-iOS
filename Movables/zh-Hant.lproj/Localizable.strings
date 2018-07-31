@@ -65,6 +65,8 @@
 "annotation.dropoff" = "放置地點";
 "annotation.currentLocation" = "現在地點";
 "annotation.origin" = "寄送地";
+"label.countConversations" = "%d個對話";
+"label.countConversationsPlural" = "%d個對話";
 "label.noPackagesFound" = "找無議題包";
 "label.noPackagesNearby" = "附近沒有議題包";
 "label.saySomething" = "說點話...";

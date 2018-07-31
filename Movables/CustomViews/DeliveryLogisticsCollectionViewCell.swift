@@ -31,6 +31,7 @@ import Firebase
 enum ActionType {
     case Call
     case Tweet
+    case Facebook
     case More
 }
 
@@ -69,11 +70,9 @@ struct LogisticsRow {
 
 struct Action {
     var type: ActionType
-    var dictionary: [String: Any]
     
-    init(type: ActionType, dictionary: [String: Any]) {
+    init(type: ActionType) {
         self.type = type
-        self.dictionary = dictionary
     }
 }
 
@@ -352,6 +351,8 @@ class DeliveryLogisticsCollectionViewCell: UICollectionViewCell {
             return UIImage(named: "phone_50pt")!
         case .Tweet:
             return UIImage(named: "twitter_50pt")!
+        case .Facebook:
+            return UIImage(named: "facebook_50pt")!
         default:
             return UIImage(named: "more_50pt")!
         }

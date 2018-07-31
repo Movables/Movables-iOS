@@ -933,13 +933,15 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
         let topicReference = ((packageContent["topic"] as! [String: Any])["reference"] as! DocumentReference)
         let topicName = ((packageContent["topic"] as! [String: Any])["name"] as! String)
 
-        
-        if let subscribedTopics = (userDocument["private_profile"] as! [String:Any])["subscripbed_topics"] as? [String: Double] {
+        print("userDocument is: \(userDocument.data()!)")
+        if let subscribedTopics = (userDocument.data()!["private_profile"] as! [String:Any])["subscribed_topics"] as? [String: Timestamp] {
+            print("subscribedTopics: \(subscribedTopics)")
             if subscribedTopics[topicReference.documentID] != nil {
                 // user already subscribed to the topic
+                print("user already subscribed to the topic")
                 let subscribedTopicDocument: DocumentSnapshot?
                 do {
-                try subscribedTopicDocument = transaction.getDocument(userReference.collection("subscribed_topic").document(topicReference.documentID))
+                try subscribedTopicDocument = transaction.getDocument(userReference.collection("subscribed_topics").document(topicReference.documentID))
                 } catch let fetchError as NSError {
                     errorPointer?.pointee = fetchError
                     return nil
@@ -954,12 +956,19 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
                                 "name": packageContent["headline"] as! String,
                                 "reference": packageReference,
                                 "type": getStringForCommunityType(type: .package)
-                        ]
+                        ],
+                        "communities.\(packageReference.documentID)":
+                            [
+                                "name": packageContent["headline"] as! String,
+                                "reference": packageReference,
+                                "type": getStringForCommunityType(type: .package)
+                            ],
                     ],
                     forDocument: subscribedTopicDocument!.reference
                 )
             } else {
                 // user hasn't subscribed to the topic
+                print("user hasn't subscribed to the topic")
                 transaction.setData(
                     [
                         "name": topicName,
@@ -983,6 +992,7 @@ func dropoffPackage(with packageReference: DocumentReference, userReference: Doc
             }
         } else {
             // user hasn't subscribed to any topic
+            print("user hasn't subscribed to any topic")
             transaction.setData(
                 [
                     "name": topicName,
