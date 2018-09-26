@@ -182,7 +182,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
-  - CountdownLabel (from `https://github.com/suzuki-0000/CountdownLabel.git`)
+  - CountdownLabel
   - Crashlytics
   - CropViewController
   - DateToolsSwift
@@ -211,6 +211,7 @@ SPEC REPOS:
     - Alamofire
     - Bolts
     - BoringSSL
+    - CountdownLabel
     - Crashlytics
     - CropViewController
     - DateToolsSwift
@@ -251,15 +252,6 @@ SPEC REPOS:
     - SwiftyJSON
     - TTTAttributedLabel
     - "UITextView+Placeholder"
-
-EXTERNAL SOURCES:
-  CountdownLabel:
-    :git: https://github.com/suzuki-0000/CountdownLabel.git
-
-CHECKOUT OPTIONS:
-  CountdownLabel:
-    :commit: 4dc9ddfcf1f1505a401415ae953fd444cb25a183
-    :git: https://github.com/suzuki-0000/CountdownLabel.git
 
 SPEC CHECKSUMS:
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
@@ -307,6 +299,6 @@ SPEC CHECKSUMS:
   TTTAttributedLabel: 8cffe8e127e4e82ff3af1e5386d4cd0ad000b656
   "UITextView+Placeholder": 0c3efd97f37ea64bde7f34cc6e90fe02e87b3909
 
-PODFILE CHECKSUM: 11e4b6f925f7c530d420c5d36a6d1dd758f1736e
+PODFILE CHECKSUM: c98b1fe5ca5238f09252b5406aadf8ab27144af7
 
 COCOAPODS: 1.5.3

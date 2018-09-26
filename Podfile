@@ -46,7 +46,7 @@ target 'Movables' do
   pod 'TTTAttributedLabel'
 
 #  pod 'Spring', :git => 'https://github.com/MengTo/Spring.git'
-  pod 'CountdownLabel', :git => 'https://github.com/suzuki-0000/CountdownLabel.git'
+  pod 'CountdownLabel'
 
   # Lint
   pod 'SwiftLint'
