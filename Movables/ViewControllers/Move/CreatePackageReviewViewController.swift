@@ -79,7 +79,7 @@ class CreatePackageReviewViewController: UIViewController {
         layout.minimumInteritemSpacing = 0
         layout.sectionInset = .zero
         layout.estimatedItemSize = CGSize(width: UIScreen.main.bounds.width, height: 100)
-        layout.itemSize = UICollectionViewFlowLayoutAutomaticSize
+        layout.itemSize = UICollectionViewFlowLayout.automaticSize
 
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -95,7 +95,7 @@ class CreatePackageReviewViewController: UIViewController {
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
         
-        collectionView.register(PackageDetailHeaderCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "packageDetailHeader")
+        collectionView.register(PackageDetailHeaderCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "packageDetailHeader")
         collectionView.register(ExpandableTextCollectionViewCell.self, forCellWithReuseIdentifier: "expandableTextCell")
         collectionView.register(HeaderLabelCollectionViewCell.self, forCellWithReuseIdentifier: "headerLabelCell")
         
@@ -112,7 +112,7 @@ class CreatePackageReviewViewController: UIViewController {
     }
     
     private func setupOtherViews() {
-        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.childViewControllers.count)", image: nil, body: String(NSLocalizedString("label.reviewPackage", comment: "label text for review package")), color: .white)
+        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.children.count)", image: nil, body: String(NSLocalizedString("label.reviewPackage", comment: "label text for review package")), color: .white)
         instructionLabel.bodyLabel.textColor = Theme().textColor
         instructionLabel.circleMask.backgroundColor = Theme().textColor
         instructionLabel.characterLabel.textColor = .white
@@ -320,7 +320,7 @@ extension CreatePackageReviewViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let view = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "packageDetailHeader", for: indexPath) as! PackageDetailHeaderCollectionReusableView
+        let view = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "packageDetailHeader", for: indexPath) as! PackageDetailHeaderCollectionReusableView
         if coverImage != nil {
             view.imageView.image = coverImage!
         } else {

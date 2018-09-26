@@ -10,9 +10,9 @@ target 'Movables' do
   pod 'Firebase/Firestore'
   pod 'Firebase/Functions'
   pod 'Firebase/Storage'
-  pod 'AlgoliaSearch-Client-Swift'
+  pod 'InstantSearchClient'
   pod 'FBSDKLoginKit'
-  
+
 
   # Authentication
   pod 'Firebase/Auth'
@@ -23,11 +23,11 @@ target 'Movables' do
   pod 'Crashlytics'
   
   # Utilities
-  pod 'SwiftyJSON', '~> 4.0'
+  pod 'SwiftyJSON'
 #  pod 'Timepiece'
 #  pod 'Localize-Swift', '~> 2.0'
 #  pod 'CodableFirebase'
-  pod 'SDWebImage', '~> 4.0'
+  pod 'SDWebImage'
   pod 'DateToolsSwift'
   pod 'Alamofire'
   
@@ -46,7 +46,7 @@ target 'Movables' do
   pod 'TTTAttributedLabel'
 
 #  pod 'Spring', :git => 'https://github.com/MengTo/Spring.git'
-  pod 'CountdownLabel'
+  pod 'CountdownLabel', :git => 'https://github.com/suzuki-0000/CountdownLabel.git'
 
   # Lint
   pod 'SwiftLint'

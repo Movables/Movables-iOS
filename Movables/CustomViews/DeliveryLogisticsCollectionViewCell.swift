@@ -169,7 +169,7 @@ class DeliveryLogisticsCollectionViewCell: UICollectionViewCell {
         let annotations = [origin, currentLocation, recipient] as! [MKAnnotation]
         layoutIfNeeded()
         
-        let request = MKDirectionsRequest()
+        let request = MKDirections.Request()
         request.source = MKMapItem(placemark: MKPlacemark(coordinate: currentLocation.coordinate))
         request.destination = MKMapItem(placemark: MKPlacemark(coordinate: recipient.coordinate))
         request.requestsAlternateRoutes = false
@@ -183,7 +183,7 @@ class DeliveryLogisticsCollectionViewCell: UICollectionViewCell {
             } else {
                 print(response!.routes.count)
                 for route in response!.routes {
-                    self.mapView.add(route.polyline,
+                    self.mapView.addOverlay(route.polyline,
                                      level: MKOverlayLevel.aboveRoads)
                     boundingRect = route.polyline.boundingMapRect
                 }
@@ -193,13 +193,13 @@ class DeliveryLogisticsCollectionViewCell: UICollectionViewCell {
             LocationManager.shared.requestLocation()
             
             let coordinates = [LocationManager.shared.location!.coordinate, currentLocation.coordinate, recipient.coordinate]
-            let mapPoints = coordinates.map { MKMapPointForCoordinate($0) }
+            let mapPoints = coordinates.map { MKMapPoint($0) }
             let mapRects = mapPoints.map { MKMapRect(origin: $0, size: MKMapSize(width: 1, height: 1)) }
-            let fittingRect = mapRects.reduce(MKMapRectNull, MKMapRectUnion)
+            let fittingRect = mapRects.reduce(MKMapRect.null) { $0.union($1) }
             
             if boundingRect != nil {
                 self.mapView.addAnnotations(annotations)
-                self.mapView.setVisibleMapRect(MKMapRectUnion(fittingRect, boundingRect!), edgePadding: .zero, animated: false)
+                self.mapView.setVisibleMapRect(fittingRect.union(boundingRect!), edgePadding: .zero, animated: false)
             } else {
                 self.mapView.layoutMargins = UIEdgeInsets(top: 45, left: 80, bottom: 100, right: 80)
                 self.mapView.showAnnotations([recipient, origin], animated: false)
@@ -240,7 +240,7 @@ class DeliveryLogisticsCollectionViewCell: UICollectionViewCell {
                 }
                 self.progressOverlay = MKPolyline(coordinates: coords, count: coords.count)
 //                boundingRect = self.progressOverlay!.boundingMapRect
-                self.mapView.add(self.progressOverlay!, level: .aboveRoads)
+                self.mapView.addOverlay(self.progressOverlay!, level: .aboveRoads)
                 (self.presentingVC as! PackageDetailViewController).fetchedTransitRecords = true
             })
             

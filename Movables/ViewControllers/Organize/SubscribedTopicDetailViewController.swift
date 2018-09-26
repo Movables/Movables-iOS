@@ -28,7 +28,7 @@ import UIKit
 import Firebase
 import NVActivityIndicatorView
 import CoreLocation
-import AlgoliaSearch
+import InstantSearchClient
 
 protocol SubscribedTopicDetailViewControllerDelegate {
     func dismissSubscribedTopicDetailVC()
@@ -213,11 +213,11 @@ class SubscribedTopicDetailViewController: UIViewController {
         tableView.dataSource = self
         tableView.separatorStyle = .none
         tableView.contentInsetAdjustmentBehavior = .never
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.scrollIndicatorInsets.top = UIApplication.shared.keyWindow!.safeAreaInsets.top
         tableView.scrollIndicatorInsets.bottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom
         tableView.estimatedRowHeight = 100
-        tableView.sectionHeaderHeight = UITableViewAutomaticDimension
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.estimatedSectionHeaderHeight = 40
         tableView.contentInset.bottom = UIApplication.shared.keyWindow!.safeAreaInsets.bottom
         tableView.register(OrganizeDetailTableHeaderViewCell.self, forCellReuseIdentifier: "organizeDetailHeader")
@@ -371,7 +371,7 @@ extension SubscribedTopicDetailViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return section == 0 ? 0 : UITableViewAutomaticDimension
+        return section == 0 ? 0 : UITableView.automaticDimension
     }
 }
 

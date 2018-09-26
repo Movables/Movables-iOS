@@ -94,7 +94,7 @@ class CreatePackageContentViewController: UIViewController {
         contentStackView.spacing = 18
         scrollView.addSubview(contentStackView)
         
-        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.childViewControllers.count)", image: nil, body: String(NSLocalizedString("label.packageContents", comment: "label text for package contents")), color: .white)
+        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.children.count)", image: nil, body: String(NSLocalizedString("label.packageContents", comment: "label text for package contents")), color: .white)
         instructionLabel.bodyLabel.textColor = Theme().textColor
         instructionLabel.circleMask.backgroundColor = Theme().textColor
         instructionLabel.characterLabel.textColor = .white
@@ -317,7 +317,7 @@ class CreatePackageContentViewController: UIViewController {
             print("Camera")
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
                 self.picker.allowsEditing = false
-                self.picker.sourceType = UIImagePickerControllerSourceType.camera
+                self.picker.sourceType = UIImagePickerController.SourceType.camera
                 self.picker.cameraCaptureMode = .photo
                 self.picker.modalPresentationStyle = .overCurrentContext
                 self.present(self.picker,animated: true,completion: nil)
@@ -543,9 +543,10 @@ extension CreatePackageContentViewController: UIPickerViewDelegate {
 }
 
 extension CreatePackageContentViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         var  chosenImage = UIImage()
-        chosenImage = info[UIImagePickerControllerOriginalImage] as! UIImage //2
+        chosenImage = info[.originalImage] as! UIImage
 //        myImageView.contentMode = .scaleAspectFit //3
 //        myImageView.image = chosenImage //4
         self.cropVC = CropViewController(croppingStyle: .default, image: chosenImage)
@@ -568,7 +569,7 @@ extension CreatePackageContentViewController: CropViewControllerDelegate {
         dismiss(animated: true) {
             // insert cropped photo into stackview and update add cover photo button
             print(image)
-            if let data = UIImageJPEGRepresentation(image, 0.5) {
+            if let data = image.jpegData(compressionQuality: 0.5) {
                 let bcf = ByteCountFormatter()
                 bcf.allowedUnits = [.useMB] // optional: restricts the units to MB only
                 bcf.countStyle = .file

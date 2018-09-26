@@ -55,7 +55,7 @@ class DropoffSummaryViewController: UIViewController {
         super.viewDidLoad()
         
         layout = UICollectionViewFlowLayout()
-        layout.estimatedItemSize = UICollectionViewFlowLayoutAutomaticSize
+        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         layout.scrollDirection = .vertical
         layout.estimatedItemSize = CGSize(width: UIScreen.main.bounds.width, height: 100)
         layout.minimumLineSpacing = 10

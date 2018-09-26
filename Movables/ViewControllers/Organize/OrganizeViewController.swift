@@ -73,7 +73,7 @@ class OrganizeViewController: UIViewController {
         tableView = UITableView(frame: .zero)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.backgroundColor = .white
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 250
         tableView.separatorStyle = .none
         tableView.register(OrganizePackageMovedTableViewCell.self, forCellReuseIdentifier: "packageMoved")

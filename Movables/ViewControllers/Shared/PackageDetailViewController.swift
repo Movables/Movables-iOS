@@ -118,7 +118,7 @@ class PackageDetailViewController: UIViewController {
         layout.minimumInteritemSpacing = 0
         layout.sectionInset = .zero
         layout.estimatedItemSize = CGSize(width: UIScreen.main.bounds.width, height: 100)
-        layout.itemSize = UICollectionViewFlowLayoutAutomaticSize
+        layout.itemSize = UICollectionViewFlowLayout.automaticSize
         
         floatingButtonsContainerView = UIView(frame: .zero)
         floatingButtonsContainerView.translatesAutoresizingMaskIntoConstraints = false
@@ -217,7 +217,7 @@ class PackageDetailViewController: UIViewController {
         view.addConstraint(bottomConstraintFAB)
 
         
-        collectionView.register(PackageDetailHeaderCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "packageDetailHeader")
+        collectionView.register(PackageDetailHeaderCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "packageDetailHeader")
         collectionView.register(ExpandableTextCollectionViewCell.self, forCellWithReuseIdentifier: "expandableTextCell")
         collectionView.register(HeaderLabelCollectionViewCell.self, forCellWithReuseIdentifier: "headerLabelCell")
         collectionView.register(DeliveryLogisticsCollectionViewCell.self, forCellWithReuseIdentifier: "deliveryLogisticsCell")
@@ -519,7 +519,7 @@ extension PackageDetailViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-            let view = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "packageDetailHeader", for: indexPath) as! PackageDetailHeaderCollectionReusableView
+        let view = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "packageDetailHeader", for: indexPath) as! PackageDetailHeaderCollectionReusableView
         if package != nil && package!.coverImageUrl != nil {
             view.imageView.sd_setImage(with: URL(string: package!.coverImageUrl!)) { (image, error, cacheType, url) in
                 if error != nil {

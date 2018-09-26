@@ -336,7 +336,7 @@ class CreatePackageCoordinator: Coordinator {
             let metaData = StorageMetadata()
             metaData.contentType = "image/jpeg"
             let coverPicImageReference = Storage.storage().reference().child("images/packages/\(packageReference.documentID)/cover_pic.jpeg")
-            coverPicImageReference.putData(UIImageJPEGRepresentation(image, 0.5)!, metadata: metaData, completion: { (meta, error) in
+            coverPicImageReference.putData(image.jpegData(compressionQuality: 0.5)!, metadata: metaData, completion: { (meta, error) in
                 if let error = error {
                     print("error: \(error)")
                     completion(false)

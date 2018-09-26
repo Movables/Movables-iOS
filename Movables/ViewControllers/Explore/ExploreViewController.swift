@@ -26,7 +26,7 @@
 
 import UIKit
 import MapKit
-import AlgoliaSearch
+import InstantSearchClient
 
 protocol ExploreViewControllerDelegate: class {
     func showPackageDetail(with package: Package)
@@ -103,7 +103,7 @@ class ExploreViewController: UIViewController {
         let inset: CGFloat = calculateSectionInset()
         collectionViewFlowLayout.sectionInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset - 16)
         
-        collectionViewFlowLayout.itemSize = UICollectionViewFlowLayoutAutomaticSize
+        collectionViewFlowLayout.itemSize = UICollectionViewFlowLayout.automaticSize
         collectionViewFlowLayout.estimatedItemSize = CGSize(width: view.safeAreaLayoutGuide.layoutFrame.width - inset * 2, height: cardPeekCollectionView.frame.height)
     }
     
@@ -148,7 +148,7 @@ class ExploreViewController: UIViewController {
     private func setupTopicsTrendingCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.itemSize = UICollectionViewFlowLayoutAutomaticSize
+        layout.itemSize = UICollectionViewFlowLayout.automaticSize
         layout.estimatedItemSize = CGSize(width: 120, height: 40)
         layout.minimumLineSpacing = 12
         layout.sectionInset.left = 18
@@ -638,7 +638,7 @@ extension ExploreViewController: UICollectionViewDelegate {
 
                 }
             }
-            collectionView.selectItem(at: indexPath, animated: false, scrollPosition: UICollectionViewScrollPosition(rawValue:0))
+            collectionView.selectItem(at: indexPath, animated: false, scrollPosition: UICollectionView.ScrollPosition(rawValue:0))
             let category = packageCategoriesEnumArray[indexPath.item]
             self.category = category
             if let cell = collectionView.cellForItem(at: indexPath) as? CircularToggleCollectionViewCell {
@@ -656,7 +656,7 @@ extension ExploreViewController: UICollectionViewDelegate {
                     
                 }
             }
-            collectionView.selectItem(at: indexPath, animated: false, scrollPosition: UICollectionViewScrollPosition(rawValue:0))
+            collectionView.selectItem(at: indexPath, animated: false, scrollPosition: UICollectionView.ScrollPosition(rawValue:0))
             self.topicName = topics[indexPath.item].name
             if let cell = collectionView.cellForItem(at: indexPath) as? TopicTrendingCollectionViewCell {
                 cell.containerView.backgroundColor = Theme().textColor
@@ -873,7 +873,7 @@ extension MKCoordinateRegion {
         
         // handle single coordinate
         guard coordinates.count > 1 else {
-            return MKCoordinateRegion(center: coordinates[0], span: MKCoordinateSpanMake(1, 1))
+            return MKCoordinateRegion(center: coordinates[0], span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1))
         }
         
         let transformed = coordinates.map(transform)
@@ -883,11 +883,11 @@ extension MKCoordinateRegion {
         let maxLat = transformed.max { $0.latitude < $1.latitude }!.latitude
         let minLon = transformed.min { $0.longitude < $1.longitude }!.longitude
         let maxLon = transformed.max { $0.longitude < $1.longitude }!.longitude
-        let span = MKCoordinateSpanMake(maxLat - minLat, maxLon - minLon)
+        let span = MKCoordinateSpan(latitudeDelta: maxLat - minLat, longitudeDelta: maxLon - minLon)
         
         // find the center of the span
         let center = inverseTransform(CLLocationCoordinate2DMake((maxLat - span.latitudeDelta / 2), maxLon - span.longitudeDelta / 2))
         
-        return MKCoordinateRegionMake(center, span)
+        return MKCoordinateRegion(center: center, span: span)
     }
 }

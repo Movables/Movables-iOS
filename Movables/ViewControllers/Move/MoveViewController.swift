@@ -372,15 +372,15 @@ extension MoveViewController: CLLocationManagerDelegate {
         let radiusInMapPoints = radiusInMeters * MKMapPointsPerMeterAtLatitude(centerCoordinate.latitude)
         let radiusSquared = MKMapSize(width: radiusInMapPoints, height: radiusInMapPoints)
         
-        let regionOrigin = MKMapPointForCoordinate(centerCoordinate)
+        let regionOrigin = MKMapPoint(centerCoordinate)
         var regionRect = MKMapRect(origin: regionOrigin, size: radiusSquared)
         
-        regionRect = MKMapRectOffset(regionRect, -radiusInMapPoints/2, -radiusInMapPoints/2)
+        regionRect = regionRect.offsetBy(dx: -radiusInMapPoints/2, dy: -radiusInMapPoints/2)
         
         // clamp the rect to be within the world
-        regionRect = MKMapRectIntersection(regionRect, MKMapRectWorld)
+        regionRect = regionRect.intersection(.world)
         
-        let region = MKCoordinateRegionForMapRect(regionRect)
+        let region = MKCoordinateRegion(regionRect)
         return region
     }
     
@@ -407,19 +407,19 @@ extension MoveViewController: CLLocationManagerDelegate {
                     var boundingMapRectChanged = false
                     var updateRect = self.progress!.addCoordinate(newLocation.coordinate, boundingMapRectChanged: &boundingMapRectChanged)
                     if boundingMapRectChanged {
-                        self.mapView.remove(self.progress! as MKOverlay)
+                        self.mapView.removeOverlay(self.progress! as MKOverlay)
                         self.progressPathRenderer = nil
-                        self.mapView.add(self.progress!, level: .aboveRoads)
+                        self.mapView.addOverlay(self.progress!, level: .aboveRoads)
                     }
-                    if !MKMapRectIsNull(updateRect) {
+                    if !updateRect.isNull {
                         // There is a non null update rect.
                         // Compute the currently visible map zoom scale
                         let currentZoomScale = MKZoomScale(self.mapView.bounds.size.width / CGFloat(self.mapView.visibleMapRect.size.width))
                         // Find out the line width at this zoom scale and outset the updateRect by that amount
                         let lineWidth = MKRoadWidthAtZoomScale(currentZoomScale)
-                        updateRect = MKMapRectInset(updateRect, Double(-lineWidth), Double(-lineWidth))
+                        updateRect = updateRect.insetBy(dx: Double(-lineWidth), dy: Double(-lineWidth))
                         // Ask the overlay view to update just the changed area.
-                        self.progressPathRenderer?.setNeedsDisplayIn(updateRect)
+                        self.progressPathRenderer?.setNeedsDisplay(updateRect)
                         print("updated rect")
                         self.recordMovement(at: newLocation)
                     }
@@ -439,35 +439,35 @@ extension MoveViewController: CLLocationManagerDelegate {
             for (index, movement) in self.movements!.enumerated() {
                 if index == 0 {
                     self.progress = ProgressPath(center: CLLocationCoordinate2D(latitude: movement.geoPoint.latitude, longitude: movement.geoPoint.longitude))
-                    self.mapView.remove(self.progress as! MKOverlay)
+                    self.mapView.removeOverlay(self.progress as! MKOverlay)
                     self.progressPathRenderer = nil
-                    self.mapView.add(self.progress!, level: .aboveRoads)
+                    self.mapView.addOverlay(self.progress!, level: .aboveRoads)
                     
                     let r = self.progress!.boundingMapRect
                     var pts: [MKMapPoint] = [
-                        MKMapPointMake(MKMapRectGetMinX(r), MKMapRectGetMinY(r)),
-                        MKMapPointMake(MKMapRectGetMinX(r), MKMapRectGetMaxY(r)),
-                        MKMapPointMake(MKMapRectGetMaxX(r), MKMapRectGetMaxY(r)),
-                        MKMapPointMake(MKMapRectGetMaxX(r), MKMapRectGetMinY(r)),
+                        MKMapPoint(x: r.minX, y: r.minY),
+                        MKMapPoint(x: r.minX, y: r.minY),
+                        MKMapPoint(x: r.minX, y: r.minY),
+                        MKMapPoint(x: r.minX, y: r.minY),
                         ]
                     let count = pts.count
                     let boundingMapRectOverlay = MKPolygon(points: &pts, count: count)
-                    self.mapView.add(boundingMapRectOverlay, level: .aboveRoads)
+                    self.mapView.addOverlay(boundingMapRectOverlay, level: .aboveRoads)
                 } else {
                     var boundingMapRectChanged = false
                     let newCoordinate = CLLocationCoordinate2D(latitude: movement.geoPoint.latitude, longitude: movement.geoPoint.longitude)
                     var updateRect = self.progress!.addCoordinate(newCoordinate, boundingMapRectChanged: &boundingMapRectChanged)
                     if boundingMapRectChanged {
                         
-                    } else if !MKMapRectIsNull(updateRect) {
+                    } else if !updateRect.isNull {
                         // There is a non null update rect.
                         // Compute the currently visible map zoom scale
                         let currentZoomScale = MKZoomScale(self.mapView.bounds.size.width / CGFloat(self.mapView.visibleMapRect.size.width))
                         // Find out the line width at this zoom scale and outset the updateRect by that amount
                         let lineWidth = MKRoadWidthAtZoomScale(currentZoomScale)
-                        updateRect = MKMapRectInset(updateRect, Double(-lineWidth), Double(-lineWidth))
+                        updateRect = updateRect.insetBy(dx: Double(-lineWidth), dy: Double(-lineWidth))
                         // Ask the overlay view to update just the changed area.
-                        self.progressPathRenderer?.setNeedsDisplayIn(updateRect)
+                        self.progressPathRenderer?.setNeedsDisplay(updateRect)
                     }
                 }
             }
@@ -483,7 +483,7 @@ extension MoveViewController: CLLocationManagerDelegate {
     
     func drawRouteToDestination() {
         if self.currentPackage != nil && self.currentTransitRecord != nil  {
-            let request = MKDirectionsRequest()
+            let request = MKDirections.Request()
             request.source = MKMapItem(placemark: MKPlacemark(coordinate: moveLocationManager.location!.coordinate))
             request.destination = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: self.currentPackage!.destination.geoPoint.latitude, longitude: self.currentPackage!.destination.geoPoint.longitude)))
             request.requestsAlternateRoutes = false
@@ -512,7 +512,7 @@ extension MoveViewController: CLLocationManagerDelegate {
         ])
         for route in routes {
             self.proposedRouteOverlay = route.polyline
-            self.mapView.add(self.proposedRouteOverlay!,
+            self.mapView.addOverlay(self.proposedRouteOverlay!,
                              level: MKOverlayLevel.aboveRoads)
             print("draw route")
         }
