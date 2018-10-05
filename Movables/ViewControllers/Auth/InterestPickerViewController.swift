@@ -119,7 +119,7 @@ class InterestPickerViewController: UIViewController {
     private func setupTableView() {
         tableView = UITableView(frame: .zero)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.separatorStyle = .none
         tableView.estimatedRowHeight = 88
         tableView.dataSource = self
@@ -213,7 +213,7 @@ extension InterestPickerViewController: UITableViewDelegate {
             cell.titleLabel.textColor = categories.contains(category) ? .white : Theme().textColor
             cell.backgroundColor = categories.contains(category) ? getTintForCategory(category: category) : .clear
         }
-        tableView.selectRow(at: indexPath, animated: false, scrollPosition: UITableViewScrollPosition.none)
+        tableView.selectRow(at: indexPath, animated: false, scrollPosition: UITableView.ScrollPosition.none)
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {

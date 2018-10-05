@@ -76,19 +76,19 @@ class MainCoordinator: Coordinator {
     }
     
     func showMainTabController() {
-        let activitiesVC = self.activitiesCoordinator.rootViewController.childViewControllers.first as! ActivitiesViewController
+        let activitiesVC = self.activitiesCoordinator.rootViewController.children.first as! ActivitiesViewController
         activitiesVC.mainCoordinatorDelegate = delegate
         activitiesVC.mainCoordinator = self
         
-        let moveVC = self.moveCoordinator.rootViewController.childViewControllers.first as! MoveViewController
+        let moveVC = self.moveCoordinator.rootViewController.children.first as! MoveViewController
         moveVC.mainCoordinatorDelegate = delegate
         moveVC.mainCoordinator = self
         
-        let profileVC = self.profileCoordinator.rootViewController.childViewControllers.first as! ProfileViewController
+        let profileVC = self.profileCoordinator.rootViewController.children.first as! ProfileViewController
         profileVC.mainCoordinatorDelegate = delegate
         profileVC.mainCoordinator = self
         
-        let organizeVC = self.organizeCoordinator.rootViewController.childViewControllers.first as! OrganizeViewController
+        let organizeVC = self.organizeCoordinator.rootViewController.children.first as! OrganizeViewController
         organizeVC.mainCoordinator = self
         organizeVC.mainCoordinatorDelegate = delegate
         

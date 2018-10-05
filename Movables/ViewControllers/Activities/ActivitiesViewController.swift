@@ -222,8 +222,8 @@ class ActivitiesViewController: UIViewController {
             let coords = entry.value.first!.coordinate
             let distanceInMeters: Double = 500
             
-            let options = MKMapSnapshotOptions()
-            options.region = MKCoordinateRegionMakeWithDistance(coords, distanceInMeters, distanceInMeters)
+            let options = MKMapSnapshotter.Options()
+            options.region = MKCoordinateRegion(center: coords, latitudinalMeters: distanceInMeters, longitudinalMeters: distanceInMeters)
             options.size = CGSize(width: UIScreen.main.bounds.width - 18, height: 200)
             
             /// 4.
@@ -248,7 +248,7 @@ class ActivitiesViewController: UIViewController {
         tableView = UITableView(frame: .zero)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.backgroundColor = .clear
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 250
         tableView.separatorStyle = .none
         tableView.register(ActivityTableViewCell.self, forCellReuseIdentifier: "activityCell")

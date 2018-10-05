@@ -104,9 +104,9 @@ class MCCircleWithLabel: UIView {
         circleMask.backgroundColor = image == nil ? .white : .clear
 
         if let textInCircle = textInCircle {
-            let labelTextAttributed = NSMutableAttributedString(string: textInCircle, attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 24).bold])
+            let labelTextAttributed = NSMutableAttributedString(string: textInCircle, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 24).bold])
             if let labelTextSubscript = labelTextSubscript {
-                labelTextAttributed.append(NSAttributedString(string: labelTextSubscript, attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 11).bold]))
+                labelTextAttributed.append(NSAttributedString(string: labelTextSubscript, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 11).bold]))
             }
             circleTextLabel.attributedText = labelTextAttributed
         }

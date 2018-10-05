@@ -95,17 +95,17 @@ class CreatePackageDestinationSearchViewController: UIViewController {
     func registerKeyboardNotifications() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(keyboardWillShow(notification:)),
-                                               name: NSNotification.Name.UIKeyboardWillShow,
+                                               name: UIResponder.keyboardWillShowNotification,
                                                object: nil)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(keyboardWillHide(notification:)),
-                                               name: NSNotification.Name.UIKeyboardWillHide,
+                                               name: UIResponder.keyboardWillHideNotification,
                                                object: nil)
     }
     
     @objc func keyboardWillShow(notification: NSNotification) {
         let userInfo: NSDictionary = notification.userInfo! as NSDictionary
-        let keyboardInfo = userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue
+        let keyboardInfo = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue
         let keyboardSize = keyboardInfo.cgRectValue.size
         let contentInsets = UIEdgeInsets(top: CONTENT_INSET_TOP, left: 0, bottom: keyboardSize.height - UIApplication.shared.keyWindow!.safeAreaInsets.bottom, right: 0)
         tableView.contentInset = contentInsets
@@ -170,7 +170,7 @@ class CreatePackageDestinationSearchViewController: UIViewController {
     private func setupTableView() {
         tableView = UITableView(frame: .zero)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 88
         tableView.dataSource = self
         tableView.delegate = self
@@ -215,7 +215,7 @@ class CreatePackageDestinationSearchViewController: UIViewController {
         textField.clearButtonMode = .whileEditing
         textFieldContainer.addSubview(textField)
         
-        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.childViewControllers.count)", image: nil, body: String(NSLocalizedString("label.setADestination", comment: "label text for set a destination")), color: .white)
+        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.children.count)", image: nil, body: String(NSLocalizedString("label.setADestination", comment: "label text for set a destination")), color: .white)
         instructionLabel.bodyLabel.textColor = Theme().textColor
         instructionLabel.circleMask.backgroundColor = Theme().textColor
         instructionLabel.characterLabel.textColor = .white
@@ -249,9 +249,9 @@ class CreatePackageDestinationSearchViewController: UIViewController {
         print("begin search")
         LocationManager.shared.desiredAccuracy = kCLLocationAccuracyHundredMeters
         LocationManager.shared.requestLocation()
-        let request = MKLocalSearchRequest()
+        let request = MKLocalSearch.Request()
         request.naturalLanguageQuery = text
-        request.region = MKCoordinateRegionMakeWithDistance(LocationManager.shared.location!.coordinate, 100000, 100000)
+        request.region = MKCoordinateRegion(center: LocationManager.shared.location!.coordinate, latitudinalMeters: 100000, longitudinalMeters: 100000)
         
         let search = MKLocalSearch(request: request)
         

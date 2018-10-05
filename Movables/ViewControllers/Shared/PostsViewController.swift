@@ -70,7 +70,7 @@ class PostsViewController: SLKTextViewController {
         layout.minimumInteritemSpacing = 0
         layout.sectionInset = .zero
         layout.estimatedItemSize = CGSize(width: UIScreen.main.bounds.width, height: 120)
-        layout.itemSize = UICollectionViewFlowLayoutAutomaticSize
+        layout.itemSize = UICollectionViewFlowLayout.automaticSize
         
         collectionView?.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: "postCell")
         collectionView?.register(ActivityIndicatorCollectionViewCell.self, forCellWithReuseIdentifier: "loadingViewCell")

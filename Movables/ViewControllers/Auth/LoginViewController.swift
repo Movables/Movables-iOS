@@ -204,7 +204,7 @@ class FacebookButton: FBSDKLoginButton {
     }
     
     override var intrinsicContentSize: CGSize {
-        return CGSize(width: UIViewNoIntrinsicMetric, height: standardButtonHeight)
+        return CGSize(width: UIView.noIntrinsicMetric, height: standardButtonHeight)
     }
     
     override func imageRect(forContentRect contentRect: CGRect) -> CGRect {

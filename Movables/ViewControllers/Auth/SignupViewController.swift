@@ -239,7 +239,7 @@ class SignupViewController: UIViewController {
                 dateFormatter.dateStyle = .short
                 let dateString = dateFormatter.string(from: Date())
                 let profilePicImageReference = Storage.storage().reference().child("images/profile_pics/\(authDataResult!.user.uid)/\(dateString).jpeg")
-                profilePicImageReference.putData(UIImageJPEGRepresentation(image, 0.5)!, metadata: metaData, completion: { (meta, error) in
+                profilePicImageReference.putData(image.jpegData(compressionQuality: 0.5)!, metadata: metaData, completion: { (meta, error) in
                     if let error = error {
                         print("error: \(error)")
                         let alertController = UIAlertController(title: String(NSLocalizedString("copy.alert.fileSaveUnsuccessful", comment: "alert title for unsuccessful file save")), message: error.localizedDescription, preferredStyle: .alert)
@@ -310,7 +310,7 @@ class SignupViewController: UIViewController {
                 print("Camera")
                 if UIImagePickerController.isSourceTypeAvailable(.camera) {
                     self.picker.allowsEditing = false
-                    self.picker.sourceType = UIImagePickerControllerSourceType.camera
+                    self.picker.sourceType = UIImagePickerController.SourceType.camera
                     self.picker.cameraCaptureMode = .photo
                     self.picker.cameraDevice = .front
                     self.picker.modalPresentationStyle = .overCurrentContext
@@ -351,9 +351,10 @@ class SignupViewController: UIViewController {
 }
 
 extension SignupViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         var  chosenImage = UIImage()
-        chosenImage = info[UIImagePickerControllerOriginalImage] as! UIImage //2
+        chosenImage = info[.originalImage] as! UIImage
         self.cropVC = CropViewController(croppingStyle: .circular, image: chosenImage)
         self.cropVC?.aspectRatioPreset = .presetSquare
         self.cropVC?.aspectRatioLockEnabled = true
@@ -397,7 +398,7 @@ extension SignupViewController: CropViewControllerDelegate {
         dismiss(animated: true) {
             // insert cropped photo into stackview and update add cover photo button
             print(image)
-            if let data = UIImageJPEGRepresentation(image, 0.5) {
+            if let data = image.jpegData(compressionQuality: 0.5) {
                 let bcf = ByteCountFormatter()
                 bcf.allowedUnits = [.useMB] // optional: restricts the units to MB only
                 bcf.countStyle = .file

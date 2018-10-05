@@ -120,7 +120,7 @@ class MCRouteSummaryCollectionViewCell: UICollectionViewCell {
         let polyline = MKPolyline(coordinates: coords, count: coords.count)
         print("number of coords in dropoff summary: \(coords.count)")
         boundingRect = polyline.boundingMapRect
-        self.mapView.add(polyline, level: .aboveRoads)
+        self.mapView.addOverlay(polyline, level: .aboveRoads)
         
         self.mapView.addAnnotations(annotations)
         self.mapView.setVisibleMapRect(boundingRect!, edgePadding: UIEdgeInsets(top: 45, left: 45, bottom: 25, right: 45), animated: false)

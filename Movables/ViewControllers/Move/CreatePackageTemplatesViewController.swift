@@ -66,7 +66,7 @@ class CreatePackageTemplatesViewController: UIViewController {
     private func setupTableView() {
         tableView = UITableView(frame: .zero)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 100
         tableView.contentInset.top = CONTENT_INSET_TOP
         tableView.contentInset.bottom = CONTENT_INSET_BOTTOM
@@ -79,7 +79,7 @@ class CreatePackageTemplatesViewController: UIViewController {
         tableView.register(ListViewButtonTableViewCell.self, forCellReuseIdentifier: "buttonCell")
         view.addSubview(tableView)
 
-        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.childViewControllers.count)", image: nil, body: String(format: String(NSLocalizedString("label.topicName", comment: "instruction label for topic name")), createPackageCoordinator.topicResultItem!.name), color: .white)
+        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.children.count)", image: nil, body: String(format: String(NSLocalizedString("label.topicName", comment: "instruction label for topic name")), createPackageCoordinator.topicResultItem!.name), color: .white)
         instructionLabel.bodyLabel.textColor = Theme().textColor
         instructionLabel.circleMask.backgroundColor = Theme().textColor
         instructionLabel.characterLabel.textColor = .white

@@ -109,7 +109,7 @@ class CreateConversationLegislativeAreaViewController: UIViewController {
     private func setupTableView() {
         tableView = UITableView(frame: .zero)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 88
         tableView.dataSource = self
         tableView.delegate = self
@@ -120,7 +120,7 @@ class CreateConversationLegislativeAreaViewController: UIViewController {
         tableView.contentOffset.y = -CONTENT_INSET_TOP
         view.addSubview(tableView)
         
-        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.childViewControllers.count)", image: nil, body: String(NSLocalizedString("label.selectALegislativeArea", comment: "instruction label text for select a legislative area")), color: .white)
+        instructionLabel = MCPill(frame: .zero, character: "\(self.navigationController!.children.count)", image: nil, body: String(NSLocalizedString("label.selectALegislativeArea", comment: "instruction label text for select a legislative area")), color: .white)
         instructionLabel.bodyLabel.textColor = Theme().textColor
         instructionLabel.circleMask.backgroundColor = Theme().textColor
         instructionLabel.characterLabel.textColor = .white
