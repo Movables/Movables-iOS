@@ -386,6 +386,8 @@ struct Package: Equatable {
             longitude: (hit["_geoloc"] as! [String: CLLocationDegrees])["lng"]!
         )
         
+        print(hitContent)
+        
         self.dueDate = Date(timeIntervalSince1970: (hitContent["due_date"] as! TimeInterval))
         
         self.dropoffMessage = hitContent["dropoff_message"] as? String
